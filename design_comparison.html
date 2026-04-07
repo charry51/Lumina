@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lumina - Comparativa de Diseño</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-premium { font-family: 'Outfit', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .gold-text { color: #D4AF37; }
+        .gold-btn { background: linear-gradient(to right, #D4AF37, #B8860B); color: black; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-100">
+
+    <!-- DISEÑO 1: SIMPLE Y MINIMALISTA -->
+    <div class="w-full md:w-1/2 h-full bg-white border-r border-gray-200 p-8 overflow-y-auto">
+        <header class="mb-10 text-center">
+            <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Concepto A</span>
+            <h1 class="text-2xl font-bold text-gray-900 mt-1">Minimalismo Funcional</h1>
+        </header>
+
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-700">Tus Pantallas</h2>
+                <button class="text-sm font-medium text-blue-600">+ Añadir</button>
+            </div>
+            <div class="space-y-3">
+                <div class="p-4 border border-gray-100 rounded-md flex justify-between items-center hover:bg-gray-50 transition-colors">
+                    <div>
+                        <p class="font-medium text-gray-900 text-sm">Entrada Principal</p>
+                        <p class="text-xs text-gray-500">Madrid • Activa</p>
+                    </div>
+                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-gray-50 p-6 rounded-lg">
+            <h2 class="text-sm font-bold text-gray-900 mb-4 uppercase">Subir Campaña</h2>
+            <div class="space-y-4">
+                <input type="text" placeholder="Nombre de campaña" class="w-full p-2.5 text-sm border border-gray-200 rounded outline-none focus:border-blue-500">
+                <div class="border-2 border-dashed border-gray-200 rounded p-6 text-center text-xs text-gray-400">
+                    Arrastra el archivo aquí
+                </div>
+                <button class="w-full py-2.5 bg-black text-white text-sm font-bold rounded">Enviar</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- DISEÑO 2: PREMIUM Y LUJOSO -->
+    <div class="w-full md:w-1/2 h-full bg-[#0a0a0a] text-white p-8 overflow-y-auto">
+        <header class="mb-10 text-center font-premium">
+            <span class="text-[10px] font-bold gold-text uppercase tracking-[0.3em]">Concepto B</span>
+            <h1 class="text-3xl font-bold mt-1 tracking-tight">Estética Luxury</h1>
+        </header>
+
+        <section class="mb-12">
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-xl font-medium font-premium tracking-tight">Portfolio de Pantallas</h2>
+                <div class="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center hover:border-gold-text transition-colors cursor-pointer">
+                    <span class="text-lg font-light gold-text">+</span>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl flex justify-between items-center group cursor-pointer hover:bg-white/5 transition-all">
+                <div>
+                    <h3 class="font-semibold text-white">Showroom Paris</h3>
+                    <p class="text-[11px] text-zinc-500 uppercase tracking-widest mt-0.5">Francia • Streaming Live</p>
+                </div>
+                <div class="px-3 py-1 rounded-full border border-green-500/20 bg-green-500/10 text-green-400 text-[9px] font-bold uppercase tracking-tighter">On-Air</div>
+            </div>
+        </section>
+
+        <section class="glass p-8 rounded-3xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#D4AF37] to-transparent"></div>
+            <h2 class="text-lg font-medium font-premium mb-6">Emisión de Contenido</h2>
+            <div class="space-y-6">
+                <div class="group border-b border-zinc-800 pb-2">
+                    <label class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Etiqueta</label>
+                    <input type="text" placeholder="Colección Invierno" class="w-full bg-transparent p-0 text-lg font-light outline-none placeholder:text-zinc-800 focus:text-white">
+                </div>
+                <div class="h-32 border border-zinc-800 border-dashed rounded-xl flex flex-col items-center justify-center text-zinc-600 hover:text-zinc-400 cursor-pointer hover:border-zinc-500 transition-all">
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Cargar Master</span>
+                </div>
+                <button class="w-full py-4 gold-btn text-xs font-bold uppercase tracking-[0.2em] rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all">Lanzar Broadcast</button>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>
