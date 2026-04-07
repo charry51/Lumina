@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-black text-white font-[family-name:var(--font-geist-sans)]">
@@ -10,12 +12,12 @@ export default function Home() {
         </p>
         
         <div className="flex gap-4 items-center">
-          <a
+          <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-white text-black gap-2 hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-6 sm:px-8 font-bold shadow-xl"
             href="/dashboard"
           >
             Ir al Dashboard
-          </a>
+          </Link>
           <a
             className="rounded-full border border-solid border-white transition-colors flex items-center justify-center hover:bg-[#222] text-sm sm:text-base h-10 sm:h-12 px-6 sm:px-8"
             href="https://github.com/charry51/Lumina"
