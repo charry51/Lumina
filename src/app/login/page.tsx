@@ -1,4 +1,4 @@
-import { login } from './actions'
+import { login } from '@/app/login/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

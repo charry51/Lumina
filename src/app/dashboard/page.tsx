@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
@@ -31,11 +32,14 @@ export default async function DashboardPage() {
           <p className="text-zinc-500">Gestión de tus dispositivos y pantallas de señalización digital.</p>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-zinc-500">
+          <span className="text-sm text-zinc-500 hidden md:inline-block">
             {user?.email}
           </span>
+          <Link href="/dashboard/nueva">
+            <Button>+ Nueva Campaña</Button>
+          </Link>
           <form action={logout}>
-            <Button variant="outline" type="submit">Cerrar Sesión</Button>
+            <Button variant="outline" type="submit">Salir</Button>
           </form>
         </div>
       </header>
