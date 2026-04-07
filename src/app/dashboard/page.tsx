@@ -15,6 +15,13 @@ export default async function DashboardPage() {
     .from('pantallas')
     .select('*')
 
+  // Le pedimos a Supabase el perfil con info del plan
+  const { data: profile } = await supabase
+    .from('perfiles')
+    .select('*, planes(nombre)')
+    .eq('id', user?.id)
+    .single()
+
   // Le pedimos a Supabase LAS CAMPAÑAS DE ESTE CLIENTE
   const { data: misCampanas, error: errorCampanas } = await supabase
     .from('campanas')
@@ -36,9 +43,17 @@ export default async function DashboardPage() {
       <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-zinc-900">Panel de Control</h1>
-          <p className="text-zinc-500">Gestión de tus dispositivos y campañas activas.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-sm text-zinc-500">Gestión de tus dispositivos y campañas activas.</span>
+            <span className="text-xs bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full border border-blue-200">
+              {profile?.planes?.nombre || 'Plan Básico'}
+            </span>
+          </div>
         </div>
         <div className="flex items-center gap-4">
+          <Link href="/dashboard/planes">
+             <Button variant="ghost" className="text-zinc-600 hover:text-blue-600">Mejorar Plan</Button>
+          </Link>
           <span className="text-sm text-zinc-500 hidden md:inline-block">
             {user?.email}
           </span>

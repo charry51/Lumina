@@ -23,6 +23,26 @@ export async function createCampaign(prevState: any, formData: FormData) {
       return { type: 'error', message: 'Por favor, completa todos los campos requeridos.' }
     }
 
+    // 0. Verificar límites del plan
+    const { data: profile } = await supabase
+      .from('perfiles')
+      .select('*, planes(*)')
+      .eq('id', user.id)
+      .single()
+
+    const { data: existingCount } = await supabase
+      .from('campanas')
+      .select('id', { count: 'exact', head: true })
+      .eq('cliente_id', user.id)
+
+    const maxCampanas = profile?.planes?.max_campanas || 1
+    if ((existingCount || 0) >= maxCampanas) {
+      return { 
+        type: 'error', 
+        message: `Has alcanzado el límite de tu plan (${maxCampanas} campaña). Mejora tu plan para añadir más.` 
+      }
+    }
+
     // 1. Upload File
     const fileExt = file.name.split('.').pop()
     const fileName = `${crypto.randomUUID()}.${fileExt}`
@@ -34,7 +54,7 @@ export async function createCampaign(prevState: any, formData: FormData) {
 
     if (uploadError) {
       console.error("Storage upload error: ", uploadError)
-      return { type: 'error', message: 'Error al subir el archivo (¿está público el bucket?): ' + uploadError.message }
+      return { type: 'error', message: 'Error al subir el archivo: ' + uploadError.message }
     }
 
     // 2. Get Public URL
@@ -53,11 +73,12 @@ export async function createCampaign(prevState: any, formData: FormData) {
         url_video: publicUrl,
         fecha_inicio: fechaInicio,
         fecha_fin: fechaFin,
+        estado: 'pendiente_aprobacion' // Por defecto siempre pendiente para que el admin lo vea
       })
 
     if (insertError) {
       console.error("DB insert error: ", insertError)
-      return { type: 'error', message: 'Error al guardar la campaña en base de datos. ¿Ejecutaste el ALTER TABLE para pantalla_id?' }
+      return { type: 'error', message: 'Error al guardar en la base de datos.' }
     }
 
     revalidatePath('/dashboard')

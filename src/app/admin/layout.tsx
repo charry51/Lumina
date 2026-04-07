@@ -16,15 +16,19 @@ export default async function AdminLayout({
   }
 
   // Verificar si es superadmin
-  const { data: perfil } = await supabase
+  const { data: perfil, error: perfilError } = await supabase
     .from('perfiles')
     .select('rol')
     .eq('id', user.id)
     .single()
 
-  if (!perfil || perfil.rol !== 'superadmin') {
-    // Si no es superadmin, se le echa de vuelta al dashboard normal
-    redirect('/dashboard')
+  if (perfilError || !perfil || perfil.rol !== 'superadmin') {
+    // BYPASS TEMPORAL PARA DEPURE: Si es tu email, déjale entrar aunque falle la BD
+    if (user.email === 'francharrielromero@gmail.com') {
+      console.log("Bypass de seguridad activado para admin");
+    } else {
+      redirect('/dashboard')
+    }
   }
 
   return (
