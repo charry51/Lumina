@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ActiveScreensMonitor } from './ActiveScreensMonitor'
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
@@ -25,6 +26,7 @@ export default async function AdminDashboardPage() {
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <ActiveScreensMonitor />
         <Card className="bg-zinc-900 border-zinc-800 text-white">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-zinc-400">Total Pantallas</CardTitle>
