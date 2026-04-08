@@ -16,6 +16,8 @@ export async function createCampaign(prevState: any, formData: FormData) {
     const nombreCampana = formData.get('nombre_campana') as string
     const fechaInicio = formData.get('fecha_inicio') as string
     const fechaFin = formData.get('fecha_fin') as string
+    const horaInicio = (formData.get('hora_inicio') as string) || '00:00:00'
+    const horaFin = (formData.get('hora_fin') as string) || '23:59:59'
     const pantallaId = formData.get('pantalla_id') as string // Deberá haberse ejecutado el ALTER TABLE 
     const file = formData.get('video') as File
 
@@ -73,6 +75,8 @@ export async function createCampaign(prevState: any, formData: FormData) {
         url_video: publicUrl,
         fecha_inicio: fechaInicio,
         fecha_fin: fechaFin,
+        hora_inicio: horaInicio,
+        hora_fin: horaFin,
         estado: 'pendiente_aprobacion' // Por defecto siempre pendiente para que el admin lo vea
       })
 

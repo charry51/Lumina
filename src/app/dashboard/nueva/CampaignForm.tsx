@@ -60,12 +60,22 @@ export default function CampaignForm({ pantallas }: { pantallas: Pantalla[] }) {
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <Label htmlFor="fecha_inicio">Fecha de Inicio</Label>
-          {/* Usamos date nativo para evitar complejidades extra, mantiene estética de sistema */}
           <Input id="fecha_inicio" name="fecha_inicio" type="date" required disabled={isLoading} />
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="fecha_fin">Fecha de Fin</Label>
           <Input id="fecha_fin" name="fecha_fin" type="date" required disabled={isLoading} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="hora_inicio">Hora Inicio Emisión</Label>
+          <Input id="hora_inicio" name="hora_inicio" type="time" defaultValue="00:00" required disabled={isLoading} />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="hora_fin">Hora Fin Emisión</Label>
+          <Input id="hora_fin" name="hora_fin" type="time" defaultValue="23:59" required disabled={isLoading} />
         </div>
       </div>
 
