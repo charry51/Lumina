@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
@@ -22,10 +23,17 @@ export default async function DashboardPage() {
     .eq('id', user?.id)
     .single()
 
+  // FORZAR ONBOARDING
+  // Si el usuario no tiene plan, o su estado es inactivo
+  // (Asumimos que al registrar un user nuevo lo creamos NULL o false)
+  if (!profile?.plan_id || profile?.suscripcion_activa === false) {
+     redirect('/dashboard/planes')
+  }
+
   // Le pedimos a Supabase LAS CAMPAÑAS DE ESTE CLIENTE
   const { data: misCampanas, error: errorCampanas } = await supabase
     .from('campanas')
-    .select('*, pantallas(nombre)')
+    .select('*, pantallas(nombre), reproducciones_logs(count)')
     .eq('cliente_id', user?.id)
     .order('created_at', { ascending: false })
 
@@ -114,6 +122,7 @@ export default async function DashboardPage() {
                   <th className="px-6 py-4">Nombre</th>
                   <th className="px-6 py-4">Destino</th>
                   <th className="px-6 py-4">Duración</th>
+                  <th className="px-6 py-4">Impactos Reales</th>
                   <th className="px-6 py-4">Estado</th>
                 </tr>
               </thead>
@@ -123,6 +132,11 @@ export default async function DashboardPage() {
                     <td className="px-6 py-4 font-medium text-zinc-900">{camp.nombre_campana}</td>
                     <td className="px-6 py-4 text-zinc-600">{camp.pantallas?.nombre || 'General'}</td>
                     <td className="px-6 py-4 text-zinc-500">{camp.fecha_inicio} a {camp.fecha_fin}</td>
+                    <td className="px-6 py-4">
+                        <span className="font-mono bg-blue-50 text-blue-700 px-2 py-1 rounded border border-blue-100">
+                            {camp.reproducciones_logs?.[0]?.count || 0} visualizaciones
+                        </span>
+                    </td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${
                         camp.estado === 'aprobada' ? 'bg-green-100 text-green-700' :
