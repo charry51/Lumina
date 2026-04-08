@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { deletePantalla } from './actions'
 import { toast } from 'sonner'
-import { Trash2 } from 'lucide-react'
+import { Trash2, ExternalLink } from 'lucide-react'
+import Link from 'next/link'
 
 export function PantallasTable({ initialData }: { initialData: any[] }) {
   const [loading, setLoading] = useState<string | null>(null)
@@ -47,7 +48,16 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
               <td className="px-6 py-4 font-mono text-xs text-zinc-400">
                 {p.latitud ? `${p.latitud}, ${p.longitud}` : 'No Asignadas'}
               </td>
-              <td className="px-6 py-4 text-right">
+              <td className="px-6 py-4 text-right flex justify-end gap-2">
+                <Link href={`/player/${p.id}`} target="_blank">
+                  <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </Button>
+                </Link>
                 <Button 
                     variant="ghost" 
                     size="sm" 

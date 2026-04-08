@@ -33,16 +33,20 @@ export default async function NuevaCampanaPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900">Nueva Campaña</h1>
-        <p className="text-zinc-500">Sube material publicitario y prográmalo para nuestra red de pantallas.</p>
-        <span className="text-xs bg-[#D4AF37] text-black font-bold px-2 py-1 rounded inline-block mt-2">
-            Nivel de Selección: {profile.planes.nombre}
-        </span>
+    <div className="max-w-4xl mx-auto py-12 px-6 bg-background text-foreground min-h-screen">
+      <header className="mb-8 border-b border-zinc-800 pb-6 flex items-center gap-6">
+        <img src="/logo.png" alt="Lumina Logo" className="h-12 w-auto" />
+        <div>
+            <h1 className="text-2xl font-bold text-zinc-100 italic tracking-tight uppercase">CREAR <span className="text-[#D4AF37] NOT-italic">NUEVA CAMPAÑA</span></h1>
+            <div className="flex items-center gap-2 mt-1">
+                <span className="text-[10px] bg-[#D4AF37]/10 text-[#D4AF37] font-bold px-3 py-1 rounded-full border border-[#D4AF37]/30 uppercase tracking-widest">
+                    Modo: {profile.planes.nombre}
+                </span>
+            </div>
+        </div>
       </header>
       
-      <div className="p-6 border border-zinc-200 rounded-xl shadow-sm bg-white">
+      <div className="p-8 border border-zinc-800 rounded-2xl shadow-2xl bg-zinc-950">
         <CampaignForm pantallas={pantallas || []} userPlan={profile.planes.nombre} />
       </div>
     </div>

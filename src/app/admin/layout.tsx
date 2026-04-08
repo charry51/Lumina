@@ -36,7 +36,8 @@ export default async function AdminLayout({
       {/* Sidebar Admin */}
       <aside className="w-64 border-r border-zinc-900 bg-black flex flex-col">
         <div className="p-6">
-          <h2 className="text-xl font-bold tracking-tighter text-white">LUMINA <span className="text-[#D4AF37] text-xs uppercase ml-2">Admin</span></h2>
+          <img src="/logo.png" alt="Lumina Admin" className="h-12 w-auto" />
+          <span className="text-[10px] text-[#D4AF37] font-black uppercase tracking-[0.3em] mt-2 block pl-1">Admin Panel</span>
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
           <Link href="/admin" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">

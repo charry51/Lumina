@@ -18,6 +18,7 @@ export async function authorizeCampaignStatus(campaignId: string, newStatus: 'ap
     return { success: false, error: error.message }
   }
 
+  revalidatePath('/admin')
   revalidatePath('/admin/campanas')
   revalidatePath('/dashboard')
   

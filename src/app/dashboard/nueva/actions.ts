@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import crypto from 'node:crypto'
 
 export async function createCampaign(prevState: any, formData: FormData) {
   try {
@@ -18,10 +19,13 @@ export async function createCampaign(prevState: any, formData: FormData) {
     const fechaFin = formData.get('fecha_fin') as string
     const horaInicio = (formData.get('hora_inicio') as string) || '00:00:00'
     const horaFin = (formData.get('hora_fin') as string) || '23:59:59'
-    const pantallaId = formData.get('pantalla_id') as string // Deberá haberse ejecutado el ALTER TABLE 
+    const pantallaId = formData.get('pantalla_id') as string
+    const pantallaIdsRaw = formData.get('pantalla_ids') as string // Nuevo campo opcional para múltiple selección
     const file = formData.get('video') as File
 
-    if (!nombreCampana || !fechaInicio || !fechaFin || !pantallaId || !file || file.size === 0) {
+    const pantallaIds = pantallaIdsRaw ? pantallaIdsRaw.split(',') : [pantallaId]
+
+    if (!nombreCampana || !fechaInicio || !fechaFin || (pantallaIds.length === 0 && !pantallaId) || !file || file.size === 0) {
       return { type: 'error', message: 'Por favor, completa todos los campos requeridos.' }
     }
 
@@ -32,20 +36,22 @@ export async function createCampaign(prevState: any, formData: FormData) {
       .eq('id', user.id)
       .single()
 
-    const { data: existingCount } = await supabase
+    const { count: existingCount } = await supabase
       .from('campanas')
       .select('id', { count: 'exact', head: true })
       .eq('cliente_id', user.id)
 
     const maxCampanas = profile?.planes?.max_campanas || 1
-    if ((existingCount || 0) >= maxCampanas) {
+    const totalNew = pantallaIds.length
+    
+    if (((existingCount || 0) + totalNew) > maxCampanas) {
       return { 
         type: 'error', 
-        message: `Has alcanzado el límite de tu plan (${maxCampanas} campaña). Mejora tu plan para añadir más.` 
+        message: `Has alcanzado el límite de tu plan (${maxCampanas} campañas máximo). Solo puedes añadir ${maxCampanas - (existingCount || 0)} más.` 
       }
     }
 
-    // 1. Upload File
+    // 1. Upload File (Upload only once)
     const fileExt = file.name.split('.').pop()
     const fileName = `${crypto.randomUUID()}.${fileExt}`
 
@@ -65,20 +71,22 @@ export async function createCampaign(prevState: any, formData: FormData) {
       .from('creatividades')
       .getPublicUrl(uploadData.path)
 
-    // 3. Insert into Database
+    // 3. Insert into Database (Loop over IDs)
+    const inserts = pantallaIds.map(id => ({
+      cliente_id: user.id,
+      pantalla_id: id !== "default" ? id : null,
+      nombre_campana: nombreCampana,
+      url_video: publicUrl,
+      fecha_inicio: fechaInicio,
+      fecha_fin: fechaFin,
+      hora_inicio: horaInicio,
+      hora_fin: horaFin,
+      estado: 'pendiente_aprobacion'
+    }))
+
     const { error: insertError } = await supabase
       .from('campanas')
-      .insert({
-        cliente_id: user.id,
-        pantalla_id: pantallaId !== "default" ? pantallaId : null,
-        nombre_campana: nombreCampana,
-        url_video: publicUrl,
-        fecha_inicio: fechaInicio,
-        fecha_fin: fechaFin,
-        hora_inicio: horaInicio,
-        hora_fin: horaFin,
-        estado: 'pendiente_aprobacion' // Por defecto siempre pendiente para que el admin lo vea
-      })
+      .insert(inserts)
 
     if (insertError) {
       console.error("DB insert error: ", insertError)
@@ -86,10 +94,12 @@ export async function createCampaign(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/dashboard')
+    revalidatePath('/admin')
     
-    return { type: 'success', message: '¡Campaña subida con éxito!' }
+    return { type: 'success', message: `¡${totalNew} ${totalNew > 1 ? 'campañas creadas' : 'campaña creada'} con éxito!` }
 
   } catch (err: any) {
+    console.error("Error en createCampaign:", err)
     return { type: 'error', message: err.message || 'Error inesperado.' }
   }
 }

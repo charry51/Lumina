@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -26,9 +28,15 @@ type Pantalla = {
 export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: { pantallas: Pantalla[], userPlan?: string }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedMapScreen, setSelectedMapScreen] = useState<string | null>(null)
+  const [selectedMapScreens, setSelectedMapScreens] = useState<string[]>([])
 
   const isPremium = userPlan.toLowerCase().includes('expansión') || userPlan.toLowerCase().includes('dominio')
+
+  const toggleScreen = (id: string) => {
+    setSelectedMapScreens(prev => 
+      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
+    )
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -36,15 +44,15 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
 
     const formData = new FormData(event.currentTarget)
     
-    // Si usamos mapa, inyectamos el ID manualmente si no está en el form
-    if (isPremium && selectedMapScreen) {
-      formData.set('pantalla_id', selectedMapScreen)
-    }
-
-    if (isPremium && !formData.get('pantalla_id')) {
-        toast.error('Debes seleccionar una pantalla en el mapa.')
+    // Si es premium, usamos la lista del mapa
+    if (isPremium) {
+      if (selectedMapScreens.length === 0) {
+        toast.error('Debes seleccionar al menos una pantalla en el mapa.')
         setIsLoading(false)
         return
+      }
+      // Pasamos los IDs como una cadena separada por comas para que el action los procese
+      formData.set('pantalla_ids', selectedMapScreens.join(','))
     }
     
     try {
@@ -57,70 +65,72 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         router.push('/dashboard')
         router.refresh()
       }
-    } catch (error) {
-      toast.error('Ocurrió un error inesperado al enviar el formulario.')
+    } catch (error: any) {
+      console.error('Error al crear campaña:', error)
+      toast.error(`Ocurrió un error inesperado: ${error.message || 'Consulta la consola'}`)
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-sm">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="nombre_campana">Nombre de la Campaña</Label>
-        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Promoción Verano 2026" required disabled={isLoading} />
+        <Label htmlFor="nombre_campana" className="text-zinc-400 font-medium">Nombre de la Campaña</Label>
+        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Promoción Verano 2026" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 focus:border-[#D4AF37] text-zinc-100 h-11" />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="fecha_inicio">Fecha de Inicio</Label>
-          <Input id="fecha_inicio" name="fecha_inicio" type="date" required disabled={isLoading} />
+          <Label htmlFor="fecha_inicio" className="text-zinc-400 font-medium">Fecha de Inicio</Label>
+          <Input id="fecha_inicio" name="fecha_inicio" type="date" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="fecha_fin">Fecha de Fin</Label>
-          <Input id="fecha_fin" name="fecha_fin" type="date" required disabled={isLoading} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="hora_inicio">Hora Inicio Emisión</Label>
-          <Input id="hora_inicio" name="hora_inicio" type="time" defaultValue="00:00" required disabled={isLoading} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="hora_fin">Hora Fin Emisión</Label>
-          <Input id="hora_fin" name="hora_fin" type="time" defaultValue="23:59" required disabled={isLoading} />
+          <Label htmlFor="fecha_fin" className="text-zinc-400 font-medium">Fecha de Fin</Label>
+          <Input id="fecha_fin" name="fecha_fin" type="date" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 relative z-0">
-        <Label>Pantalla de Destino</Label>
+      <div className="grid grid-cols-2 gap-6">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="hora_inicio" className="text-zinc-400 font-medium">Hora Inicio Emisión</Label>
+          <Input id="hora_inicio" name="hora_inicio" type="time" defaultValue="00:00" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="hora_fin" className="text-zinc-400 font-medium">Hora Fin Emisión</Label>
+          <Input id="hora_fin" name="hora_fin" type="time" defaultValue="23:59" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4 relative z-0">
+        <Label className="text-zinc-400 font-medium">Selección de Pantallas</Label>
         
         {isPremium ? (
-          <div className="space-y-3">
-             <div className="p-3 bg-[#D4AF37]/10 border border-[#D4AF37] rounded-lg text-[#b08d24] mb-2 flex items-center justify-between">
+          <div className="space-y-4">
+             <div className="p-4 bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-xl text-[#D4AF37] mb-2 flex items-center justify-between">
                 <div>
-                   <p className="font-bold">✨ Funcionalidad Pro: Selección Satélite</p>
-                   <p className="text-xs text-yellow-700">Explora nuestro inventario geolocalizado.</p>
+                   <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-[#D4AF37] text-black px-1.5 py-0.5 rounded">PRO</span></p>
+                   <p className="text-[11px] opacity-70">Selecciona los nodos de emisión en el mapa satélite.</p>
                 </div>
-                {selectedMapScreen && (
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">¡Selección Lista!</span>
+                {selectedMapScreens.length > 0 && (
+                    <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
+                        {selectedMapScreens.length} Marcadas
+                    </span>
                 )}
              </div>
              <MapSelector 
                 pantallas={pantallas} 
-                onSelectPantalla={(id) => setSelectedMapScreen(id)}
-                selectedId={selectedMapScreen}
+                onTogglePantalla={toggleScreen}
+                selectedIds={selectedMapScreens}
              />
-             {/* Componente hidden para enganchar el estado con el FormData */}
-             <input type="hidden" name="pantalla_id" value={selectedMapScreen || ''} required />
+             <input type="hidden" name="pantalla_id" value={selectedMapScreens[0] || ''} />
           </div>
         ) : (
           <Select name="pantalla_id" required disabled={isLoading}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11">
               <SelectValue placeholder="Selecciona una pantalla de la lista..." />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-100">
               {pantallas.length === 0 ? (
                 <SelectItem value="default" disabled>No hay pantallas disponibles</SelectItem>
               ) : (
@@ -136,13 +146,13 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="video">Archivo (Imagen o Video)</Label>
-        <Input id="video" name="video" type="file" required disabled={isLoading} accept="image/*,video/mp4" />
-        <p className="text-xs text-zinc-500">Sube material estático o MP4 para reproducir en bucle.</p>
+        <Label htmlFor="video" className="text-zinc-400 font-medium tracking-tight">Archivo (Imagen o Video)</Label>
+        <Input id="video" name="video" type="file" required disabled={isLoading} accept="image/*,video/mp4" className="bg-zinc-900 border-zinc-800 text-zinc-100 h-12 file:text-zinc-100 file:font-semibold" />
+        <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Resolución sugerida: 1920x1080 (HD)</p>
       </div>
 
-      <Button type="submit" className="mt-4 bg-zinc-900 hover:bg-black text-white" disabled={isLoading}>
-        {isLoading ? 'Subiendo...' : 'Crear Campaña'}
+      <Button type="submit" className="mt-6 bg-[#D4AF37] hover:bg-[#b08d24] text-black font-black h-12 uppercase tracking-widest text-xs" disabled={isLoading}>
+        {isLoading ? 'Emitiendo en la red...' : 'Lanzar Campaña'}
       </Button>
     </form>
   )

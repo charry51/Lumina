@@ -3,10 +3,15 @@ import Link from 'next/link'
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-black text-white font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 items-center text-center">
-        <h1 className="text-6xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 drop-shadow-sm">
-          Lumina
-        </h1>
+      <main className="flex flex-col gap-10 items-center text-center">
+        <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#D4AF37] to-zinc-800 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+            <img 
+                src="/logo.png" 
+                alt="Lumina" 
+                className="relative h-24 sm:h-32 w-auto drop-shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all"
+            />
+        </div>
         <p className="text-xl text-zinc-400 max-w-md mx-auto">
           Plataforma de Digital Signage SaaS inteligente para la gestión de contenidos dinámica.
         </p>

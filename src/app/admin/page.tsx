@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ActiveScreensMonitor } from './ActiveScreensMonitor'
+import { ActionButtons } from './campanas/ActionButtons'
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
@@ -65,6 +66,7 @@ export default async function AdminDashboardPage() {
                   <th className="px-6 py-4">Campaña</th>
                   <th className="px-6 py-4">Fecha Solicitud</th>
                   <th className="px-6 py-4">Estado</th>
+                  <th className="px-6 py-4 text-right">Acción</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800">
@@ -76,6 +78,9 @@ export default async function AdminDashboardPage() {
                       <span className="bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded-full text-xs font-bold uppercase">
                         {camp.estado.replace('_', ' ')}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                       <ActionButtons campanaId={camp.id} />
                     </td>
                   </tr>
                 ))}

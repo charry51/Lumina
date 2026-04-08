@@ -40,12 +40,12 @@ function ChangeView({ center, zoom }: { center: [number, number], zoom: number }
 
 export default function MapSelectorClient({ 
   pantallas, 
-  onSelectPantalla,
-  selectedId
+  onTogglePantalla,
+  selectedIds = []
 }: { 
   pantallas: Pantalla[],
-  onSelectPantalla: (id: string) => void,
-  selectedId: string | null
+  onTogglePantalla: (id: string) => void,
+  selectedIds: string[]
 }) {
   // Centro aproximado de España por defecto
   const [center, setCenter] = useState<[number, number]>([40.4168, -3.7038])
@@ -61,38 +61,47 @@ export default function MapSelectorClient({
   const pantallasConGeo = pantallas.filter(p => p.latitud !== null && p.longitud !== null)
 
   return (
-    <div className="h-[400px] w-full rounded-md overflow-hidden border border-zinc-200 shadow-inner relative z-0">
+    <div className="h-[400px] w-full rounded-md overflow-hidden border border-zinc-200 border-zinc-800 shadow-inner relative z-0">
       <MapContainer center={center} zoom={6} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
         <ChangeView center={center} zoom={6} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
-        {pantallasConGeo.map((pantalla) => (
-          <Marker 
-            key={pantalla.id} 
-            position={[pantalla.latitud!, pantalla.longitud!]}
-            icon={selectedId === pantalla.id ? selectedIcon : new L.Icon.Default()}
-            eventHandlers={{
-                click: () => {
-                    onSelectPantalla(pantalla.id)
-                },
-            }}
-          >
-            <Popup>
-              <div className="text-sm font-[family-name:var(--font-geist-sans)]">
-                <p className="font-bold">{pantalla.nombre}</p>
-                <p className="text-zinc-500">{pantalla.ubicacion}</p>
-                <button 
-                  onClick={() => onSelectPantalla(pantalla.id)}
-                  className="mt-2 w-full bg-black text-white px-2 py-1 flex items-center justify-center rounded text-xs"
-                >
-                  {selectedId === pantalla.id ? 'Seleccionada' : 'Seleccionar Pantalla'}
-                </button>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {pantallasConGeo.map((pantalla) => {
+          const isSelected = selectedIds.includes(pantalla.id)
+          
+          return (
+            <Marker 
+              key={pantalla.id} 
+              position={[pantalla.latitud!, pantalla.longitud!]}
+              icon={isSelected ? selectedIcon : new L.Icon.Default()}
+              eventHandlers={{
+                  click: () => {
+                      onTogglePantalla(pantalla.id)
+                  },
+              }}
+            >
+              <Popup>
+                <div className="text-sm font-[family-name:var(--font-geist-sans)] dark:text-zinc-900">
+                  <p className="font-bold">{pantalla.nombre}</p>
+                  <p className="opacity-70">{pantalla.ubicacion}</p>
+                  <button 
+                    type="button"
+                    onClick={() => onTogglePantalla(pantalla.id)}
+                    className={`mt-2 w-full px-2 py-1.5 flex items-center justify-center rounded text-xs font-bold transition-colors ${
+                      isSelected 
+                        ? 'bg-red-50 text-red-600 border border-red-200' 
+                        : 'bg-zinc-900 text-white hover:bg-black'
+                    }`}
+                  >
+                    {isSelected ? 'Quitar Selección' : 'Seleccionar Pantalla'}
+                  </button>
+                </div>
+              </Popup>
+            </Marker>
+          )
+        })}
       </MapContainer>
     </div>
   )
