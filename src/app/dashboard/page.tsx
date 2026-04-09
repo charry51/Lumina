@@ -59,10 +59,19 @@ export default async function DashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/planes">
-             <Button variant="ghost" className="text-zinc-400 hover:text-primary hover:bg-primary/5">Plan y Facturación</Button>
+          <Link href="/host/dashboard">
+             <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/5 hidden lg:flex gap-2 items-center">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+                Tengo una Pantalla
+             </Button>
           </Link>
-          <span className="text-sm text-zinc-500 hidden md:inline-block border-r border-border pr-4 italic font-mono">
+          <Link href="/dashboard/planes">
+             <Button variant="ghost" className="text-zinc-400 hover:text-primary hover:bg-primary/5">Plan</Button>
+          </Link>
+          <span className="text-sm text-zinc-500 hidden xl:inline-block border-r border-border pr-4 italic font-mono">
             {user?.email}
           </span>
           <Link href="/dashboard/nueva">
@@ -113,8 +122,16 @@ export default async function DashboardPage() {
               </div>
             ))
           ) : (
-            <div className="col-span-full py-12 text-center cyber-card border-dashed">
-              <p className="text-muted-foreground italic text-sm">No se encontraron pantallas en tu red.</p>
+            <div className="col-span-full py-12 text-center cyber-card border-dashed bg-primary/5 border-primary/20">
+              <div className="max-w-xs mx-auto">
+                <p className="text-zinc-100 font-heading uppercase text-sm mb-2">¿Tienes una pantalla física?</p>
+                <p className="text-muted-foreground text-[11px] mb-6 uppercase tracking-wider">Únela a la red Lumina para emitir tu propio contenido o ganar comisiones.</p>
+                <Link href="/host/dashboard">
+                  <Button size="sm" className="bg-primary text-black font-black uppercase text-[10px] tracking-widest hover:bg-primary/80">
+                    Vincular mi TV ahora
+                  </Button>
+                </Link>
+              </div>
             </div>
           )}
         </div>

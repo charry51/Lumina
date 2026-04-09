@@ -15,6 +15,7 @@ export function PairingForm() {
   const [nombre, setNombre] = useState('')
   const [ciudad, setCiudad] = useState('')
   const [ubicacion, setUbicacion] = useState('')
+  const [esPublica, setEsPublica] = useState(true)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -29,7 +30,7 @@ export function PairingForm() {
     }
 
     setLoading(true)
-    const result = await activatePairingCode(code, nombre, ciudad, ubicacion || ciudad)
+    const result = await activatePairingCode(code, nombre, ciudad, ubicacion || ciudad, esPublica)
 
     if (result.success) {
       setSuccess(true)
@@ -107,6 +108,41 @@ export function PairingForm() {
           className="bg-zinc-900 border-zinc-800 text-white h-10"
           disabled={loading}
         />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label className="text-zinc-400 text-xs uppercase tracking-widest mb-1">Visibilidad de la Pantalla</Label>
+        <div className="grid grid-cols-2 gap-2 bg-zinc-950 p-1 rounded-xl border border-zinc-800">
+            <button
+                type="button"
+                onClick={() => setEsPublica(true)}
+                className={`flex flex-col items-center gap-1 py-3 rounded-lg border transition-all ${
+                    esPublica 
+                        ? 'bg-primary/20 border-primary/50 text-white shadow-[0_0_15px_rgba(0,210,255,0.1)]' 
+                        : 'border-transparent text-zinc-500 hover:text-zinc-400'
+                }`}
+            >
+                <span className="text-[10px] font-black uppercase tracking-tighter">🌐 Pública</span>
+                <span className="text-[8px] opacity-60 uppercase">Marketplace Lumina</span>
+            </button>
+            <button
+                type="button"
+                onClick={() => setEsPublica(false)}
+                className={`flex flex-col items-center gap-1 py-3 rounded-lg border transition-all ${
+                    !esPublica 
+                        ? 'bg-zinc-800 border-zinc-700 text-white' 
+                        : 'border-transparent text-zinc-500 hover:text-zinc-400'
+                }`}
+            >
+                <span className="text-[10px] font-black uppercase tracking-tighter">🔒 Privada</span>
+                <span className="text-[8px] opacity-60 uppercase">Uso Interno Solo</span>
+            </button>
+        </div>
+        <p className="text-[9px] text-zinc-600 italic px-1">
+            {esPublica 
+                ? "* Cualquiera podrá contratar publicidad en esta pantalla. Tú ganas comisiones." 
+                : "* Solo tú podrás emitir contenido en esta pantalla. Estará oculta para otros."}
+        </p>
       </div>
 
       <Button

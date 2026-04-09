@@ -42,7 +42,8 @@ export async function activatePairingCode(
   code: string,
   nombre: string,
   ciudad: string,
-  ubicacion: string
+  ubicacion: string,
+  esPublica: boolean = true
 ): Promise<{ success: boolean; pantallaId?: string; error?: string }> {
   const supabase = await createClient()
 
@@ -87,6 +88,7 @@ export async function activatePairingCode(
       ciudad,
       ubicacion,
       estado: 'activa',
+      es_publica: esPublica,
       organizacion_id: perfil?.organizacion_id
     })
     .select('id')

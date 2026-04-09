@@ -20,11 +20,13 @@ export function NuevaPantallaForm() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [tab, setTab] = useState<'manual' | 'vincular'>('vincular')
+  const [esPublica, setEsPublica] = useState(true)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     const formData = new FormData(e.currentTarget)
+    formData.append('es_publica', esPublica.toString())
     
     if (!formData.get('nombre') || !formData.get('ciudad') || !formData.get('latitud') || !formData.get('longitud')) {
         toast.error('Nombre, Ciudad, Latitud y Longitud son requeridos');
@@ -107,6 +109,35 @@ export function NuevaPantallaForm() {
               <div className="space-y-2">
                   <Label htmlFor="longitud" className="text-zinc-400 text-xs uppercase tracking-widest">Longitud</Label>
                   <Input id="longitud" name="longitud" placeholder="-3.7038" type="number" step="any" className="bg-zinc-950 border-zinc-800" disabled={loading} />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 py-2">
+              <Label className="text-zinc-400 text-xs uppercase tracking-widest mb-1">Visibilidad Marketplace</Label>
+              <div className="grid grid-cols-2 gap-2 bg-zinc-950 p-1 rounded-xl border border-zinc-800">
+                  <button
+                      type="button"
+                      onClick={() => setEsPublica(true)}
+                      className={`flex flex-col items-center gap-1 py-3 rounded-lg border transition-all ${
+                          esPublica 
+                              ? 'bg-primary/20 border-primary/50 text-white' 
+                              : 'border-transparent text-zinc-500 hover:text-zinc-400'
+                      }`}
+                  >
+                      <span className="text-[10px] font-black uppercase tracking-tighter">🌐 Pública</span>
+                      <span className="text-[8px] opacity-60 uppercase">Disponible</span>
+                  </button>
+                  <button
+                      type="button"
+                      onClick={() => setEsPublica(false)}
+                      className={`flex flex-col items-center gap-1 py-3 rounded-lg border transition-all ${
+                          !esPublica 
+                              ? 'bg-zinc-800 border-zinc-700 text-white' 
+                              : 'border-transparent text-zinc-500 hover:text-zinc-400'
+                      }`}
+                  >
+                      <span className="text-[10px] font-black uppercase tracking-tighter">🔒 Privada</span>
+                      <span className="text-[8px] opacity-60 uppercase">Uso Propio</span>
+                  </button>
               </div>
             </div>
             <Button type="submit" className="w-full bg-[#D4AF37] text-black hover:bg-[#b08d24] font-black uppercase tracking-widest" disabled={loading}>

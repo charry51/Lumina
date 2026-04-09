@@ -44,7 +44,9 @@ export async function createPantalla(formData: FormData) {
   const lat = latStr ? parseFloat(latStr) : null
   const lng = lngStr ? parseFloat(lngStr) : null
 
-  // 5. Inserción con Vínculo de Organización
+  const esPublica = formData.get('es_publica') !== 'false' // Si no viene o es 'on', es pública
+
+  // 5. Inserción con Vínculo de Organización y Privacidad
   const { error } = await supabase.from('pantallas').insert({
     nombre,
     ubicacion,
@@ -52,6 +54,7 @@ export async function createPantalla(formData: FormData) {
     latitud: lat,
     longitud: lng,
     estado: 'activa',
+    es_publica: esPublica,
     organizacion_id: perfil.organizacion_id
   })
 

@@ -94,19 +94,32 @@ export async function createCampaign(prevState: any, formData: FormData) {
       finalEstado = 'rechazada_ia'
     }
 
-    // 4. Insert into Database (Loop over IDs)
-    const inserts = pantallaIds.map(id => ({
-      cliente_id: user.id,
-      pantalla_id: id !== "default" ? id : null,
-      nombre_campana: nombreCampana,
-      url_video: publicUrl,
-      fecha_inicio: fechaInicio,
-      fecha_fin: fechaFin,
-      hora_inicio: horaInicio,
-      hora_fin: horaFin,
-      estado: finalEstado,
-      ia_metadata: iaResult
-    }))
+    // 4. Obtener datos de las pantallas (para precio y organización)
+    const { data: screensData } = await supabase
+      .from('pantallas')
+      .select('id, precio_emision, organizacion_id')
+      .in('id', pantallaIds)
+
+    const screensMap = new Map(screensData?.map(s => [s.id, s]) || [])
+
+    // 5. Insert into Database (Loop over IDs)
+    const inserts = pantallaIds.map(id => {
+      const screen = screensMap.get(id)
+      return {
+        cliente_id: user.id,
+        pantalla_id: id !== "default" ? id : null,
+        organizacion_id: profile?.organizacion_id, // Obligatorio para RLS
+        nombre_campana: nombreCampana,
+        url_video: publicUrl,
+        fecha_inicio: fechaInicio,
+        fecha_fin: fechaFin,
+        hora_inicio: horaInicio,
+        hora_fin: horaFin,
+        estado: finalEstado,
+        ia_metadata: iaResult,
+        precio_pactado: screen?.precio_emision || 50.00 // Congelamos el precio actual
+      }
+    })
 
     const { error: insertError } = await supabase
       .from('campanas')
@@ -114,7 +127,7 @@ export async function createCampaign(prevState: any, formData: FormData) {
 
     if (insertError) {
       console.error("DB insert error: ", insertError)
-      return { type: 'error', message: 'Error al guardar en la base de datos.' }
+      return { type: 'error', message: `Error de Base de Datos: ${insertError.message} (${insertError.code})` }
     }
 
     revalidatePath('/dashboard')
