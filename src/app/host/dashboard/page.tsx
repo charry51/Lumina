@@ -1,31 +1,49 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
+import { PairingForm } from '@/app/admin/pantallas/PairingForm'
+
 export default async function HostDashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/login')
 
-  // Obtener el perfil del host con su pantalla y comisiones
-  const { data: hostData } = await supabase
+  // Obtener todos los registros de host vinculados a este perfil
+  const { data: hosts } = await supabase
     .from('hosts')
-    .select('*, pantallas(nombre, ciudad, estado, precio_emision)')
+    .select('*, pantallas(id, nombre, ciudad, estado, precio_emision)')
     .eq('perfil_id', user.id)
-    .single()
 
-  if (!hostData) {
+  const hasScreens = hosts && hosts.length > 0
+
+  if (!hasScreens) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-8">
-        <div className="cyber-card p-12 max-w-lg text-center">
-          <h1 className="text-2xl font-heading text-gradient mb-4">Sin acceso de Host</h1>
-          <p className="text-muted-foreground text-sm">
-            Tu cuenta no está vinculada a ninguna pantalla. Contacta con el administrador de Lumina para activar tu perfil de host.
-          </p>
+      <div className="min-h-screen bg-[#0a0a0f] text-foreground p-8 font-sans flex flex-col items-center justify-center">
+        <div className="max-w-md w-full">
+            <header className="mb-10 text-center">
+                <h1 className="text-4xl font-heading font-black text-gradient mb-2">BIENVENIDO A LUMINA</h1>
+                <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-[3px]">Convierte tu local en ingresos publicitarios</p>
+            </header>
+
+            <div className="cyber-card p-8 bg-zinc-900/50 backdrop-blur-xl border-primary/20">
+                <div className="mb-6">
+                    <h2 className="text-lg font-heading text-zinc-100 uppercase mb-2">Vincular mi primera pantalla</h2>
+                    <p className="text-zinc-500 text-xs">Asegúrate de que tu TV muestra el código de vinculación (LM-XXX) entrando en lumina.app/vincular desde ella.</p>
+                </div>
+                <PairingForm />
+            </div>
+
+            <p className="mt-8 text-center text-[10px] text-zinc-600 uppercase tracking-widest font-mono">
+                ¿Necesitas ayuda? lumina.app/soporte
+            </p>
         </div>
       </div>
     )
   }
+
+  // Si tiene pantallas, usamos la primera para el dashboard simplificado actual
+  const hostData = hosts[0]
 
   // Obtener historial de comisiones
   const { data: comisiones } = await supabase

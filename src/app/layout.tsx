@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logo.png",
   },
+  manifest: "/manifest.json",
 };
 
 import { Toaster } from "@/components/ui/sonner";

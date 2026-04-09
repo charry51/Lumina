@@ -1,0 +1,27 @@
+{
+  "name": "LUMINA Digital Signage",
+  "short_name": "LUMINA",
+  "description": "Plataforma profesional de Digital Signage. Gestiona y emite contenido en tu red de pantallas.",
+  "start_url": "/vincular",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#00d2ff",
+  "orientation": "landscape",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "lang": "es"
+}
