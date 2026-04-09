@@ -17,8 +17,25 @@ export async function createCampaign(prevState: any, formData: FormData) {
     const nombreCampana = formData.get('nombre_campana') as string
     const fechaInicio = formData.get('fecha_inicio') as string
     const fechaFin = formData.get('fecha_fin') as string
-    const horaInicio = (formData.get('hora_inicio') as string) || '00:00:00'
-    const horaFin = (formData.get('hora_fin') as string) || '23:59:59'
+    
+    // Dayparting Logic: Only 'expansion' or 'dominio' can custom times
+    let horaInicio = (formData.get('hora_inicio') as string) || '00:00:00'
+    let horaFin = (formData.get('hora_fin') as string) || '23:59:59'
+    
+    // Obtener plan para restricción (necesario antes de procesar)
+    const { data: profile } = await supabase
+      .from('perfiles')
+      .select('*, planes(*)')
+      .eq('id', user.id)
+      .single()
+
+    const planId = profile?.planes?.id || 'presencia'
+    const canDaypart = planId === 'expansion' || planId === 'dominio'
+
+    if (!canDaypart) {
+      horaInicio = '00:00:00'
+      horaFin = '23:59:59'
+    }
     const pantallaId = formData.get('pantalla_id') as string
     const pantallaIdsRaw = formData.get('pantalla_ids') as string // Nuevo campo opcional para múltiple selección
     const file = formData.get('video') as File
@@ -28,13 +45,6 @@ export async function createCampaign(prevState: any, formData: FormData) {
     if (!nombreCampana || !fechaInicio || !fechaFin || (pantallaIds.length === 0 && !pantallaId) || !file || file.size === 0) {
       return { type: 'error', message: 'Por favor, completa todos los campos requeridos.' }
     }
-
-    // 0. Verificar límites del plan
-    const { data: profile } = await supabase
-      .from('perfiles')
-      .select('*, planes(*)')
-      .eq('id', user.id)
-      .single()
 
     const { count: existingCount } = await supabase
       .from('campanas')

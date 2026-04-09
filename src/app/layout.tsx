@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-heading",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
+  variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Lumina | Inteligencia Digital Signage",
+  title: "LUMINA | Inteligencia Digital Signage",
   description: "Plataforma SaaS avanzada para la gestión dinámica de pantallas publicitarias.",
   icons: {
     icon: "/logo.png",
@@ -30,9 +35,17 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${dmSans.variable} ${spaceGrotesk.variable} ${jetbrains.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col">
+        {/* Anti-Next Logo CSS injection */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          [data-nextjs-static-indicator], 
+          .nextjs-static-indicator-container, 
+          #nextjs-dev-overlay { 
+            display: none !important; 
+          }
+        `}} />
         {children}
         <Toaster />
       </body>

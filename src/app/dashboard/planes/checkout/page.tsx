@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { updatePlan } from './actions'
 import { toast } from 'sonner'
 import { Loader2, ShieldCheck, CreditCard } from 'lucide-react'
@@ -36,59 +34,84 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] p-4 bg-slate-50 font-[family-name:var(--font-geist-sans)]">
-      <Card className="w-full max-w-md shadow-2xl border-0 overflow-hidden">
-        <div className="bg-slate-900 p-6 text-white flex items-center justify-between">
+    <div className="flex items-center justify-center min-h-[90vh] p-4 bg-background font-sans text-foreground">
+      <div className="cyber-card w-full max-w-md overflow-hidden relative border-primary/30 shadow-[0_0_50px_rgba(0,210,255,0.1)]">
+        <div className="bg-[#1a1a2e]/80 p-8 border-b border-border flex items-center justify-between">
           <div>
-            <p className="text-slate-400 text-xs uppercase font-bold tracking-widest">Resumen del pedido</p>
-            <h2 className="text-2xl font-bold capitalize">{planId.replace('_', ' ')}</h2>
+            <p className="text-primary text-[10px] uppercase font-mono tracking-[4px] mb-1">Terminal de Pago</p>
+            <h2 className="text-3xl font-heading text-zinc-100 uppercase tracking-tight">{planId.replace('_', ' ')}</h2>
           </div>
-          <CreditCard className="w-8 h-8 opacity-50" />
+          <div className="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center bg-primary/5">
+            <CreditCard className="w-6 h-6 text-primary shadow-[0_0_10px_rgba(0,210,255,0.5)]" />
+          </div>
         </div>
         
-        <CardContent className="p-8 space-y-6">
-          <div className="flex justify-between items-center text-slate-600 border-b pb-4 border-slate-100">
-            <span>Suscripción Mensual</span>
-            <span className="font-bold text-slate-900">Calculando...</span>
+        <div className="p-8 space-y-8">
+          <div className="flex justify-between items-center text-zinc-400 border-b border-border/30 pb-4 font-mono text-[11px] uppercase tracking-widest">
+            <span>Protocolo de Suscripción</span>
+            <span className="font-bold text-primary">Sincronizado</span>
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-lg flex gap-3 items-start border border-blue-100">
-            <ShieldCheck className="w-5 h-5 text-blue-600 mt-0.5" />
-            <p className="text-xs text-blue-800 leading-relaxed">
-              Estás en un entorno de pruebas seguro. Al hacer clic en el botón, el sistema simulará una transacción exitosa y actualizará los límites de tu cuenta de forma inmediata.
-            </p>
+          <div className="bg-primary/5 p-5 border border-primary/20 relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-1 h-full bg-primary animate-pulse"></div>
+            <div className="flex gap-3 items-start">
+              <ShieldCheck className="w-5 h-5 text-primary mt-0.5" />
+              <div className="flex flex-col gap-1">
+                <p className="text-[10px] text-zinc-100 font-bold uppercase tracking-tight">
+                  {planId === 'presencia' ? '🎉 Oferta Especial: 30 Días de Prueba' : 'Entorno de Alta Seguridad'}
+                </p>
+                <p className="text-[9px] text-zinc-400 leading-relaxed font-sans uppercase tracking-tight">
+                  {planId === 'presencia' 
+                    ? 'Disfruta de todas las funciones del plan Presencia sin coste durante un mes. Luego 79€/mes.' 
+                    : 'Al confirmar, se simulará una autorización bancaria encriptada para activar sus privilegios de red.'}
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-3">
-             <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Subtotal</span>
-                <span>--</span>
+          <div className="space-y-4">
+             <div className="flex justify-between text-[11px] font-mono uppercase text-zinc-500 tracking-widest">
+                <span>Total a Pagar Hoy</span>
+                <span className={planId === 'presencia' ? 'text-green-500 font-bold' : ''}>
+                  {planId === 'presencia' ? '0.00€' : 'Simulado'}
+                </span>
              </div>
-             <div className="flex justify-between text-lg font-bold border-t pt-2">
-                <span>Total a pagar</span>
-                <span className="text-blue-600 italic">Simulado</span>
-             </div>
+             {planId === 'presencia' && (
+               <div className="flex justify-between text-[9px] font-mono uppercase text-zinc-600 tracking-tighter">
+                  <span>Próximo cargo</span>
+                  <span>En 30 días</span>
+               </div>
+             )}
           </div>
-        </CardContent>
+        </div>
 
-        <CardFooter className="p-8 pt-0 flex flex-col gap-4">
-          <Button 
-            className="w-full py-6 text-lg font-bold bg-blue-600 hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+        <div className="p-8 pt-0 flex flex-col gap-6">
+          <button 
+            className={`cyber-button-cyan w-full py-4 text-xs font-black uppercase tracking-[3px] shadow-lg shadow-primary/10 flex items-center justify-center gap-3 ${loading ? 'opacity-70 cursor-wait' : ''}`}
             onClick={handlePayment}
             disabled={loading}
           >
             {loading ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Procesando...
+                <Loader2 className="h-4 w-4 animate-spin text-black" />
+                Validando...
               </>
-            ) : "Confirmar y Pagar"}
-          </Button>
-          <Button variant="ghost" className="text-slate-400 text-xs" onClick={() => router.back()}>
-            Cancelar y volver
-          </Button>
-        </CardFooter>
-      </Card>
+            ) : (
+                planId === 'presencia' ? "Iniciar Prueba Gratuita" : "Autorizar Transacción"
+            )}
+          </button>
+          <button 
+            className="text-zinc-600 text-[9px] uppercase font-bold tracking-[2px] hover:text-zinc-300 transition-colors" 
+            onClick={() => router.back()}
+          >
+            Abortar y Volver
+          </button>
+        </div>
+        
+        {/* Decorative corner elements */}
+        <div className="absolute bottom-1 right-1 w-2 h-2 border-r border-b border-primary/30"></div>
+        <div className="absolute top-1 left-1 w-2 h-2 border-l border-t border-primary/30"></div>
+      </div>
     </div>
   )
 }

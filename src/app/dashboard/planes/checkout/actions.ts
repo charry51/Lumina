@@ -10,13 +10,21 @@ export async function updatePlan(planId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'No autenticado' }
 
-  // Actualizar el plan en el perfil
+  // Si es el plan presencia, activamos el trial de 30 días
+  const updateData: any = {
+    plan_id: planId,
+    suscripcion_activa: true
+  }
+
+  if (planId === 'presencia') {
+    const trialDate = new Date()
+    trialDate.setDate(trialDate.getDate() + 30)
+    updateData.prueba_fin = trialDate.toISOString()
+  }
+
   const { error } = await supabase
     .from('perfiles')
-    .update({ 
-      plan_id: planId,
-      suscripcion_activa: true 
-    })
+    .update(updateData)
     .eq('id', user.id)
 
   if (error) {

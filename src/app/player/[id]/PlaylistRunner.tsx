@@ -15,17 +15,47 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   // 1. Estados y Refs
   const [currentIndex, setCurrentIndex] = useState(0)
   const [hasHydrated, setHasHydrated] = useState(false)
+  const [cachedUrls, setCachedUrls] = useState<Record<string, string>>({})
   const videoRef = useRef<HTMLVideoElement>(null)
-  
-  // El cliente se crea una sola vez fuera o con useMemo, pero aquí lo dejamos simple
   const supabase = createClient()
 
-  // 2. Todos los Effects (Sin condiciones previas)
+  // 2. Todos los Effects
   
-  // Hidratación
+  // Hidratación y Cache Init
   useEffect(() => {
     setHasHydrated(true)
-  }, [])
+    
+    // Pre-cargar todos los contenidos en caché
+    const preloadMedia = async () => {
+      const cache = await caches.open('lumina-media-v1');
+      const newCachedUrls: Record<string, string> = {};
+
+      for (const item of playlist) {
+        if (!item.url_video) continue;
+        try {
+          // Intentar obtener de caché o descargar
+          let response = await cache.match(item.url_video);
+          if (!response) {
+            console.log(`[Lumina Cache] Descargando: ${item.url_video}`);
+            await cache.add(item.url_video);
+            response = await cache.match(item.url_video);
+          }
+          
+          if (response) {
+            const blob = await response.blob();
+            newCachedUrls[item.url_video] = URL.createObjectURL(blob);
+          }
+        } catch (error) {
+          console.error(`Error caching ${item.url_video}:`, error);
+          // Fallback al URL original si falla la caché
+          newCachedUrls[item.url_video] = item.url_video;
+        }
+      }
+      setCachedUrls(newCachedUrls);
+    };
+
+    if (playlist.length > 0) preloadMedia();
+  }, [playlist])
 
   // Presencia
   useEffect(() => {
@@ -72,14 +102,14 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   }
 
   const isImage = currentMedia?.url_video ? /\.(jpg|jpeg|png|webp|gif)$/i.test(currentMedia.url_video) : false
+  const activeUrl = currentMedia ? (cachedUrls[currentMedia.url_video] || currentMedia.url_video) : null;
 
   // Rotación de imágenes
   useEffect(() => {
     let timer: NodeJS.Timeout
     if (isImage && playlist.length > 0 && hasHydrated) {
       timer = setTimeout(() => {
-        // Avance manual
-        setCurrentIndex((prev) => (prev + 1) % playlist.length)
+        handleNext()
       }, 10000)
     }
     return () => { if (timer) clearTimeout(timer) }
@@ -89,62 +119,66 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   const handleNext = async () => {
     const currentItem = playlist[currentIndex]
     if (currentItem?.id) {
-       await logPlayback(currentItem.id, screenId).catch(console.error)
+       // Proof of Play: Log post-reproducción
+       logPlayback(currentItem.id, screenId).catch(console.error)
     }
     if (playlist.length > 0) {
       setCurrentIndex((prev) => (prev + 1) % playlist.length)
     }
   }
 
-  // 4. Sincronización de índice si el actual no es válido
   useEffect(() => {
     if (activeIndex !== currentIndex && hasHydrated) {
        setCurrentIndex(activeIndex)
     }
   }, [activeIndex, currentIndex, hasHydrated])
 
-  // 5. Renderizado final (Única rama condicional permitida)
+  // 5. Renderizado final
   
   if (!hasHydrated) {
-    return <div className="w-screen h-screen bg-black" />
+    return <div className="w-screen h-screen bg-[#0a0a0f]" />
   }
 
   if (playlist.length === 0 || attempts >= playlist.length) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-black bg-gradient-to-br from-zinc-900 to-black text-white p-12 text-center border-4 border-dashed border-zinc-800">
-        <h1 className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-          Lumina
-        </h1>
-        <h2 className="text-3xl font-light text-zinc-400">Espacio Disponible</h2>
-        <p className="mt-8 text-zinc-600 font-mono">Esperando programación válida horaria...</p>
+      <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0f] text-white p-12 text-center">
+        <div className="cyber-card p-12 max-w-2xl border-dashed border-2">
+            <h1 className="text-6xl font-heading mb-6 text-primary">
+              Lumina
+            </h1>
+            <h2 className="text-2xl font-sans text-zinc-400 uppercase tracking-widest">Espacio Publicitario</h2>
+            <p className="mt-8 text-muted-foreground font-mono text-sm uppercase">Sin contenido programado para este horario</p>
+        </div>
       </div>
     )
   }
 
   if (isImage) {
     return (
-      <div className="w-full h-full bg-black flex items-center justify-center">
-        <img src={currentMedia.url_video} alt="Campaign" className="w-full h-full object-cover" />
+      <div className="w-full h-full bg-[#0a0a0f] flex items-center justify-center overflow-hidden">
+        {activeUrl && <img src={activeUrl} alt="Campaign Content" className="w-full h-full object-cover" />}
       </div>
     )
   }
 
   return (
-    <div className="w-full h-full bg-black">
-      <video
-        ref={videoRef}
-        key={currentMedia.url_video}
-        src={currentMedia.url_video}
-        autoPlay
-        muted
-        playsInline 
-        className="w-full h-full object-cover"
-        onEnded={handleNext}
-        onError={() => {
-          console.error("Error playing video:", currentMedia.url_video)
-          handleNext()
-        }}
-      />
+    <div className="w-full h-full bg-[#0a0a0f]">
+      {activeUrl && (
+        <video
+          ref={videoRef}
+          key={activeUrl}
+          src={activeUrl}
+          autoPlay
+          muted
+          playsInline 
+          className="w-full h-full object-cover"
+          onEnded={handleNext}
+          onError={() => {
+            console.error("Error playing video:", activeUrl)
+            handleNext()
+          }}
+        />
+      )}
     </div>
   )
 }

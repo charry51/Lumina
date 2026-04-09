@@ -6,19 +6,35 @@ import { revalidatePath } from 'next/cache'
 export async function createPantalla(formData: FormData) {
   const supabase = await createClient()
 
-  // Seguridad: Verificamos admin
+  // 1. Seguridad y Contexto de Usuario
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'No autorizado' }
 
-  // Bypass temporal o check real
-  let isAdmin = user.email === 'francharrielromero@gmail.com'
-  if (!isAdmin) {
-    const { data: perfil } = await supabase.from('perfiles').select('rol').eq('id', user.id).single()
-    if (perfil?.rol === 'superadmin') isAdmin = true
+  // 2. Obtener Perfil, Plan y Organización
+  const { data: perfil } = await supabase
+    .from('perfiles')
+    .select('*, planes(*)')
+    .eq('id', user.id)
+    .single()
+
+  if (!perfil) return { success: false, error: 'Perfil no encontrado' }
+  
+  // 3. Verificación de Límites de Pantalla
+  const { count: conteoActual } = await supabase
+    .from('pantallas')
+    .select('*', { count: 'exact', head: true })
+    .eq('organizacion_id', perfil.organizacion_id)
+
+  const maxPantallas = perfil.planes?.max_pantallas || 1
+  
+  if ((conteoActual || 0) >= maxPantallas) {
+    return { 
+      success: false, 
+      error: `Límite de pantallas alcanzado para el plan ${perfil.planes?.nombre}. Máximo: ${maxPantallas}.` 
+    }
   }
 
-  if (!isAdmin) return { success: false, error: 'Acceso denegado' }
-
+  // 4. Procesamiento de Formulario
   const nombre = formData.get('nombre') as string
   const ubicacion = formData.get('ubicacion') as string
   const ciudad = formData.get('ciudad') as string
@@ -28,18 +44,21 @@ export async function createPantalla(formData: FormData) {
   const lat = latStr ? parseFloat(latStr) : null
   const lng = lngStr ? parseFloat(lngStr) : null
 
+  // 5. Inserción con Vínculo de Organización
   const { error } = await supabase.from('pantallas').insert({
     nombre,
     ubicacion,
     ciudad,
     latitud: lat,
     longitud: lng,
-    estado: 'activa' // Default
+    estado: 'activa',
+    organizacion_id: perfil.organizacion_id
   })
 
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/admin/pantallas')
+  revalidatePath('/dashboard')
   return { success: true }
 }
 

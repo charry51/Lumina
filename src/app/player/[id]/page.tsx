@@ -58,6 +58,7 @@ export default async function PlayerPage({
     if (prioridad === 'maxima') multiplier = 4
     if (prioridad === 'alta') multiplier = 3
     if (prioridad === 'estandar') multiplier = 2
+    if (prioridad === 'baja') multiplier = 1
 
     for (let i = 0; i < multiplier; i++) {
         playlistItems.push({
