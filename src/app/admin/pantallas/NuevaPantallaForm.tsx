@@ -47,11 +47,13 @@ export function NuevaPantallaForm() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-[#D4AF37] text-black hover:bg-[#b08d24] font-bold">
-          + Añadir Pantalla
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger 
+        render={
+          <Button className="bg-[#D4AF37] text-black hover:bg-[#b08d24] font-bold">
+            + Añadir Pantalla
+          </Button>
+        } 
+      />
       <DialogContent className="sm:max-w-[480px] bg-zinc-900 text-white border-zinc-800">
         <DialogHeader>
           <DialogTitle className="font-heading uppercase tracking-widest text-sm">Nueva Pantalla en la Red</DialogTitle>

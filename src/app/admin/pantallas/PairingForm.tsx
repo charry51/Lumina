@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Tv, Loader2, CheckCircle2 } from 'lucide-react'
+import { Tv, Loader2, CheckCircle2, MapPin } from 'lucide-react'
+import MapSelector from '@/components/MapSelector'
 
 export function PairingForm() {
   const router = useRouter()
@@ -16,6 +17,7 @@ export function PairingForm() {
   const [ciudad, setCiudad] = useState('')
   const [ubicacion, setUbicacion] = useState('')
   const [esPublica, setEsPublica] = useState(true)
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -29,8 +31,21 @@ export function PairingForm() {
       return
     }
 
+    if (esPublica && !coords) {
+      toast.error('Para pantallas públicas es obligatorio marcar la ubicación en el mapa')
+      return
+    }
+
     setLoading(true)
-    const result = await activatePairingCode(code, nombre, ciudad, ubicacion || ciudad, esPublica)
+    const result = await activatePairingCode(
+      code, 
+      nombre, 
+      ciudad, 
+      ubicacion || ciudad, 
+      esPublica,
+      coords?.lat,
+      coords?.lng
+    )
 
     if (result.success) {
       setSuccess(true)
@@ -108,6 +123,22 @@ export function PairingForm() {
           className="bg-zinc-900 border-zinc-800 text-white h-10"
           disabled={loading}
         />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label className="text-zinc-400 text-xs uppercase tracking-widest mb-1 flex items-center gap-2">
+            <MapPin className="w-3 h-3 text-primary" /> Posición en el Mapa
+        </Label>
+        <div className="rounded-xl overflow-hidden border border-zinc-800 h-[200px] bg-zinc-950">
+            <MapSelector 
+                onSelect={(lat, lng) => setCoords({ lat, lng })}
+            />
+        </div>
+        {coords && (
+            <p className="text-[9px] text-zinc-500 font-mono text-center">
+                Coordenadas fijadas: {coords.lat.toFixed(4)}, {coords.lng.toFixed(4)}
+            </p>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">

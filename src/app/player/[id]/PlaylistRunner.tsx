@@ -205,6 +205,13 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   // ——— 9. Avanzar con log de reproducción (online o cola offline) ———
   const handleNext = useCallback(async () => {
     const currentItem = playlist[currentIndex]
+    
+    // Si solo hay un vídeo, el currentIndex no cambia, así que forzamos el reinicio manual
+    if (playlist.length === 1 && videoRef.current) {
+      videoRef.current.currentTime = 0
+      videoRef.current.play().catch(() => {})
+    }
+
     if (currentItem?.id) {
       if (isOnline) {
         logPlayback(currentItem.id, screenId).catch(() => {
@@ -216,6 +223,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
         addOfflineLog(currentItem.id, screenId)
       }
     }
+    
     if (playlist.length > 0) {
       setCurrentIndex((prev) => (prev + 1) % playlist.length)
     }
@@ -274,6 +282,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
             autoPlay
             muted
             playsInline
+            loop={playlist.length === 1}
             className="w-full h-full object-cover"
             onEnded={handleNext}
             onError={() => {

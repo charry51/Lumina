@@ -7,16 +7,21 @@ export default async function AdminDashboardPage() {
   const supabase = await createClient()
 
   // Analíticas básicas para el superadmin (conteos)
-  const [{ count: totalCampanas }, { count: totalPantallas }] = await Promise.all([
+  const [
+    { count: totalCampanas }, 
+    { count: totalPantallas },
+    { count: totalPendientes }
+  ] = await Promise.all([
     supabase.from('campanas').select('*', { count: 'exact', head: true }),
-    supabase.from('pantallas').select('*', { count: 'exact', head: true })
+    supabase.from('pantallas').select('*', { count: 'exact', head: true }),
+    supabase.from('campanas').select('*', { count: 'exact', head: true }).in('estado', ['pendiente_aprobacion', 'pre_aprobada', 'revision_manual_ia'])
   ])
 
-  // Últimas campañas pendientes
+  // Últimas 5 campañas para la tabla
   const { data: pendientes } = await supabase
     .from('campanas')
     .select('id, nombre_campana, estado, fecha_inicio')
-    .eq('estado', 'pendiente_aprobacion')
+    .in('estado', ['pendiente_aprobacion', 'pre_aprobada', 'revision_manual_ia'])
     .limit(5)
 
   return (
@@ -51,7 +56,7 @@ export default async function AdminDashboardPage() {
             <CardTitle className="text-sm font-medium text-zinc-400">Pendientes Revisión</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[#D4AF37]">{pendientes?.length || 0}</div>
+            <div className="text-3xl font-bold text-[#D4AF37]">{totalPendientes || 0}</div>
           </CardContent>
         </Card>
       </div>
@@ -80,7 +85,7 @@ export default async function AdminDashboardPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                       <ActionButtons campanaId={camp.id} />
+                       <ActionButtons campanaId={camp.id} estado={camp.estado} />
                     </td>
                   </tr>
                 ))}
