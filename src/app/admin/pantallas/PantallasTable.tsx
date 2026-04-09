@@ -30,24 +30,43 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
           <tr>
             <th className="px-6 py-4">ID</th>
             <th className="px-6 py-4">Nombre y Ciudad</th>
-            <th className="px-6 py-4">Coordenadas</th>
+            <th className="px-6 py-4">Demanda</th>
+            <th className="px-6 py-4">Precio Act.</th>
             <th className="px-6 py-4 text-right">Acciones</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-800">
           {initialData.length === 0 && (
-            <tr><td colSpan={4} className="p-6 text-center text-zinc-500">No hay pantallas registradas. Usa el botón de Nueva Pantalla.</td></tr>
+            <tr><td colSpan={5} className="p-6 text-center text-zinc-500">No hay pantallas registradas. Usa el botón de Nueva Pantalla.</td></tr>
           )}
-          {initialData.map(p => (
-            <tr key={p.id} className="hover:bg-zinc-800/50">
-              <td className="px-6 py-4 font-mono text-zinc-500">{p.id.slice(0, 8)}...</td>
-              <td className="px-6 py-4">
-                <p className="font-bold text-zinc-100">{p.nombre}</p>
-                <p className="text-zinc-500">{p.ubicacion} ({p.ciudad})</p>
-              </td>
-              <td className="px-6 py-4 font-mono text-xs text-zinc-400">
-                {p.latitud ? `${p.latitud}, ${p.longitud}` : 'No Asignadas'}
-              </td>
+          {initialData.map(p => {
+            const ratio = (p.precio_emision / (p.precio_base || 50))
+            let demandLabel = 'NORMAL'
+            let demandColor = 'text-zinc-500 border-zinc-500/20 bg-zinc-500/5'
+            
+            if (ratio >= 1.5) {
+              demandLabel = 'CRÍTICA 🔥'
+              demandColor = 'text-red-500 border-red-500/30 bg-red-500/5 pulse'
+            } else if (ratio > 1.0) {
+              demandLabel = 'ALTA ⚡'
+              demandColor = 'text-yellow-500 border-yellow-500/30 bg-yellow-500/5'
+            }
+
+            return (
+              <tr key={p.id} className="hover:bg-zinc-800/50">
+                <td className="px-6 py-4 font-mono text-zinc-600 text-[10px]">{p.id.slice(0, 8)}</td>
+                <td className="px-6 py-4">
+                  <p className="font-heading font-bold text-zinc-100 uppercase text-xs">{p.nombre}</p>
+                  <p className="text-[10px] text-zinc-500 uppercase tracking-tighter">{p.ciudad}</p>
+                </td>
+                <td className="px-6 py-4">
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded border ${demandColor}`}>
+                    {demandLabel}
+                  </span>
+                </td>
+                <td className="px-6 py-4 font-mono text-xs text-primary font-bold">
+                  {p.precio_emision}€
+                </td>
               <td className="px-6 py-4 text-right flex justify-end gap-2">
                 <Link href={`/player/${p.id}`} target="_blank">
                   <Button 
@@ -69,7 +88,7 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
                 </Button>
               </td>
             </tr>
-          ))}
+          )})}
         </tbody>
       </table>
     </div>

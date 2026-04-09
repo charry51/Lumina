@@ -5,10 +5,10 @@ import { NuevaPantallaForm } from './NuevaPantallaForm'
 export default async function AdminPantallasPage() {
   const supabase = await createClient()
 
-  // Leer pantallas
+  // Leer pantallas con datos de Yield Management
   const { data: pantallas, error } = await supabase
     .from('pantallas')
-    .select('*')
+    .select('*, precio_emision, precio_base, capacidad_maxima')
     .order('created_at', { ascending: false })
 
   return (

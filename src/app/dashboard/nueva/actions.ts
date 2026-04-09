@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import crypto from 'node:crypto'
+import { analyzeVideo } from '@/lib/ia/validator'
 
 export async function createCampaign(prevState: any, formData: FormData) {
   try {
@@ -81,7 +82,19 @@ export async function createCampaign(prevState: any, formData: FormData) {
       .from('creatividades')
       .getPublicUrl(uploadData.path)
 
-    // 3. Insert into Database (Loop over IDs)
+    // 3. IA SCAN (Brain integration)
+    const iaResult = await analyzeVideo(publicUrl)
+    let finalEstado = 'pendiente_aprobacion'
+    
+    if (iaResult.status === 'safe') {
+      finalEstado = 'pre_aprobada'
+    } else if (iaResult.status === 'flagged') {
+      finalEstado = 'revision_manual_ia'
+    } else if (iaResult.status === 'rejected') {
+      finalEstado = 'rechazada_ia'
+    }
+
+    // 4. Insert into Database (Loop over IDs)
     const inserts = pantallaIds.map(id => ({
       cliente_id: user.id,
       pantalla_id: id !== "default" ? id : null,
@@ -91,7 +104,8 @@ export async function createCampaign(prevState: any, formData: FormData) {
       fecha_fin: fechaFin,
       hora_inicio: horaInicio,
       hora_fin: horaFin,
-      estado: 'pendiente_aprobacion'
+      estado: finalEstado,
+      ia_metadata: iaResult
     }))
 
     const { error: insertError } = await supabase
@@ -106,7 +120,11 @@ export async function createCampaign(prevState: any, formData: FormData) {
     revalidatePath('/dashboard')
     revalidatePath('/admin')
     
-    return { type: 'success', message: `¡${totalNew} ${totalNew > 1 ? 'campañas creadas' : 'campaña creada'} con éxito!` }
+    let successMessage = `¡${totalNew} ${totalNew > 1 ? 'campañas creadas' : 'campaña creada'} con éxito!`
+    if (iaResult.status === 'safe') successMessage += " (IA: Validada como segura ✅)"
+    if (iaResult.status === 'flagged') successMessage += " (IA: Requiere revisión manual ⚠️)"
+    
+    return { type: 'success', message: successMessage }
 
   } catch (err: any) {
     console.error("Error en createCampaign:", err)

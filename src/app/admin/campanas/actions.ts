@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { syncScreenPrice } from '@/lib/yield/pricing'
 
 export async function authorizeCampaignStatus(campaignId: string, newStatus: 'aprobada' | 'rechazada') {
   const supabase = await createClient()
@@ -68,6 +69,10 @@ export async function authorizeCampaignStatus(campaignId: string, newStatus: 'ap
       // El error de revenue no bloquea la aprobación: solo lo logueamos
       console.error('[Lumina Revenue] Error calculando comisión:', revenueError)
     }
+  }
+
+  if (campana?.pantalla_id) {
+    await syncScreenPrice(campana.pantalla_id)
   }
 
   revalidatePath('/admin')

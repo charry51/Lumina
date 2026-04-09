@@ -12,10 +12,11 @@ export default async function DashboardPage() {
   // Recuperar sesión activa
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Le pedimos a Supabase las pantallas
+  // Le pedimos a Supabase las pantallas vinculadas a las campañas del usuario (Privacidad)
   const { data: pantallas, error } = await supabase
     .from('pantallas')
-    .select('*')
+    .select('*, campanas!inner(cliente_id)')
+    .eq('campanas.cliente_id', user?.id)
 
   // Le pedimos a Supabase el perfil con info del plan
   const { data: profile } = await supabase

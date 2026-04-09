@@ -30,6 +30,8 @@ type Pantalla = {
   ciudad: string
   latitud: number | null
   longitud: number | null
+  precio_emision?: number
+  precio_base?: number
 }
 
 function ChangeView({ center, zoom }: { center: [number, number], zoom: number }) {
@@ -70,6 +72,7 @@ export default function MapSelectorClient({
         />
         {pantallasConGeo.map((pantalla) => {
           const isSelected = selectedIds.includes(pantalla.id)
+          const isHighDemand = (pantalla.precio_emision || 0) > (pantalla.precio_base || 50)
           
           return (
             <Marker 
@@ -83,19 +86,27 @@ export default function MapSelectorClient({
               }}
             >
               <Popup>
-                <div className="text-sm font-[family-name:var(--font-geist-sans)] dark:text-zinc-900">
-                  <p className="font-bold">{pantalla.nombre}</p>
-                  <p className="opacity-70">{pantalla.ubicacion}</p>
+                <div className="text-sm font-sans dark:text-zinc-900 min-w-[120px]">
+                  <div className="flex justify-between items-start gap-2 mb-1">
+                    <p className="font-bold uppercase text-[11px] leading-tight">{pantalla.nombre}</p>
+                    {isHighDemand && (
+                      <span className="text-[8px] bg-yellow-500 text-black px-1 py-0.5 rounded font-black whitespace-nowrap">
+                        ⚡ ALTA
+                      </span>
+                    )}
+                  </div>
+                  <p className="opacity-60 text-[10px] uppercase font-mono">{pantalla.ciudad}</p>
+                  
                   <button 
                     type="button"
                     onClick={() => onTogglePantalla(pantalla.id)}
-                    className={`mt-2 w-full px-2 py-1.5 flex items-center justify-center rounded text-xs font-bold transition-colors ${
+                    className={`mt-3 w-full px-2 py-1.5 flex items-center justify-center rounded text-[10px] font-black uppercase transition-colors ${
                       isSelected 
-                        ? 'bg-red-50 text-red-600 border border-red-200' 
-                        : 'bg-zinc-900 text-white hover:bg-black'
+                        ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm' 
+                        : 'bg-zinc-950 text-white hover:bg-black shadow-md'
                     }`}
                   >
-                    {isSelected ? 'Quitar Selección' : 'Seleccionar Pantalla'}
+                    {isSelected ? 'Desmarcar' : 'Seleccionar'}
                   </button>
                 </div>
               </Popup>

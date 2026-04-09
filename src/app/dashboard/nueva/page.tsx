@@ -17,10 +17,10 @@ export default async function NuevaCampanaPage() {
      redirect('/dashboard/planes')
   }
 
-  // Fetch only active screens or all screens depending on requirements.
+  // Fetch only active screens with Yield data.
   const { data: pantallas, error } = await supabase
     .from('pantallas')
-    .select('id, nombre, ubicacion, ciudad, latitud, longitud')
+    .select('id, nombre, ubicacion, ciudad, latitud, longitud, precio_emision, precio_base')
     .eq('estado', 'activa')
 
   if (error) {

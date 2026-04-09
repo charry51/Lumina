@@ -34,7 +34,9 @@ export function ActionButtons({ campanaId, estado }: { campanaId: string, estado
     setLoading(false)
   }
 
-  const isPending = estado === 'pendiente_aprobacion'
+  const isPending = estado === 'pendiente_aprobacion' || 
+                    estado === 'pre_aprobada' || 
+                    estado === 'revision_manual_ia'
 
   return (
     <div className="flex gap-2 items-center justify-end">

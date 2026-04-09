@@ -23,6 +23,8 @@ type Pantalla = {
   ciudad: string
   latitud: number | null
   longitud: number | null
+  precio_emision: number
+  precio_base: number
 }
 
 export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: { pantallas: Pantalla[], userPlan?: string }) {
@@ -134,11 +136,21 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
               {pantallas.length === 0 ? (
                 <SelectItem value="default" disabled>No hay pantallas disponibles</SelectItem>
               ) : (
-                pantallas.map((pantalla) => (
-                  <SelectItem key={pantalla.id} value={pantalla.id}>
-                    {pantalla.ciudad} - {pantalla.nombre}
-                  </SelectItem>
-                ))
+                pantallas.map((pantalla) => {
+                  const isHighDemand = pantalla.precio_emision > (pantalla.precio_base || 50)
+                  return (
+                    <SelectItem key={pantalla.id} value={pantalla.id} className="focus:bg-primary/10">
+                      <div className="flex justify-between items-center w-full">
+                        <span>{pantalla.ciudad} - {pantalla.nombre}</span>
+                        {isHighDemand && (
+                          <span className="ml-2 text-[8px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
+                            ⚡ ALTA DEMANDA
+                          </span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  )
+                })
               )}
             </SelectContent>
           </Select>
