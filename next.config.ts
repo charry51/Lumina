@@ -7,10 +7,6 @@ const nextConfig: NextConfig = {
     },
     proxyClientMaxBodySize: '1gb',
   },
-  devIndicators: {
-    appIsrStatus: false,
-    buildActivity: false,
-  },
 };
 
 export default nextConfig;
