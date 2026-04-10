@@ -74,6 +74,13 @@ export default async function DashboardPage() {
           <span className="text-sm text-zinc-500 hidden xl:inline-block border-r border-border pr-4 italic font-mono">
             {user?.email}
           </span>
+          {profile?.rol === 'superadmin' && (
+            <Link href="/admin">
+              <Button variant="outline" className="border-red-500/50 text-red-500 hover:bg-red-500/5 hover:text-red-400">
+                Panel Admin
+              </Button>
+            </Link>
+          )}
           <Link href="/dashboard/nueva">
             <button className="cyber-button-cyan">+ Nueva Emisión</button>
           </Link>

@@ -55,7 +55,7 @@ export default async function LoginPage({
           )}
 
           <button className="cyber-button-cyan mt-4 py-4 text-[11px] font-black uppercase tracking-[3px]">
-            Entrar al Dashboard
+            Iniciar sesión
           </button>
         </form>
 
