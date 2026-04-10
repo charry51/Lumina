@@ -111,7 +111,7 @@ export default function MapSelectorClient({
               icon={isSelected ? selectedIcon : new L.Icon.Default()}
               eventHandlers={{
                   click: () => {
-                      onTogglePantalla(pantalla.id)
+                      onTogglePantalla?.(pantalla.id)
                   },
               }}
             >
