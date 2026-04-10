@@ -58,7 +58,7 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end w-full sm:w-auto">
           <Link href="/host/dashboard">
              <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/5 hidden lg:flex gap-2 items-center">
                 <span className="relative flex h-2 w-2">
@@ -82,10 +82,10 @@ export default async function DashboardPage() {
             </Link>
           )}
           <Link href="/dashboard/nueva">
-            <button className="cyber-button-cyan">+ Nueva Emisión</button>
+            <button className="cyber-button-cyan transition-all text-[11px] sm:text-xs">+ Nueva Emisión</button>
           </Link>
           <form action={logout}>
-            <Button variant="outline" type="submit" className="border-border hover:bg-muted">Salir</Button>
+            <Button variant="outline" type="submit" className="border-border hover:bg-muted text-[11px] sm:text-xs px-3 sm:px-4">Salir</Button>
           </form>
         </div>
       </header>
@@ -149,7 +149,7 @@ export default async function DashboardPage() {
            <span className="w-1 h-6 bg-secondary rounded-full shadow-[0_0_10px_#6c5ce7]"></span>
            Mis Campañas
         </h2>
-        <div className="cyber-card overflow-hidden shadow-2xl">
+        <div className="responsive-table-container cyber-card shadow-2xl overflow-hidden">
           {misCampanas && misCampanas.length > 0 ? (
             <table className="w-full text-sm text-left">
               <thead className="bg-[#1a1a2e]/50 border-b border-border">
