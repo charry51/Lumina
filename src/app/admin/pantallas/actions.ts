@@ -19,6 +19,9 @@ export async function createPantalla(formData: FormData) {
 
   if (!perfil) return { success: false, error: 'Perfil no encontrado' }
   
+  // Seguridad extra: Solo superadmin puede crear pantallas globales desde aquí
+  if (perfil.rol !== 'superadmin') return { success: false, error: 'Acceso denegado' }
+  
   // 3. Verificación de Límites de Pantalla
   const { count: conteoActual } = await supabase
     .from('pantallas')
@@ -70,7 +73,10 @@ export async function deletePantalla(id: string) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { success: false, error: 'Not authorized' }
     
-    // Simplificando admin check para el delete... asumimos protegido por la propia UI
+    // Seguridad: Solo admin puede borrar pantallas arbitrarias
+    const { data: perfil } = await supabase.from('perfiles').select('rol').eq('id', user.id).single()
+    if (perfil?.rol !== 'superadmin') return { success: false, error: 'Acceso denegado' }
+
     const { error } = await supabase.from('pantallas').delete().eq('id', id)
     if (error) return { success: false, error: error.message }
   
