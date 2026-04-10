@@ -67,9 +67,6 @@ export default async function LoginPage({
         </footer>
       </div>
       
-      <div className="mt-12 opacity-20 text-[9px] font-mono uppercase tracking-[4px]">
-        Encrypted Protocol v4.0.2 // Market Ready Phase
-      </div>
     </div>
   )
 }

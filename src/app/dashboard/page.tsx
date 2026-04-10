@@ -86,7 +86,7 @@ export default async function DashboardPage() {
       <div className="mb-12">
         <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient">
            <span className="w-1 h-6 bg-primary rounded-full shadow-[0_0_10px_#00d2ff]"></span>
-           Monitor de Nodos en Red
+           Mis Pantallas Activas
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {pantallas && pantallas.length > 0 ? (
@@ -140,7 +140,7 @@ export default async function DashboardPage() {
       <div>
         <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient">
            <span className="w-1 h-6 bg-secondary rounded-full shadow-[0_0_10px_#6c5ce7]"></span>
-           Contenidos en Emisión
+           Mis Campañas
         </h2>
         <div className="cyber-card overflow-hidden shadow-2xl">
           {misCampanas && misCampanas.length > 0 ? (
@@ -150,9 +150,9 @@ export default async function DashboardPage() {
                   <th className="cyber-table-header">Campaña</th>
                   <th className="cyber-table-header">Destino</th>
                   <th className="cyber-table-header">Periodo</th>
-                  <th className="cyber-table-header">Impactos (PoP)</th>
+                  <th className="cyber-table-header">Reproducciones</th>
                   <th className="cyber-table-header">Estado</th>
-                  <th className="cyber-table-header text-right">Admin</th>
+                  <th className="cyber-table-header text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/30">
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
                     <td className="px-6 py-4 text-zinc-500 font-mono text-[10px] whitespace-nowrap">{camp.fecha_inicio} » {camp.fecha_fin}</td>
                     <td className="px-6 py-4">
                         <span className="font-mono bg-primary/10 text-primary px-2 py-1 rounded border border-primary/20 text-[10px] uppercase">
-                            {profile?.plan_id === 'presencia' ? '0' : (camp.reproducciones_logs?.[0]?.count || 0)} pings
+                            {profile?.plan_id === 'presencia' ? '—' : (camp.reproducciones_logs?.[0]?.count || 0)} vistas
                         </span>
                         {profile?.plan_id === 'presencia' && (
                           <p className="text-[8px] text-zinc-500 mt-1 uppercase tracking-tighter">🔒 Mejora a Impacto para ver datos</p>
@@ -175,7 +175,7 @@ export default async function DashboardPage() {
                         camp.estado === 'rechazada' ? 'bg-red-500/10 text-red-400' :
                         'bg-yellow-500/10 text-yellow-400'
                       }`}>
-                        {camp.estado.replace('_', ' ')}
+                        {camp.estado.replace(/_/g, ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">

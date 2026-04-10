@@ -69,7 +69,7 @@ export default async function AdminDashboardPage() {
               <thead className="bg-zinc-950 text-zinc-400 font-medium">
                 <tr>
                   <th className="px-6 py-4">Campaña</th>
-                  <th className="px-6 py-4">Fecha Solicitud</th>
+                  <th className="px-6 py-4">Fecha de Inicio</th>
                   <th className="px-6 py-4">Estado</th>
                   <th className="px-6 py-4 text-right">Acción</th>
                 </tr>
@@ -81,7 +81,7 @@ export default async function AdminDashboardPage() {
                     <td className="px-6 py-4">{camp.fecha_inicio}</td>
                     <td className="px-6 py-4">
                       <span className="bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded-full text-xs font-bold uppercase">
-                        {camp.estado.replace('_', ' ')}
+                        {camp.estado.replace(/_/g, ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">

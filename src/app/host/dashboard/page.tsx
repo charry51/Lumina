@@ -186,8 +186,8 @@ export default async function HostDashboardPage({
                         <td className="px-6 py-4 font-heading text-zinc-100 uppercase text-[11px] tracking-wide">
                           {com.campanas?.nombre_campana || 'Campaña eliminada'}
                         </td>
-                        <td className="px-6 py-4 text-zinc-400 font-mono text-xs">{com.importe_total?.toFixed(2)}€</td>
-                        <td className="px-6 py-4 font-mono text-primary font-bold text-xs">+{com.comision?.toFixed(2)}€</td>
+                        <td className="px-6 py-4 text-zinc-400 font-mono text-xs">{com.importe_bruto?.toFixed(2)}€</td>
+                        <td className="px-6 py-4 font-mono text-primary font-bold text-xs">+{com.importe_host?.toFixed(2)}€</td>
                         <td className="px-6 py-4 text-right text-zinc-500 font-mono text-[10px]">
                           {new Date(com.created_at).toLocaleDateString('es-ES')}
                         </td>

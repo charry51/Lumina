@@ -129,7 +129,7 @@ export default function MapSelectorClient({
                   
                   <button 
                     type="button"
-                    onClick={() => onTogglePantalla(pantalla.id)}
+                    onClick={() => onTogglePantalla?.(pantalla.id)}
                     className={`mt-3 w-full px-2 py-1.5 flex items-center justify-center rounded text-[10px] font-black uppercase transition-colors ${
                       isSelected 
                         ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm' 

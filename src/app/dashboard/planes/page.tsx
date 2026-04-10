@@ -37,7 +37,7 @@ export default async function PlanesPage() {
             {profile?.plan_id === plan.id && (
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-full flex justify-center">
                 <span className="bg-primary text-black text-[9px] uppercase font-black px-4 py-1.5 rounded-full tracking-[2px] shadow-[0_0_20px_rgba(0,210,255,0.3)]">
-                  Configuración Activa
+                  Tu Plan Actual
                 </span>
               </div>
             )}
@@ -82,12 +82,12 @@ export default async function PlanesPage() {
             <div className="mt-auto">
               {profile?.plan_id === plan.id ? (
                 <button className="w-full py-3 text-[10px] uppercase font-black tracking-widest border border-zinc-800 text-zinc-600 cursor-not-allowed">
-                  Configuración Actual
+                  Tu Plan Actual
                 </button>
               ) : (
                 <Link href={`/dashboard/planes/checkout?plan=${plan.id}`} className="w-full">
                   <button className="cyber-button-cyan w-full text-[11px] font-black uppercase tracking-[2px]">
-                    Sincronizar Plan
+                    Contratar Plan
                   </button>
                 </Link>
               )}

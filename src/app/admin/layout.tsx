@@ -23,12 +23,7 @@ export default async function AdminLayout({
     .single()
 
   if (perfilError || !perfil || perfil.rol !== 'superadmin') {
-    // BYPASS TEMPORAL PARA DEPURE: Si es tu email, déjale entrar aunque falle la BD
-    if (user.email === 'francharrielromero@gmail.com') {
-      console.log("Bypass de seguridad activado para admin");
-    } else {
-      redirect('/dashboard')
-    }
+    redirect('/dashboard')
   }
 
   return (

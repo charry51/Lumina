@@ -112,19 +112,21 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
              <div className="p-4 bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-xl text-[#D4AF37] mb-2 flex items-center justify-between">
                 <div>
                    <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-[#D4AF37] text-black px-1.5 py-0.5 rounded">PRO</span></p>
-                   <p className="text-[11px] opacity-70">Selecciona los nodos de emisión en el mapa satélite.</p>
+                   <p className="text-[11px] opacity-70">Selecciona las pantallas disponibles en el mapa.</p>
                 </div>
                 {selectedMapScreens.length > 0 && (
                     <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
-                        {selectedMapScreens.length} Marcadas
+                        {selectedMapScreens.length} Seleccionadas
                     </span>
                 )}
              </div>
-             <MapSelector 
-                pantallas={pantallas} 
-                onTogglePantalla={toggleScreen}
-                selectedIds={selectedMapScreens}
-             />
+             <div className="h-[400px] rounded-xl overflow-hidden border border-zinc-800">
+               <MapSelector 
+                  pantallas={pantallas} 
+                  onTogglePantalla={toggleScreen}
+                  selectedIds={selectedMapScreens}
+               />
+             </div>
              <input type="hidden" name="pantalla_id" value={selectedMapScreens[0] || ''} />
           </div>
         ) : (
