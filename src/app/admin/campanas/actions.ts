@@ -7,14 +7,23 @@ import { syncScreenPrice } from '@/lib/yield/pricing'
 export async function authorizeCampaignStatus(campaignId: string, newStatus: 'aprobada' | 'rechazada') {
   const supabase = await createClient()
 
-  // 1. Obtener datos de la campaña (necesitamos la pantalla y el precio)
+  // 1. Seguridad: Solo superadmins pueden autorizar
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'No autenticado' }
+
+  const { data: perfil } = await supabase.from('perfiles').select('rol').eq('id', user.id).single()
+  if (perfil?.rol !== 'superadmin') {
+    return { success: false, error: 'Acceso denegado: Se requiere rol de administrador' }
+  }
+
+  // 2. Obtener datos de la campaña
   const { data: campana } = await supabase
     .from('campanas')
     .select('id, pantalla_id, nombre_campana')
     .eq('id', campaignId)
     .single()
 
-  // 2. Actualizar el estado de la campaña
+  // 3. Actualizar el estado de la campaña
   const { error } = await supabase
     .from('campanas')
     .update({ estado: newStatus })
@@ -25,10 +34,9 @@ export async function authorizeCampaignStatus(campaignId: string, newStatus: 'ap
     return { success: false, error: error.message }
   }
 
-  // 3. Si se APRUEBA: calcular y registrar la comisión del host
+  // 4. Lógica de Monetización para Hosts (Revenue Share)
   if (newStatus === 'aprobada' && campana?.pantalla_id) {
     try {
-      // Buscar si la pantalla tiene un host asignado
       const { data: host } = await supabase
         .from('hosts')
         .select('id, porcentaje, saldo_pendiente')
@@ -36,38 +44,34 @@ export async function authorizeCampaignStatus(campaignId: string, newStatus: 'ap
         .single()
 
       if (host) {
-        // Obtener el precio base de emisión de la pantalla
         const { data: pantalla } = await supabase
           .from('pantallas')
-          .select('precio_emision, nombre')
+          .select('precio_emision')
           .eq('id', campana.pantalla_id)
           .single()
 
         const precioBase = pantalla?.precio_emision || 50.00
         const comisionImporte = precioBase * (host.porcentaje / 100)
 
-        // Registrar la transacción de comisión
+        // Registrar Comisión (Nuevo Esquema)
         await supabase.from('comisiones').insert({
           host_id: host.id,
           campana_id: campaignId,
           pantalla_id: campana.pantalla_id,
-          importe_total: precioBase,
-          comision: comisionImporte,
+          importe_bruto: precioBase,
+          importe_host: comisionImporte,
           porcentaje: host.porcentaje,
           estado: 'pendiente'
         })
 
-        // Actualizar el saldo pendiente del host
+        // Incrementar saldo del Host
         await supabase
           .from('hosts')
           .update({ saldo_pendiente: (host.saldo_pendiente || 0) + comisionImporte })
           .eq('id', host.id)
-
-        console.log(`[Lumina Revenue] Comisión de ${comisionImporte.toFixed(2)}€ generada para host ${host.id}`)
       }
-    } catch (revenueError) {
-      // El error de revenue no bloquea la aprobación: solo lo logueamos
-      console.error('[Lumina Revenue] Error calculando comisión:', revenueError)
+    } catch (e) {
+      console.error('[Revenue Error]', e)
     }
   }
 
