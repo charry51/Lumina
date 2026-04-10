@@ -82,7 +82,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Promoción Verano 2026" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 focus:border-[#D4AF37] text-zinc-100 h-11" />
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
           <Label htmlFor="fecha_inicio" className="text-zinc-400 font-medium">Fecha de Inicio</Label>
           <Input id="fecha_inicio" name="fecha_inicio" type="date" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
@@ -93,7 +93,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
           <Label htmlFor="hora_inicio" className="text-zinc-400 font-medium">Hora Inicio Emisión</Label>
           <Input id="hora_inicio" name="hora_inicio" type="time" defaultValue="00:00" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />

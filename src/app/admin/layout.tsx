@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import AdminMobileNav from '@/components/AdminMobileNav'
 
 export default async function AdminLayout({
   children,
@@ -28,8 +29,11 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex font-[family-name:var(--font-geist-sans)]">
-      {/* Sidebar Admin */}
-      <aside className="w-64 border-r border-zinc-900 bg-black flex flex-col">
+      {/* Navegación Móvil (Solo visible en < md) */}
+      <AdminMobileNav />
+
+      {/* Sidebar Admin (Escritorio) */}
+      <aside className="hidden md:flex w-64 border-r border-zinc-900 bg-black flex-col flex-shrink-0">
         <div className="p-6">
           <img src="/logo.png" alt="Lumina Admin" className="h-12 w-auto" />
           <span className="text-[10px] text-[#D4AF37] font-black uppercase tracking-[0.3em] mt-2 block pl-1">Admin Panel</span>
@@ -53,8 +57,10 @@ export default async function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto w-full">
-        {children}
+      <main className="flex-1 overflow-y-auto w-full pt-16 md:pt-0">
+        <div className="p-4 sm:p-8">
+          {children}
+        </div>
       </main>
     </div>
   )
