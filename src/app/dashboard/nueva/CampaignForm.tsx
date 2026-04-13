@@ -98,12 +98,19 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         .from('creatividades')
         .getPublicUrl(uploadData.path)
 
-      // 3. Añadir URL al formData y llamar a la Server Action
-      formData.set('video_url', publicUrl)
-      // Eliminamos el archivo del formData para que no viaje a Vercel
-      formData.delete('video')
+      // 3. Crear el payload JSON limpio sin el archivo
+      const payloadData = {
+        nombre_campana: formData.get('nombre_campana') as string,
+        fecha_inicio: formData.get('fecha_inicio') as string,
+        fecha_fin: formData.get('fecha_fin') as string,
+        video_url: publicUrl,
+        hora_inicio: (formData.get('hora_inicio') as string) || '',
+        hora_fin: (formData.get('hora_fin') as string) || '',
+        pantalla_id: (formData.get('pantalla_id') as string) || '',
+        pantalla_idsRaw: (formData.get('pantalla_ids') as string) || ''
+      }
 
-      const result = await createCampaign(null, formData)
+      const result = await createCampaign(payloadData)
       
       if (result.type === 'error') {
         toast.error(result.message)
