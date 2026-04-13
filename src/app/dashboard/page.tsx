@@ -67,11 +67,11 @@ export default async function DashboardPage() {
     .eq('cliente_id', user?.id)
     .order('created_at', { ascending: false })
 
-  if (error || errorCampanas) {
+  if (errorCampanas) {
     return (
       <div className="p-8 text-red-500 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-900">
         <h1 className="text-2xl font-bold mb-4">Error cargando datos</h1>
-        <p>{error?.message || errorCampanas?.message}</p>
+        <p>{errorCampanas?.message}</p>
       </div>
     )
   }
