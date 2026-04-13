@@ -6,7 +6,18 @@ import { redirect } from 'next/navigation'
 import crypto from 'node:crypto'
 import { analyzeVideo } from '@/lib/ia/validator'
 
-export async function createCampaign(prevState: any, formData: FormData) {
+export type CampaignData = {
+  nombre_campana: string
+  fecha_inicio: string
+  fecha_fin: string
+  video_url: string
+  hora_inicio: string
+  hora_fin: string
+  pantalla_id: string
+  pantalla_idsRaw: string
+}
+
+export async function createCampaign(data: CampaignData) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -15,14 +26,14 @@ export async function createCampaign(prevState: any, formData: FormData) {
       return { type: 'error', message: 'No estás autenticado.' }
     }
 
-    const nombreCampana = formData.get('nombre_campana') as string
-    const fechaInicio = formData.get('fecha_inicio') as string
-    const fechaFin = formData.get('fecha_fin') as string
-    const publicUrl = formData.get('video_url') as string // URL ya subida desde el cliente
+    const nombreCampana = data.nombre_campana
+    const fechaInicio = data.fecha_inicio
+    const fechaFin = data.fecha_fin
+    const publicUrl = data.video_url
     
     // Dayparting Logic: Only 'expansion' or 'dominio' can custom times
-    let horaInicio = (formData.get('hora_inicio') as string) || '00:00:00'
-    let horaFin = (formData.get('hora_fin') as string) || '23:59:59'
+    let horaInicio = data.hora_inicio || '00:00:00'
+    let horaFin = data.hora_fin || '23:59:59'
     
     // Obtener plan para restricción (necesario antes de procesar)
     const { data: profile } = await supabase
@@ -38,8 +49,8 @@ export async function createCampaign(prevState: any, formData: FormData) {
       horaInicio = '00:00:00'
       horaFin = '23:59:59'
     }
-    const pantallaId = formData.get('pantalla_id') as string
-    const pantallaIdsRaw = formData.get('pantalla_ids') as string // Nuevo campo opcional para múltiple selección
+    const pantallaId = data.pantalla_id
+    const pantallaIdsRaw = data.pantalla_idsRaw // Nuevo campo opcional para múltiple selección
 
     const pantallaIds = pantallaIdsRaw ? pantallaIdsRaw.split(',') : [pantallaId]
 
