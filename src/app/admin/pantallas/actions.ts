@@ -58,7 +58,8 @@ export async function createPantalla(formData: FormData) {
     longitud: lng,
     estado: 'activa',
     es_publica: esPublica,
-    organizacion_id: perfil.organizacion_id
+    organizacion_id: perfil.organizacion_id,
+    creado_por: user.id
   })
 
   if (error) return { success: false, error: error.message }
