@@ -54,7 +54,7 @@ export function NuevaPantallaForm() {
           </Button>
         } 
       />
-      <DialogContent className="sm:max-w-[480px] bg-zinc-900 text-white border-zinc-800">
+      <DialogContent className="sm:max-w-[480px] bg-zinc-900 text-white border-zinc-800 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-heading uppercase tracking-widest text-sm">Nueva Pantalla en la Red</DialogTitle>
         </DialogHeader>
