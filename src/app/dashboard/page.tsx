@@ -12,11 +12,40 @@ export default async function DashboardPage() {
   // Recuperar sesión activa
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Le pedimos a Supabase las pantallas vinculadas a las campañas del usuario (Privacidad)
-  const { data: pantallas, error } = await supabase
+  // 1. Pantallas que el usuario HA REGISTRADO (como Host)
+  const { data: propias } = await supabase
+    .from('pantallas')
+    .select('*, host:hosts!inner(perfil_id, saldo_pendiente, saldo_pagado)')
+    .eq('hosts.perfil_id', user?.id)
+
+  // 2. Pantallas donde tiene ANUNCIOS activos (como Anunciante)
+  const { data: conCampanas } = await supabase
     .from('pantallas')
     .select('*, campanas!inner(cliente_id)')
     .eq('campanas.cliente_id', user?.id)
+
+  // Combinar y eliminar duplicados
+  const mergeMap = new Map()
+  propias?.forEach(p => {
+    // Tomamos los datos del host (saldo)
+    const hostInfo = Array.isArray(p.host) ? p.host[0] : p.host
+    mergeMap.set(p.id, { 
+      ...p, 
+      es_propia: true, 
+      saldo_pendiente: hostInfo?.saldo_pendiente || 0,
+      saldo_pagado: hostInfo?.saldo_pagado || 0
+    })
+  })
+  
+  conCampanas?.forEach(p => {
+    if (mergeMap.has(p.id)) {
+      mergeMap.set(p.id, { ...mergeMap.get(p.id), tiene_campana: true })
+    } else {
+      mergeMap.set(p.id, { ...p, tiene_campana: true })
+    }
+  })
+  
+  const pantallas = Array.from(mergeMap.values())
 
   // Le pedimos a Supabase el perfil con info del plan
   const { data: profile } = await supabase
@@ -102,30 +131,52 @@ export default async function DashboardPage() {
                 <div className="mb-4">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-lg font-heading text-zinc-100 group-hover:text-primary transition-colors uppercase">{pantalla.nombre}</h3>
-                    <span className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded-full tracking-tighter ${
-                      pantalla.estado === 'activa' 
-                        ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                        : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
-                    }`}>
-                      {pantalla.estado}
-                    </span>
+                    <div className="flex flex-col items-end gap-1">
+                      <span className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded-full tracking-tighter ${
+                        pantalla.estado === 'activa' 
+                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                          : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                      }`}>
+                        {pantalla.estado}
+                      </span>
+                      {pantalla.es_propia && (
+                        <span className="text-[8px] bg-primary/20 text-primary px-1.5 py-0.5 rounded uppercase font-black tracking-widest border border-primary/30">
+                          Mi Pantalla
+                        </span>
+                      )}
+                      {pantalla.tiene_campana && !pantalla.es_propia && (
+                        <span className="text-[8px] bg-secondary/20 text-secondary px-1.5 py-0.5 rounded uppercase font-black tracking-widest border border-secondary/30">
+                          Publicidad
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground font-sans line-clamp-1">{pantalla.ubicacion}</p>
                 </div>
                 
-                <div className="flex justify-between items-center mt-4">
-                  <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
-                    <svg className="w-3 h-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    </svg>
-                    <span>{pantalla.ciudad}</span>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
+                      <svg className="w-3 h-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      </svg>
+                      <span>{pantalla.ciudad}</span>
+                    </div>
+
+                    {pantalla.es_propia && (
+                      <div className="text-right">
+                        <p className="text-[8px] text-zinc-500 uppercase font-mono mb-1">Saldo Generado</p>
+                        <p className="text-sm font-black text-primary">{(pantalla.saldo_pendiente + pantalla.saldo_pagado).toFixed(2)}€</p>
+                      </div>
+                    )}
+
+                    {!pantalla.es_propia && (
+                      <Link href={`/player/${pantalla.id}`} target="_blank">
+                        <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-primary/20 hover:bg-primary hover:text-black transition-all">
+                          Player
+                        </Button>
+                      </Link>
+                    )}
                   </div>
-                  <Link href={`/player/${pantalla.id}`} target="_blank">
-                    <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-primary/20 hover:bg-primary hover:text-black transition-all">
-                      Player
-                    </Button>
-                  </Link>
-                </div>
               </div>
             ))
           ) : (
