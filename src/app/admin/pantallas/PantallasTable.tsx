@@ -39,9 +39,9 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
             <tr><td colSpan={4} className="p-6 text-center text-zinc-500">No hay pantallas registradas. Usa el botón de Nueva Pantalla.</td></tr>
           )}
           {initialData.map(p => {
-            // Extraer email si existe la relación. 
-            // La query en el servidor debe ser: select('*, hosts(perfiles(email))')
-            const hostEmail = p.hosts?.[0]?.perfiles?.email || 'SISTEMA'
+            // Extraer correo o nombre si existe la relación. 
+            // La query en el servidor debe ser: select('*, hosts(perfiles(nombre_empresa))')
+            const hostInfo = p.hosts?.[0]?.perfiles?.nombre_empresa || 'SISTEMA'
             
             return (
               <tr key={p.id} className="hover:bg-zinc-800/50">
@@ -51,7 +51,7 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
                   <p className="text-[10px] text-zinc-500 uppercase tracking-tighter">{p.ciudad}</p>
                 </td>
                 <td className="px-6 py-4">
-                  <p className="text-xs text-primary font-mono lowercase">{hostEmail}</p>
+                  <p className="text-xs text-[#D4AF37] font-bold uppercase tracking-tight">{hostInfo}</p>
                   <p className="text-[9px] text-zinc-500 uppercase tracking-tighter">
                     {p.es_publica ? 'RED PÚBLICA' : 'RED PRIVADA'}
                   </p>
