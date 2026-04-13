@@ -8,7 +8,7 @@ export default async function AdminPantallasPage() {
   // Leer pantallas con datos de Host y Perfil (Email)
   const { data: pantallas, error } = await supabase
     .from('pantallas')
-    .select('*, hosts(perfiles(nombre_empresa))')
+    .select('*, hosts(perfiles(nombre_empresa)), creador:perfiles!creado_por(nombre_empresa)')
     .order('created_at', { ascending: false })
 
   return (

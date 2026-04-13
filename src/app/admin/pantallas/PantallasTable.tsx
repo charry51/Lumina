@@ -39,9 +39,15 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
             <tr><td colSpan={4} className="p-6 text-center text-zinc-500">No hay pantallas registradas. Usa el botón de Nueva Pantalla.</td></tr>
           )}
           {initialData.map(p => {
-            // Extraer correo o nombre si existe la relación. 
-            // La query en el servidor debe ser: select('*, hosts(perfiles(nombre_empresa))')
-            const hostInfo = p.hosts?.[0]?.perfiles?.nombre_empresa || 'SISTEMA'
+            // 1. Prioridad: Host Propietario (ingresos)
+            // 2. Backup: Admin que lo registró
+            // 3. Fallback: SISTEMA
+            const hostName = p.hosts?.[0]?.perfiles?.nombre_empresa
+            const creatorName = p.creador?.nombre_empresa
+            
+            const hostInfo = hostName 
+                ? hostName 
+                : (creatorName ? `REG: ${creatorName}` : 'SISTEMA')
             
             return (
               <tr key={p.id} className="hover:bg-zinc-800/50">
