@@ -30,28 +30,19 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
           <tr>
             <th className="px-6 py-4">ID</th>
             <th className="px-6 py-4">Nombre y Ciudad</th>
-            <th className="px-6 py-4">Demanda</th>
-            <th className="px-6 py-4">Precio Act.</th>
+            <th className="px-6 py-4">Host / Propietario</th>
             <th className="px-6 py-4 text-right">Acciones</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-800">
           {initialData.length === 0 && (
-            <tr><td colSpan={5} className="p-6 text-center text-zinc-500">No hay pantallas registradas. Usa el botón de Nueva Pantalla.</td></tr>
+            <tr><td colSpan={4} className="p-6 text-center text-zinc-500">No hay pantallas registradas. Usa el botón de Nueva Pantalla.</td></tr>
           )}
           {initialData.map(p => {
-            const ratio = (p.precio_emision / (p.precio_base || 50))
-            let demandLabel = 'NORMAL'
-            let demandColor = 'text-zinc-500 border-zinc-500/20 bg-zinc-500/5'
+            // Extraer email si existe la relación. 
+            // La query en el servidor debe ser: select('*, hosts(perfiles(email))')
+            const hostEmail = p.hosts?.[0]?.perfiles?.email || 'SISTEMA'
             
-            if (ratio >= 1.5) {
-              demandLabel = 'CRÍTICA 🔥'
-              demandColor = 'text-red-500 border-red-500/30 bg-red-500/5 pulse'
-            } else if (ratio > 1.0) {
-              demandLabel = 'ALTA ⚡'
-              demandColor = 'text-yellow-500 border-yellow-500/30 bg-yellow-500/5'
-            }
-
             return (
               <tr key={p.id} className="hover:bg-zinc-800/50">
                 <td className="px-6 py-4 font-mono text-zinc-600 text-[10px]">{p.id.slice(0, 8)}</td>
@@ -60,12 +51,10 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
                   <p className="text-[10px] text-zinc-500 uppercase tracking-tighter">{p.ciudad}</p>
                 </td>
                 <td className="px-6 py-4">
-                  <span className={`text-[9px] font-black px-2 py-0.5 rounded border ${demandColor}`}>
-                    {demandLabel}
-                  </span>
-                </td>
-                <td className="px-6 py-4 font-mono text-xs text-primary font-bold">
-                  {p.precio_emision}€
+                  <p className="text-xs text-primary font-mono lowercase">{hostEmail}</p>
+                  <p className="text-[9px] text-zinc-500 uppercase tracking-tighter">
+                    {p.es_publica ? 'RED PÚBLICA' : 'RED PRIVADA'}
+                  </p>
                 </td>
               <td className="px-6 py-4 text-right flex justify-end gap-2">
                 <Link href={`/player/${p.id}`} target="_blank">
