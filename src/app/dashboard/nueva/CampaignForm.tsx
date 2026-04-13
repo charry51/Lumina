@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import MapSelector from '@/components/MapSelector'
+import { createClient } from '@/lib/supabase/client' // Cliente del navegador
 
 type Pantalla = {
   id: string
@@ -30,6 +31,8 @@ type Pantalla = {
 export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: { pantallas: Pantalla[], userPlan?: string }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
   const [selectedMapScreens, setSelectedMapScreens] = useState<string[]>([])
 
   const isPremium = userPlan.toLowerCase().includes('expansión') || userPlan.toLowerCase().includes('dominio')
@@ -45,6 +48,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
     setIsLoading(true)
 
     const formData = new FormData(event.currentTarget)
+    const file = formData.get('video') as File
     
     // Si es premium, usamos la lista del mapa
     if (isPremium) {
@@ -53,11 +57,52 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         setIsLoading(false)
         return
       }
-      // Pasamos los IDs como una cadena separada por comas para que el action los procese
       formData.set('pantalla_ids', selectedMapScreens.join(','))
     }
-    
+
+    if (!file || file.size === 0) {
+      toast.error('Debes seleccionar un archivo de video o imagen.')
+      setIsLoading(false)
+      return
+    }
+
     try {
+      // 1. SUBIDA DIRECTA A SUPABASE STORAGE
+      const supabase = createClient()
+      setIsUploading(true)
+      setUploadProgress(0)
+
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${self.crypto.randomUUID()}.${fileExt}`
+      const filePath = `${fileName}`
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('creatividades')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+          // Nota: El SDK de Supabase ahora soporta onUploadProgress en navegadores modernos
+          // @ts-ignore
+          onUploadProgress: (progress) => {
+            const percent = (progress.loaded / progress.total) * 100
+            setUploadProgress(Math.round(percent))
+          }
+        })
+
+      if (uploadError) {
+        throw new Error(`Error en Storage: ${uploadError.message}`)
+      }
+
+      // 2. Obtener URL Pública
+      const { data: { publicUrl } } = supabase.storage
+        .from('creatividades')
+        .getPublicUrl(uploadData.path)
+
+      // 3. Añadir URL al formData y llamar a la Server Action
+      formData.set('video_url', publicUrl)
+      // Eliminamos el archivo del formData para que no viaje a Vercel
+      formData.delete('video')
+
       const result = await createCampaign(null, formData)
       
       if (result.type === 'error') {
@@ -69,9 +114,11 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
       }
     } catch (error: any) {
       console.error('Error al crear campaña:', error)
-      toast.error(`Ocurrió un error inesperado: ${error.message || 'Consulta la consola'}`)
+      toast.error(`Error: ${error.message || 'Consulta la consola'}`)
     } finally {
       setIsLoading(false)
+      setIsUploading(false)
+      setUploadProgress(0)
     }
   }
 
@@ -165,8 +212,22 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Resolución sugerida: 1920x1080 (HD)</p>
       </div>
 
+      {isUploading && (
+        <div className="space-y-2">
+          <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden">
+            <div 
+              className="bg-primary h-full transition-all duration-300 shadow-[0_0_10px_rgba(0,210,255,0.5)]" 
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
+          <p className="text-[10px] text-zinc-500 font-mono text-center uppercase tracking-widest">
+            Subiendo archivo: {uploadProgress}%
+          </p>
+        </div>
+      )}
+
       <Button type="submit" className="mt-6 bg-[#D4AF37] hover:bg-[#b08d24] text-black font-black h-12 uppercase tracking-widest text-xs" disabled={isLoading}>
-        {isLoading ? 'Emitiendo en la red...' : 'Lanzar Campaña'}
+        {isLoading ? (isUploading ? 'Subiendo Media...' : 'Procesando IA...') : 'Lanzar Campaña'}
       </Button>
     </form>
   )

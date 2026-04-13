@@ -18,6 +18,7 @@ export async function createCampaign(prevState: any, formData: FormData) {
     const nombreCampana = formData.get('nombre_campana') as string
     const fechaInicio = formData.get('fecha_inicio') as string
     const fechaFin = formData.get('fecha_fin') as string
+    const publicUrl = formData.get('video_url') as string // URL ya subida desde el cliente
     
     // Dayparting Logic: Only 'expansion' or 'dominio' can custom times
     let horaInicio = (formData.get('hora_inicio') as string) || '00:00:00'
@@ -39,11 +40,10 @@ export async function createCampaign(prevState: any, formData: FormData) {
     }
     const pantallaId = formData.get('pantalla_id') as string
     const pantallaIdsRaw = formData.get('pantalla_ids') as string // Nuevo campo opcional para múltiple selección
-    const file = formData.get('video') as File
 
     const pantallaIds = pantallaIdsRaw ? pantallaIdsRaw.split(',') : [pantallaId]
 
-    if (!nombreCampana || !fechaInicio || !fechaFin || (pantallaIds.length === 0 && !pantallaId) || !file || file.size === 0) {
+    if (!nombreCampana || !fechaInicio || !fechaFin || (pantallaIds.length === 0 && !pantallaId) || !publicUrl) {
       return { type: 'error', message: 'Por favor, completa todos los campos requeridos.' }
     }
 
@@ -62,27 +62,7 @@ export async function createCampaign(prevState: any, formData: FormData) {
       }
     }
 
-    // 1. Upload File (Upload only once)
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${crypto.randomUUID()}.${fileExt}`
-
-    const { data: uploadData, error: uploadError } = await supabase
-      .storage
-      .from('creatividades')
-      .upload(fileName, file)
-
-    if (uploadError) {
-      console.error("Storage upload error: ", uploadError)
-      return { type: 'error', message: 'Error al subir el archivo: ' + uploadError.message }
-    }
-
-    // 2. Get Public URL
-    const { data: { publicUrl } } = supabase
-      .storage
-      .from('creatividades')
-      .getPublicUrl(uploadData.path)
-
-    // 3. IA SCAN (Brain integration)
+    // 3. IA SCAN (Brain integration) - Ahora lo hace sobre la URL recibida
     const iaResult = await analyzeVideo(publicUrl)
     let finalEstado = 'pendiente_aprobacion'
     
