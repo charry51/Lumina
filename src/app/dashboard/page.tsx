@@ -16,13 +16,14 @@ export default async function DashboardPage() {
   const { data: propias } = await supabase
     .from('pantallas')
     .select('*, host:hosts!inner(perfil_id, saldo_pendiente, saldo_pagado)')
-    .eq('hosts.perfil_id', user?.id)
+    .eq('host.perfil_id', user?.id)
 
   // 2. Pantallas donde tiene ANUNCIOS activos (como Anunciante)
   const { data: conCampanas } = await supabase
     .from('pantallas')
-    .select('*, campanas!inner(cliente_id)')
+    .select('*, campanas!inner(cliente_id, estado)')
     .eq('campanas.cliente_id', user?.id)
+    .in('campanas.estado', ['aprobada'])
 
   // Combinar y eliminar duplicados
   const mergeMap = new Map()

@@ -17,11 +17,12 @@ export default async function NuevaCampanaPage() {
      redirect('/dashboard/planes')
   }
 
-  // Fetch only active screens with Yield data.
+  // Fetch only active, public screens with Yield data.
   const { data: pantallas, error } = await supabase
     .from('pantallas')
     .select('id, nombre, ubicacion, ciudad, latitud, longitud, precio_emision, precio_base')
     .eq('estado', 'activa')
+    .eq('es_publica', true)
 
   if (error) {
     return (

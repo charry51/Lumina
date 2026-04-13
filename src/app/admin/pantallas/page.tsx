@@ -5,25 +5,25 @@ import { NuevaPantallaForm } from './NuevaPantallaForm'
 export default async function AdminPantallasPage() {
   const supabase = await createClient()
 
-  // Leer pantallas con datos de Yield Management
+  // Leer pantallas con datos de Host y Perfil (Email)
   const { data: pantallas, error } = await supabase
     .from('pantallas')
-    .select('*, precio_emision, precio_base, capacidad_maxima')
+    .select('*, hosts(perfiles(email))')
     .order('created_at', { ascending: false })
 
   return (
     <div className="p-8 font-[family-name:var(--font-geist-sans)]">
       <header className="mb-8 flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-100">Red de Pantallas</h1>
-          <p className="text-zinc-500">Gestión de inventario físico y ubicaciones.</p>
+          <h1 className="text-3xl font-bold text-zinc-100 uppercase tracking-tighter italic">RED DE <span className="text-[#D4AF37] NOT-italic">PANTALLAS</span></h1>
+          <p className="text-zinc-500 text-xs uppercase tracking-widest mt-1">Gestión centralizada del inventario físico global.</p>
         </div>
         <NuevaPantallaForm />
       </header>
 
       {error ? (
-        <div className="p-4 bg-red-900/50 text-red-400 border border-red-800 rounded-lg">
-          Error al cargar inventario: {error.message}
+        <div className="p-4 bg-red-900/50 text-red-400 border border-red-800 rounded-lg font-mono text-xs uppercase">
+          Error de acceso a datos: {error.message}
         </div>
       ) : (
         <PantallasTable initialData={pantallas || []} />
