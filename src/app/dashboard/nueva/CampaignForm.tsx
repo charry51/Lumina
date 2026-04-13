@@ -73,7 +73,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
       setUploadProgress(0)
 
       const fileExt = file.name.split('.').pop()
-      const fileName = `${crypto.randomUUID()}.${fileExt}`
+      const fileName = `${self.crypto.randomUUID()}.${fileExt}`
       const filePath = `${fileName}`
 
       const { data: uploadData, error: uploadError } = await supabase.storage
