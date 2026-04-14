@@ -14,8 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
 import MapSelector from '@/components/MapSelector'
-import { createClient } from '@/lib/supabase/client' // Cliente del navegador
+import { createClient } from '@/lib/supabase/client'
+import { calculateEstimatedImpacts } from '@/lib/yield/pricing'
 
 type Pantalla = {
   id: string
@@ -34,6 +36,19 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
   const [selectedMapScreens, setSelectedMapScreens] = useState<string[]>([])
+  
+  // LUMINA v2: Programmatic States
+  const [presupuestoTotal, setPresupuestoTotal] = useState<number>(100)
+  const [prioridad, setPrioridad] = useState<number>(1)
+  const [duracion, setDuracion] = useState<number>(10)
+  
+  // Calculamos impactos en tiempo real asumiendo 'standard' por defecto si no hay precio_base superior
+  const impactosEstimados = calculateEstimatedImpacts({
+    presupuestoTotal,
+    prioridad,
+    duracionSegundos: duracion,
+    zona: 'standard'
+  })
 
   const isPremium = userPlan.toLowerCase().includes('expansión') || userPlan.toLowerCase().includes('dominio')
 
@@ -98,7 +113,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         .from('creatividades')
         .getPublicUrl(uploadData.path)
 
-      // 3. Crear el payload JSON limpio sin el archivo
+      // LUMINA v2: Crear el payload JSON limpio con los nuevos campos programáticos
       const payloadData = {
         nombre_campana: formData.get('nombre_campana') as string,
         fecha_inicio: formData.get('fecha_inicio') as string,
@@ -107,7 +122,10 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         hora_inicio: (formData.get('hora_inicio') as string) || '',
         hora_fin: (formData.get('hora_fin') as string) || '',
         pantalla_id: (formData.get('pantalla_id') as string) || '',
-        pantalla_idsRaw: (formData.get('pantalla_ids') as string) || ''
+        pantalla_idsRaw: (formData.get('pantalla_ids') as string) || '',
+        presupuesto_total: presupuestoTotal,
+        prioridad: prioridad,
+        impactos_estimados: impactosEstimados
       }
 
       const result = await createCampaign(payloadData)
@@ -131,9 +149,58 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm">
+      
+      {/* LUMINA v2.0 - Programmatic Dashboard Card */}
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass">
+         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-50" />
+         
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-2">
+                  <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Presupuesto de Campaña (€)</Label>
+                  <p className="text-3xl font-light font-['Space_Grotesk'] tracking-tighter text-white">€{presupuestoTotal}</p>
+                  <Slider 
+                    defaultValue={[100]} 
+                    max={5000} step={50} min={50}
+                    onValueChange={(val: number[]) => setPresupuestoTotal(val[0])} 
+                    className="mt-2"
+                  />
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                  <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Poder de Subasta (Prioridad)</Label>
+                  <Select value={prioridad.toString()} onValueChange={(val: any) => setPrioridad(parseInt(val))}>
+                    <SelectTrigger className="bg-black/50 border-zinc-800 focus:border-[#D4AF37] h-10 w-full sm:w-[200px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border-zinc-800">
+                      <SelectItem value="1">Estándar (x1)</SelectItem>
+                      <SelectItem value="2">Acelerada (x2 Penalización Coste)</SelectItem>
+                      <SelectItem value="3">Takeover (x3 Dominante)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+            </div>
+            
+            <div className="bg-black/40 rounded-lg p-6 border border-[#D4AF37]/20 flex flex-col justify-center items-center text-center">
+                <span className="text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
+                {impactosEstimados > 0 ? (
+                    <>
+                        <span className="text-5xl font-['Space_Grotesk'] text-white font-light tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                            {impactosEstimados.toLocaleString()}
+                        </span>
+                        <span className="text-zinc-500 font-medium text-xs mt-2 uppercase tracking-widest">Impactos Garantizados</span>
+                    </>
+                ) : (
+                    <span className="text-zinc-500 text-sm italic">Sube el presupuesto...</span>
+                )}
+            </div>
+         </div>
+      </div>
+
       <div className="flex flex-col gap-2">
-        <Label htmlFor="nombre_campana" className="text-zinc-400 font-medium">Nombre de la Campaña</Label>
-        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Promoción Verano 2026" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 focus:border-[#D4AF37] text-zinc-100 h-11" />
+        <Label htmlFor="nombre_campana" className="text-zinc-400 font-medium">Nombre de la Creatividad</Label>
+        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Lanzamiento Perfume 2026" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 focus:border-[#D4AF37] text-zinc-100 h-11" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

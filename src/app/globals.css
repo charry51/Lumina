@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --font-heading: var(--font-heading);
+  --font-sans: var(--font-custom-sans, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+  --font-mono: var(--font-custom-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
+  --font-heading: var(--font-custom-heading, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -130,24 +130,50 @@
     @apply border-b border-border/50 hover:bg-white/[0.02] transition-colors;
   }
 
-  /* Botones con Gradiente de Lujo Azul-Morado */
+  /* Botones con Gradiente Oro de Lujo */
+  .cyber-button-gold {
+    background: linear-gradient(135deg, #D4AF37 0%, #b08d24 100%);
+    @apply text-[#0a0a0f] font-black py-3 px-8 rounded-full hover:brightness-110 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] uppercase tracking-widest text-[10px];
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Botones con Gradiente Cyan (Original Lumina) */
   .cyber-button-cyan {
-    background: linear-gradient(135deg, #00d2ff 0%, #6c5ce7 100%);
-    @apply text-[#0a0a0f] font-bold py-2 px-6 rounded-lg hover:brightness-110 transition-all shadow-[0_0_20px_rgba(0,210,255,0.2)];
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #00d2ff 0%, #00a1ff 100%);
+    @apply text-[#0a0a0f] font-black py-3 px-8 rounded-full hover:brightness-110 transition-all shadow-[0_0_20px_rgba(0,210,255,0.3)] uppercase tracking-widest text-[10px];
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  .cyber-button-purple {
-    background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-    @apply text-white font-bold py-2 px-6 rounded-lg hover:brightness-110 transition-all;
+  .cyber-glass-gold {
+     @apply bg-[#12121a]/60 border border-[#D4AF37]/20 rounded-2xl backdrop-blur-xl shadow-[0_0_50px_rgba(212,175,55,0.05)];
   }
 
-  .text-gradient {
-    background: linear-gradient(135deg, #00d2ff 0%, #6c5ce7 100%);
+  .cyber-glass-cyan {
+     @apply bg-[#12121a]/60 border border-[#00d2ff]/20 rounded-2xl backdrop-blur-xl shadow-[0_0_50px_rgba(0,210,255,0.05)];
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #D4AF37 0%, #f1c40f 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     color: transparent;
+  }
+
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #00d2ff 0%, #00a1ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .cyber-glow-gold {
+     box-shadow: 0 0 15px rgba(212, 175, 55, 0.3), inset 0 0 5px rgba(212, 175, 55, 0.2);
+  }
+
+  .cyber-glow-cyan {
+     box-shadow: 0 0 15px rgba(0, 210, 255, 0.3), inset 0 0 5px rgba(0, 210, 255, 0.2);
   }
 
   /* Utilidad para tablas responsivas */
@@ -156,6 +182,27 @@
     scrollbar-width: thin;
   }
 }
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes pulse-gold {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 3s ease-in-out infinite;
+}
+
 
 /* Ocultar indicadores de desarrollo (Next.js/Vercel) */
 [data-nextjs-static-indicator],

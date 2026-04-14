@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function logPlayback(campanaId: string, pantallaId: string) {
   const supabase = await createClient()
 
-  // 1. Obtener la organización de la pantalla para mantener la integridad del multi-tenancy
+  // 1. Get screen organization for integrity
   const { data: pantalla } = await supabase
     .from('pantallas')
     .select('organizacion_id')
@@ -17,20 +17,30 @@ export async function logPlayback(campanaId: string, pantallaId: string) {
     return { success: false, error: "Screen organization mismatch" }
   }
 
-  // 2. Guardar log "Proof of Play" (Inmutable)
-  const { error } = await supabase
-    .from('logs_reproduccion')
+  // 2. Register "Proof of Play" (Verificadas)
+  // This triggers the database update of impactos_reales
+  const { error: errorPoP } = await supabase
+    .from('reproducciones_verificadas')
     .insert({
+      campana_id: campanaId,
+      pantalla_id: pantallaId,
+      organizacion_id: pantalla.organizacion_id
+    })
+
+  if (errorPoP) {
+    console.error("Error logging PoP:", errorPoP)
+    return { success: false, error: errorPoP.message }
+  }
+
+  // 3. Keep legacy log for backup audit if needed (Optional)
+  try {
+    await supabase.from('logs_reproduccion').insert({
       campana_id: campanaId,
       pantalla_id: pantallaId,
       organizacion_id: pantalla.organizacion_id,
       timestamp: new Date().toISOString()
     })
-
-  if (error) {
-    console.error("Error logging playback:", error)
-    return { success: false, error: error.message }
-  }
+  } catch (e) {}
 
   return { success: true }
 }

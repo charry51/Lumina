@@ -3,17 +3,17 @@ import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
-  variable: "--font-heading",
+  variable: "--font-custom-heading",
   subsets: ["latin"],
 });
 
 const dmSans = DM_Sans({
-  variable: "--font-sans",
+  variable: "--font-custom-sans",
   subsets: ["latin"],
 });
 
 const jetbrains = JetBrains_Mono({
-  variable: "--font-mono",
+  variable: "--font-custom-mono",
   subsets: ["latin"],
 });
 

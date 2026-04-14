@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { syncScreenPrice } from '@/lib/yield/pricing'
+import { syncScreenPrice } from '@/lib/yield/sync'
 
 export async function authorizeCampaignStatus(campaignId: string, newStatus: 'aprobada' | 'rechazada') {
   const supabase = await createClient()

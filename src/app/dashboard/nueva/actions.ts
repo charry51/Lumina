@@ -15,6 +15,9 @@ export type CampaignData = {
   hora_fin: string
   pantalla_id: string
   pantalla_idsRaw: string
+  presupuesto_total?: number
+  prioridad?: number
+  impactos_estimados?: number
 }
 
 export async function createCampaign(data: CampaignData) {
@@ -58,20 +61,9 @@ export async function createCampaign(data: CampaignData) {
       return { type: 'error', message: 'Por favor, completa todos los campos requeridos.' }
     }
 
-    const { count: existingCount } = await supabase
-      .from('campanas')
-      .select('id', { count: 'exact', head: true })
-      .eq('cliente_id', user.id)
-
-    const maxCampanas = profile?.planes?.max_campanas || 1
+    // LUMINA v2: Límite de campañas basado en presupuesto, no en suscripciones fijas.
+    // (Hemos eliminado las restricciones temporales de planes limitantes para asentar Programmatic)
     const totalNew = pantallaIds.length
-    
-    if (((existingCount || 0) + totalNew) > maxCampanas) {
-      return { 
-        type: 'error', 
-        message: `Has alcanzado el límite de tu plan (${maxCampanas} campañas máximo). Solo puedes añadir ${maxCampanas - (existingCount || 0)} más.` 
-      }
-    }
 
     // 3. IA SCAN (Brain integration) - Ahora lo hace sobre la URL recibida
     const iaResult = await analyzeVideo(publicUrl)
@@ -108,7 +100,11 @@ export async function createCampaign(data: CampaignData) {
         hora_fin: horaFin,
         estado: finalEstado,
         ia_metadata: iaResult,
-        precio_pactado: screen?.precio_emision || 50.00 // Congelamos el precio actual
+        precio_pactado: screen?.precio_emision || 50.00, // Legacy fallback
+        // LUMINA v2: Programmatic fields
+        presupuesto_total: data.presupuesto_total || 0,
+        prioridad: data.prioridad || 1,
+        impactos_estimados: data.impactos_estimados || 0
       }
     })
 
