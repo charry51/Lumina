@@ -32,7 +32,7 @@ export default async function HostDashboardPage({
       <div className="min-h-screen bg-[#0a0a0f] text-foreground p-8 font-sans flex flex-col items-center justify-center">
         <div className="max-w-md w-full">
             <header className="mb-10 text-center">
-                <Link href="/host/dashboard" className="inline-block mb-4 text-[10px] text-zinc-500 hover:text-primary transition-colors uppercase tracking-[3px]">← Volver al Dashboard</Link>
+                <Link href="/dashboard" className="inline-block mb-4 text-[10px] text-zinc-500 hover:text-primary transition-colors uppercase tracking-[3px]">← Volver al Dashboard Principal</Link>
                 <h1 className="text-4xl font-heading font-black text-gradient mb-2">VINCULAR TV</h1>
                 <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-[3px]">Añade un nuevo nodo de emisión a tu cuenta</p>
             </header>
@@ -71,6 +71,7 @@ export default async function HostDashboardPage({
       {/* Header Premium */}
       <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-white/5 pb-8">
         <div>
+          <Link href="/dashboard" className="inline-block mb-4 text-[10px] text-zinc-500 hover:text-primary transition-colors uppercase tracking-[3px] font-bold">← Volver al Dashboard Principal</Link>
           <div className="flex items-center gap-3 mb-1">
             <h1 className="text-4xl font-heading font-black text-gradient tracking-tighter">LUMINA</h1>
             <span className="bg-primary/10 text-primary text-[9px] font-black px-2 py-0.5 rounded border border-primary/20 uppercase tracking-widest">HOST PORTAL</span>
