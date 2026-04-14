@@ -4,13 +4,14 @@
 ALTER TABLE campanas 
 ADD COLUMN IF NOT EXISTS impactos_reales INTEGER DEFAULT 0;
 
--- 2. Función para incrementar el contador de impactos y calcular comisiones
+-- 2. Función para incrementar el contador de impactos y calcular comisiones (v3.1 con Bono IA)
 CREATE OR REPLACE FUNCTION increment_campaign_impacts()
 RETURNS TRIGGER AS $$
 DECLARE
     v_cost_per_hit DECIMAL(10,5);
     v_host_id UUID;
     v_host_porcentaje DECIMAL(5,2);
+    v_modulo_ia BOOLEAN;
     v_comision DECIMAL(10,5);
     v_presupuesto_total DECIMAL(10,2);
     v_impactos_estimados INTEGER;
@@ -26,12 +27,17 @@ BEGIN
         v_cost_per_hit := v_presupuesto_total / v_impactos_estimados;
         
         -- 3. Buscar el host asociado a esta pantalla
-        SELECT id, porcentaje INTO v_host_id, v_host_porcentaje 
+        SELECT id, porcentaje, modulo_ia_activo INTO v_host_id, v_host_porcentaje, v_modulo_ia 
         FROM hosts 
         WHERE pantalla_id = NEW.pantalla_id;
         
         -- 4. Si hay host, generar comisión
         IF v_host_id IS NOT NULL THEN
+            -- APLICAR BONO IA (Floor de 30% si tienen el módulo activo, pero respetando si el base es superior)
+            IF v_modulo_ia = true AND v_host_porcentaje < 30.00 THEN
+                v_host_porcentaje := 30.00;
+            END IF;
+
             v_comision := v_cost_per_hit * (COALESCE(v_host_porcentaje, 25.00) / 100);
             
             INSERT INTO comisiones (

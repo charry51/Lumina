@@ -62,11 +62,16 @@ export default async function PlanesPage() {
               <ul className="space-y-3 text-[11px] font-mono uppercase tracking-tight text-zinc-400">
                 <li className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(0,210,255,0.8)]"></span>
-                  {plan.max_pantallas} Nodos de pantalla
+                  {plan.id === 'dominio' ? 'Pantallas Ilimitadas' : `${plan.max_pantallas} Nodos de pantalla`}
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full opacity-50"></span>
-                  {plan.max_campanas} Campañas simultáneas
+                <li className="flex items-center gap-2 text-[#00d2ff] font-bold">
+                  <span className="w-1.5 h-1.5 bg-[#00d2ff] rounded-full"></span>
+                  Frecuencia {plan.frecuencia_relativa}x 
+                  <span className="text-[8px] opacity-70 ml-1">
+                    ({plan.id === 'presencia' ? '1 cada 2 bucles' : 
+                      plan.id === 'impacto' ? 'Máx 1 por bucle' :
+                      plan.id === 'expansion' ? 'Mín 2 por bucle' : '2-5 por bucle'})
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 bg-primary rounded-full opacity-50"></span>
@@ -76,6 +81,12 @@ export default async function PlanesPage() {
                   <span className="w-1.5 h-1.5 bg-secondary rounded-full"></span>
                   Prioridad {plan.prioridad}
                 </li>
+                {(plan.id === 'expansion' || plan.id === 'dominio') && (
+                  <li className="flex items-center gap-2 text-green-400">
+                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                    Elección de Franjas Horarias
+                  </li>
+                )}
               </ul>
             </div>
 

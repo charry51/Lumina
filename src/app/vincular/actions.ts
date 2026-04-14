@@ -45,7 +45,9 @@ export async function activatePairingCode(
   ubicacion: string,
   esPublica: boolean = true,
   latitud?: number,
-  longitud?: number
+  longitud?: number,
+  tipoPantalla: string = 'gimnasio',
+  densidadNivel: string = 'medio'
 ): Promise<{ success: boolean; pantallaId?: string; error?: string }> {
   const supabase = await createClient()
 
@@ -93,6 +95,8 @@ export async function activatePairingCode(
       longitud,
       estado: 'activa',
       es_publica: esPublica,
+      tipo_pantalla: tipoPantalla,
+      densidad_poblacion_nivel: densidadNivel,
       organizacion_id: perfil?.organizacion_id
     })
     .select('id')
@@ -104,13 +108,20 @@ export async function activatePairingCode(
 
   // 4. Lógica de Host Automático: Si no es superadmin, vincular como host
   if (perfil?.rol !== 'superadmin') {
-    // Verificar si ya existe como host para esta pantalla (no debería ocurrir por el UNIQUE)
-    // Pero sobre todo, asegurar que el usuario tenga un registro en 'hosts' vinculado a esta pantalla
+    // Cálculo dinámico de comisión según el tipo (Handwritten Note logic)
+    // Bar: 20%, Gym: 25%, Rest: 28%, Calle: 30%, CC: 32%, Calle Principal: 35%
+    let porcentajeBase = 25.00
+    if (tipoPantalla === 'bar') porcentajeBase = 20.00
+    else if (tipoPantalla === 'restaurante') porcentajeBase = 28.00
+    else if (tipoPantalla === 'calle') porcentajeBase = 30.00
+    else if (tipoPantalla === 'centro_comercial') porcentajeBase = 32.00
+    else if (tipoPantalla === 'calle_principal') porcentajeBase = 35.00
+
     await supabase.from('hosts').insert({
       perfil_id: user.id,
       pantalla_id: pantalla.id,
-      nombre_local: nombre, // Usamos el nombre de la pantalla como nombre del local por defecto
-      porcentaje: 25.00,    // Comisión estándar inicial
+      nombre_local: nombre,
+      porcentaje: porcentajeBase,
       saldo_pendiente: 0,
       saldo_pagado: 0
     })

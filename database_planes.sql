@@ -1,5 +1,5 @@
--- 1. Crear tabla de planes comerciales
-CREATE TABLE planes (
+-- 1. Crear tabla de planes comerciales (Actualizada v3.0)
+CREATE TABLE IF NOT EXISTS planes (
   id TEXT PRIMARY KEY,
   nombre TEXT NOT NULL,
   precio_mensual DECIMAL(10,2) NOT NULL,
@@ -7,21 +7,24 @@ CREATE TABLE planes (
   max_pantallas INTEGER NOT NULL,
   max_duracion_segundos INTEGER NOT NULL,
   prioridad TEXT CHECK (prioridad IN ('baja', 'estandar', 'alta', 'maxima')),
+  frecuencia_relativa INTEGER DEFAULT 1, -- 1x, 2x, 3x, 4x
   color_hex TEXT
 );
 
--- 2. Insertar los planes definidos en el documento de producto
-INSERT INTO planes (id, nombre, precio_mensual, max_campanas, max_pantallas, max_duracion_segundos, prioridad, color_hex)
+-- BORRAR DATOS ANTIGUOS PARA LIMPIEZA
+TRUNCATE TABLE planes CASCADE;
+
+-- 2. Insertar los nuevos planes definidos en las notas manuscritas
+INSERT INTO planes (id, nombre, precio_mensual, max_campanas, max_pantallas, max_duracion_segundos, prioridad, frecuencia_relativa, color_hex)
 VALUES 
-('basico', 'Plan Presencia', 29.00, 1, 1, 10, 'estandar', '#94a3b8'),
-('local_plus', 'Plan Impacto', 59.00, 3, 3, 15, 'estandar', '#3b82f6'),
-('multilocal', 'Plan Expansión', 129.00, 10, 10, 15, 'alta', '#8b5cf6'),
-('premium', 'Plan Dominio', 249.00, 25, 50, 20, 'maxima', '#D4AF37');
+('presencia', 'Plan Presencia', 79.00, 1, 1, 10, 'baja', 1, '#94a3b8'),
+('impacto', 'Plan Impacto', 199.00, 5, 3, 15, 'estandar', 2, '#3b82f6'),
+('expansion', 'Plan Expansión', 449.00, 999, 10, 20, 'alta', 3, '#8b5cf6'),
+('dominio', 'Plan Dominio', 899.00, 9999, 9999, 30, 'maxima', 4, '#D4AF37');
 
--- 3. Actualizar la tabla de perfiles para incluir el plan
+-- 3. Asegurar que los perfiles tengan el plan correcto
 ALTER TABLE perfiles 
-ADD COLUMN plan_id TEXT REFERENCES planes(id) DEFAULT 'basico',
-ADD COLUMN suscripcion_activa BOOLEAN DEFAULT true;
+ADD COLUMN IF NOT EXISTS plan_id TEXT REFERENCES planes(id) DEFAULT 'presencia',
+ADD COLUMN IF NOT EXISTS suscripcion_activa BOOLEAN DEFAULT true;
 
--- 4. Actualizar todos los perfiles actuales al plan básico para que no de error
-UPDATE perfiles SET plan_id = 'basico' WHERE plan_id IS NULL;
+UPDATE perfiles SET plan_id = 'presencia' WHERE plan_id IS NULL OR plan_id = 'basico';

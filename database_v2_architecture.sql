@@ -13,10 +13,12 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
--- 2. Actualización de Pantallas (Zonas de Impacto)
+-- 2. Actualización de Pantallas (Zonas de Impacto y Categoría v3.0)
 ALTER TABLE pantallas
 ADD COLUMN IF NOT EXISTS zona zona_enum DEFAULT 'standard',
-ADD COLUMN IF NOT EXISTS precio_base_zona DECIMAL(10,2) DEFAULT 50.00;
+ADD COLUMN IF NOT EXISTS precio_base_zona DECIMAL(10,2) DEFAULT 50.00,
+ADD COLUMN IF NOT EXISTS tipo_pantalla TEXT DEFAULT 'gimnasio',
+ADD COLUMN IF NOT EXISTS densidad_poblacion_nivel TEXT DEFAULT 'medio';
 
 -- 3. Actualización de Campañas (Presupuesto Programático)
 ALTER TABLE campanas
