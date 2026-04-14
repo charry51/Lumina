@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { logPlayback } from '../actions'
 import { createClient } from '@/lib/supabase/client'
 
@@ -9,9 +9,9 @@ type CampaignItem = {
   url_video: string;
   hora_inicio: string;
   hora_fin: string;
+  prioridad: number;
 }
 
-// Cola de logs offline (persiste en localStorage mientras no hay conexión)
 const OFFLINE_LOG_KEY = 'lumina_offline_logs'
 
 function getOfflineLogs(): string[] {
@@ -30,8 +30,7 @@ function clearOfflineLogs() {
 }
 
 export default function PlaylistRunner({ screenId, playlist }: { screenId: string, playlist: CampaignItem[] }) {
-  // ——— Estados ———
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentCampaign, setCurrentCampaign] = useState<CampaignItem | null>(null)
   const [hasHydrated, setHasHydrated] = useState(false)
   const [cachedUrls, setCachedUrls] = useState<Record<string, string>>({})
   const [isOnline, setIsOnline] = useState(true)
@@ -39,25 +38,49 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   const videoRef = useRef<HTMLVideoElement>(null)
   const supabase = createClient()
 
-  // ——— 1. Registrar Service Worker ———
+  // --- ELASTIC ENGINE: Weighted Selection ---
+  const getNextCampaign = useCallback((pool: CampaignItem[]) => {
+    if (pool.length === 0) return null
+    if (pool.length === 1) return pool[0]
+
+    // 1. Filter by valid time range
+    const now = new Date()
+    const currentMins = now.getHours() * 60 + now.getMinutes()
+    const validPool = pool.filter(c => {
+        if (!c.hora_inicio || !c.hora_fin) return true
+        const [hI, mI] = c.hora_inicio.split(':').map(Number)
+        const [hF, mF] = c.hora_fin.split(':').map(Number)
+        return currentMins >= (hI * 60 + (mI || 0)) && currentMins <= (hF * 60 + (mF || 0))
+    })
+
+    if (validPool.length === 0) return null
+
+    // 2. Weight-based random pick (Share of Voice)
+    const totalWeight = validPool.reduce((sum, c) => sum + (c.prioridad || 1), 0)
+    let random = Math.random() * totalWeight
+    
+    for (const campaign of validPool) {
+        random -= (campaign.prioridad || 1)
+        if (random <= 0) return campaign
+    }
+    
+    return validPool[0]
+  }, [])
+
+  // 1. Service Worker Registration
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js', { scope: '/' })
-        .then((reg) => {
-          console.log('[Lumina] Service Worker registrado:', reg.scope)
-        })
-        .catch((err) => console.error('[Lumina] Error registrando SW:', err))
+        .then((reg) => console.log('[Lumina] SW Registered:', reg.scope))
+        .catch((err) => console.error('[Lumina] SW Error:', err))
     }
   }, [])
 
-  // ——— 2. Detectar estado de conexión ———
+  // 2. Connectivity & Sync
   useEffect(() => {
     const handleOnline = async () => {
       setIsOnline(true)
-      console.log('[Lumina] Conexión restaurada. Sincronizando logs offline...')
-      
-      // Sincronizar logs pendientes cuando vuelve la conexión
       const pendingLogs = getOfflineLogs()
       if (pendingLogs.length > 0) {
         for (const logStr of pendingLogs) {
@@ -65,24 +88,13 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
             const { campaignId, screenId: sId } = JSON.parse(logStr)
             await logPlayback(campaignId, sId)
           } catch (e) {
-            console.error('[Lumina] Error sincronizando log offline:', e)
+            console.error('[Lumina] Sync Error:', e)
           }
         }
         clearOfflineLogs()
-        console.log(`[Lumina] ${pendingLogs.length} logs sincronizados.`)
-      }
-
-      // Intentar Background Sync si el SW lo soporta
-      if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        const reg = await navigator.serviceWorker.ready
-        try { await (reg as any).sync.register('sync-playback-logs') } catch {}
       }
     }
-
-    const handleOffline = () => {
-      setIsOnline(false)
-      console.warn('[Lumina] Sin conexión. Activando modo offline.')
-    }
+    const handleOffline = () => setIsOnline(false)
 
     setIsOnline(navigator.onLine)
     window.addEventListener('online', handleOnline)
@@ -93,7 +105,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     }
   }, [])
 
-  // ——— 3. Pre-cachear todos los vídeos de la playlist ———
+  // 3. Pre-caching
   useEffect(() => {
     setHasHydrated(true)
     if (playlist.length === 0) return
@@ -101,23 +113,8 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     const preloadMedia = async () => {
       setCacheStatus('caching')
       const newCachedUrls: Record<string, string> = {}
+      const cache = await caches.open('lumina-media-v3')
 
-      // Notificar al SW que cachee estas URLs
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'CACHE_MEDIA',
-          urls: playlist.map(p => p.url_video).filter(Boolean),
-        })
-
-        // Limpiar media antigua que ya no está en la playlist
-        navigator.serviceWorker.controller.postMessage({
-          type: 'CLEAR_OLD_MEDIA',
-          keepUrls: playlist.map(p => p.url_video).filter(Boolean),
-        })
-      }
-
-      // Obtener Blobs locales para reproducción instantánea
-      const cache = await caches.open('lumina-media-v2')
       for (const item of playlist) {
         if (!item.url_video) continue
         try {
@@ -127,7 +124,6 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
               await cache.add(item.url_video)
               response = await cache.match(item.url_video)
             } catch {
-              // Si falla la descarga (offline), usar URL original como fallback
               newCachedUrls[item.url_video] = item.url_video
               continue
             }
@@ -143,13 +139,17 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
 
       setCachedUrls(newCachedUrls)
       setCacheStatus('ready')
-      console.log('[Lumina] Todos los medios cacheados y listos para reproducción offline.')
+      
+      // Initialize first campaign if not set
+      if (!currentCampaign) {
+          setCurrentCampaign(getNextCampaign(playlist))
+      }
     }
 
     preloadMedia()
-  }, [playlist])
+  }, [playlist, getNextCampaign, currentCampaign])
 
-  // ——— 4. Presencia en tiempo real ———
+  // 4. Presence
   useEffect(() => {
     if (!screenId) return
     const channel = supabase.channel('LuminaNetwork', {
@@ -163,135 +163,92 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     return () => { channel.unsubscribe() }
   }, [screenId, supabase, isOnline])
 
-  // ——— 5. Autoplay ———
-  useEffect(() => {
-    if (videoRef.current && hasHydrated) {
-      videoRef.current.play().catch(e => console.warn('Autoplay bloqueado:', e))
-    }
-  }, [currentIndex, playlist, hasHydrated])
-
-  // ——— 6. Validación de franja horaria ———
-  const isValidTime = (inicio: string, fin: string) => {
-    if (!inicio || !fin) return true
-    const now = new Date()
-    const currentMins = now.getHours() * 60 + now.getMinutes()
-    const [hI, mI] = inicio.split(':').map(Number)
-    const [hF, mF] = fin.split(':').map(Number)
-    return currentMins >= (hI * 60 + (mI || 0)) && currentMins <= (hF * 60 + (mF || 0))
-  }
-
-  // ——— 7. Encontrar ítem activo según horario ———
-  let attempts = 0
-  let activeIndex = currentIndex
-  let currentMedia = playlist[activeIndex]
-  while (playlist.length > 0 && currentMedia && !isValidTime(currentMedia.hora_inicio, currentMedia.hora_fin) && attempts < playlist.length) {
-    activeIndex = (activeIndex + 1) % playlist.length
-    currentMedia = playlist[activeIndex]
-    attempts++
-  }
-
-  const isImage = currentMedia?.url_video ? /\.(jpg|jpeg|png|webp|gif)$/i.test(currentMedia.url_video) : false
-  const activeUrl = currentMedia ? (cachedUrls[currentMedia.url_video] || currentMedia.url_video) : null
-
-  // ——— 8. Rotación de imágenes ———
-  useEffect(() => {
-    let timer: NodeJS.Timeout
-    if (isImage && playlist.length > 0 && hasHydrated) {
-      timer = setTimeout(handleNext, 10000)
-    }
-    return () => { if (timer) clearTimeout(timer) }
-  }, [currentIndex, isImage, playlist.length, hasHydrated])
-
-  // ——— 9. Avanzar con log de reproducción (online o cola offline) ———
+  // 5. Playback Switcher
   const handleNext = useCallback(async () => {
-    const currentItem = playlist[currentIndex]
-    
-    // Si solo hay un vídeo, el currentIndex no cambia, así que forzamos el reinicio manual
-    if (playlist.length === 1 && videoRef.current) {
-      videoRef.current.currentTime = 0
-      videoRef.current.play().catch(() => {})
-    }
-
-    if (currentItem?.id) {
+    if (currentCampaign?.id) {
       if (isOnline) {
-        logPlayback(currentItem.id, screenId).catch(() => {
-          // Si falla estando "online", guardar en cola
-          addOfflineLog(currentItem.id, screenId)
-        })
+        logPlayback(currentCampaign.id, screenId).catch(() => addOfflineLog(currentCampaign.id, screenId))
       } else {
-        // Sin conexión: añadir a la cola para sincronizar después
-        addOfflineLog(currentItem.id, screenId)
+        addOfflineLog(currentCampaign.id, screenId)
       }
     }
     
-    if (playlist.length > 0) {
-      setCurrentIndex((prev) => (prev + 1) % playlist.length)
-    }
-  }, [playlist, currentIndex, screenId, isOnline])
+    // Pick logically different campaign if possible to avoid static loops
+    const next = getNextCampaign(playlist)
+    setCurrentCampaign(next)
+  }, [currentCampaign, playlist, screenId, isOnline, getNextCampaign])
 
+  // Autoplay
   useEffect(() => {
-    if (activeIndex !== currentIndex && hasHydrated) {
-      setCurrentIndex(activeIndex)
+    if (videoRef.current && hasHydrated) {
+      videoRef.current.play().catch(e => console.warn('Autoplay blocked:', e))
     }
-  }, [activeIndex, currentIndex, hasHydrated])
+  }, [currentCampaign, hasHydrated])
 
-  // ——— RENDER ———
-  if (!hasHydrated) {
-    return <div className="w-screen h-screen bg-[#0a0a0f]" />
-  }
+  const isImage = currentCampaign?.url_video ? /\.(jpg|jpeg|png|webp|gif)$/i.test(currentCampaign.url_video) : false
+  const activeUrl = currentCampaign ? (cachedUrls[currentCampaign.url_video] || currentCampaign.url_video) : null
 
-  if (playlist.length === 0 || attempts >= playlist.length) {
+  // Image Rotation
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (isImage && currentCampaign && hasHydrated) {
+      timer = setTimeout(handleNext, 10000)
+    }
+    return () => { if (timer) clearTimeout(timer) }
+  }, [currentCampaign, isImage, hasHydrated, handleNext])
+
+  if (!hasHydrated) return <div className="w-screen h-screen bg-[#0a0a0f]" />
+
+  if (!currentCampaign) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0f] text-white p-12 text-center">
-        <div className="cyber-card p-12 max-w-2xl border-dashed border-2">
-          <h1 className="text-6xl font-heading mb-6 text-gradient font-black">LUMINA</h1>
-          <h2 className="text-2xl font-sans text-zinc-400 uppercase tracking-widest">Espacio Publicitario</h2>
-          <p className="mt-8 text-muted-foreground font-mono text-sm uppercase">Sin contenido programado para este horario</p>
+        <div className="cyber-glass-gold p-12 max-w-2xl border-dashed border-2 animate-pulse-gold">
+          <h1 className="text-6xl font-heading mb-6 text-gradient-gold font-black">LUMINA</h1>
+          <h2 className="text-2xl font-sans text-white/40 uppercase tracking-widest">Available Space</h2>
+          <p className="mt-8 text-zinc-500 font-mono text-xs uppercase tracking-tighter">Waiting for programmatic auctions...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="w-full h-full bg-[#0a0a0f] relative">
-      {/* Indicador de estado offline */}
+    <div className="w-full h-full bg-black relative flex items-center justify-center">
+      {/* Offline Indicator */}
       {!isOnline && (
-        <div className="absolute top-4 right-4 z-50 flex items-center gap-2 bg-black/80 border border-yellow-500/40 px-3 py-1.5 rounded-full backdrop-blur-sm">
-          <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-          <span className="text-yellow-400 text-[10px] font-mono uppercase tracking-widest">Modo Offline</span>
+        <div className="absolute top-6 left-6 z-50 flex items-center gap-3 bg-black/80 border border-[#D4AF37]/40 px-4 py-2 rounded-full backdrop-blur-md shadow-lg">
+          <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+          <span className="text-[#D4AF37] text-[10px] font-bold uppercase tracking-wider">OFFLINE MODE ACTIVE</span>
         </div>
       )}
 
-      {/* Indicador de caché descargando */}
-      {cacheStatus === 'caching' && isOnline && (
-        <div className="absolute top-4 right-4 z-50 flex items-center gap-2 bg-black/80 border border-primary/30 px-3 py-1.5 rounded-full backdrop-blur-sm">
-          <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
-          <span className="text-primary text-[10px] font-mono uppercase tracking-widest">Sincronizando...</span>
-        </div>
-      )}
+      {/* Media Content */}
+      <div className="w-full h-full flex items-center justify-center animate-in fade-in duration-1000">
+        {isImage ? (
+            activeUrl && <img src={activeUrl} alt="Campaign" className="w-full h-full object-contain shadow-2xl" />
+        ) : (
+            activeUrl && (
+            <video
+                ref={videoRef}
+                key={activeUrl}
+                src={activeUrl}
+                autoPlay
+                muted
+                playsInline
+                className="w-full h-full object-contain"
+                onEnded={handleNext}
+                onError={() => {
+                console.error('[Lumina] Error:', activeUrl)
+                handleNext()
+                }}
+            />
+            )
+        )}
+      </div>
 
-      {/* Contenido principal */}
-      {isImage ? (
-        activeUrl && <img src={activeUrl} alt="Campaign Content" className="w-full h-full object-contain" />
-      ) : (
-        activeUrl && (
-          <video
-            ref={videoRef}
-            key={activeUrl}
-            src={activeUrl}
-            autoPlay
-            muted
-            playsInline
-            loop={playlist.length === 1}
-            className="w-full h-full object-contain bg-black"
-            onEnded={handleNext}
-            onError={() => {
-              console.error('[Lumina] Error reproduciendo:', activeUrl)
-              handleNext()
-            }}
-          />
-        )
-      )}
+      {/* Cyber Overlay Details (Lux branding) */}
+      <div className="absolute bottom-6 right-6 opacity-30 hover:opacity-100 transition-opacity">
+         <span className="text-gradient-gold font-black text-xl tracking-tighter">LUMINA v2</span>
+      </div>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
 import { DeleteCampaignButton } from './DeleteCampaignButton'
+import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, ShieldCheck } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -28,7 +29,6 @@ export default async function DashboardPage() {
   // Combinar y eliminar duplicados
   const mergeMap = new Map()
   propias?.forEach(p => {
-    // Tomamos los datos del host (saldo)
     const hostInfo = Array.isArray(p.host) ? p.host[0] : p.host
     mergeMap.set(p.id, { 
       ...p, 
@@ -48,22 +48,20 @@ export default async function DashboardPage() {
   
   const pantallas = Array.from(mergeMap.values())
 
-  // Le pedimos a Supabase el perfil con info del plan
   const { data: profile } = await supabase
     .from('perfiles')
     .select('*, planes(nombre)')
     .eq('id', user?.id)
     .single()
 
-  // FORZAR ONBOARDING
   if (!profile?.plan_id || profile?.suscripcion_activa === false) {
      redirect('/dashboard/planes')
   }
 
-  // Le pedimos a Supabase LAS CAMPAÑAS DE ESTE CLIENTE
+  // QUERY ACTUALIZADA PARA MÉTRICAS PROGRAMÁTICAS
   const { data: misCampanas, error: errorCampanas } = await supabase
     .from('campanas')
-    .select('*, pantallas(nombre), reproducciones_logs(count)')
+    .select('*, pantallas(nombre)')
     .eq('cliente_id', user?.id)
     .order('created_at', { ascending: false })
 
@@ -76,54 +74,94 @@ export default async function DashboardPage() {
     )
   }
 
+  // Cálculos de Resumen
+  const totalImpactos = misCampanas?.reduce((sum, c) => sum + (c.impactos_reales || 0), 0) || 0
+  const totalPresupuesto = misCampanas?.reduce((sum, c) => sum + (c.presupuesto_total || 0), 0) || 0
+  const campañasActivas = misCampanas?.filter(c => c.estado === 'aprobada').length || 0
+
   return (
     <div className="p-8 min-h-screen bg-background text-foreground font-sans">
       <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
         <div className="flex items-center gap-4">
           <img src="/logo.png" alt="Lumina Logo" className="h-10 w-auto" />
           <div className="pt-2">
-            <h1 className="text-3xl font-heading uppercase tracking-tighter text-gradient font-black">LUMINA</h1>
+            <h1 className="text-3xl font-heading uppercase tracking-tighter text-gradient-cyan font-black">LUMINA</h1>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-primary font-mono uppercase tracking-[2px]">Nivel {profile?.planes?.nombre || 'Básico'}</span>
+              <span className="text-[10px] text-[#D4AF37] font-mono uppercase tracking-[2px] font-bold">Protocolo V2 • {profile?.planes?.nombre || 'Básico'}</span>
             </div>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end w-full sm:w-auto">
-          <Link href="/host/dashboard">
-             <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/5 hidden lg:flex gap-2 items-center">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                </span>
-                Tengo una Pantalla
-             </Button>
-          </Link>
-          <Link href="/dashboard/planes">
-             <Button variant="ghost" className="text-zinc-400 hover:text-primary hover:bg-primary/5">Plan</Button>
-          </Link>
-          <span className="text-sm text-zinc-500 hidden xl:inline-block border-r border-border pr-4 italic font-mono">
-            {user?.email}
-          </span>
           {profile?.rol === 'superadmin' && (
             <Link href="/admin">
-              <Button variant="outline" className="border-red-500/50 text-red-500 hover:bg-red-500/5 hover:text-red-400">
-                Panel Admin
-              </Button>
+               <Button variant="outline" className="border-red-500/30 text-red-500 hover:bg-red-500/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
+                  <ShieldAlert className="w-3 h-3" />
+                  Panel Admin
+               </Button>
             </Link>
           )}
+
+          <Link href="/dashboard/planes">
+             <Button variant="outline" className="border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
+                <ShieldCheck className="w-3 h-3" />
+                Cambiar Plan
+             </Button>
+          </Link>
+
+          <Link href="/host/dashboard">
+             <Button variant="outline" className="border-[#00d2ff]/30 text-[#00d2ff] hover:bg-[#00d2ff]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
+                <Monitor className="w-3 h-3" />
+                Panel de Host
+             </Button>
+          </Link>
+          
           <Link href="/dashboard/nueva">
-            <button className="cyber-button-cyan transition-all text-[11px] sm:text-xs">+ Nueva Emisión</button>
+            <button className="cyber-button-cyan transition-all text-[10px] uppercase font-black tracking-widest px-5 py-2">
+               + Nueva Emisión
+            </button>
           </Link>
           <form action={logout}>
             <Button variant="outline" type="submit" className="border-border hover:bg-muted text-[11px] sm:text-xs px-3 sm:px-4">Salir</Button>
           </form>
         </div>
       </header>
+
+      {/* STATS BANNER (More Blue/Balanced) */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+        <div className="cyber-glass-cyan p-4 flex items-center justify-between border-[#00d2ff]/20">
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Impactos Totales</p>
+            <p className="text-2xl font-heading text-white">{totalImpactos.toLocaleString()}</p>
+          </div>
+          <Zap className="text-[#00d2ff] w-8 h-8 opacity-50" />
+        </div>
+        <div className="cyber-glass-gold p-4 flex items-center justify-between border-[#D4AF37]/20">
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Presupuesto Activo</p>
+            <p className="text-2xl font-heading text-white">{totalPresupuesto.toFixed(2)}€</p>
+          </div>
+          <DollarSign className="text-[#D4AF37] w-8 h-8 opacity-50" />
+        </div>
+        <div className="cyber-glass-cyan p-4 flex items-center justify-between border-[#00d2ff]/20">
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Campaña Activas</p>
+            <p className="text-2xl font-heading text-white">{campañasActivas}</p>
+          </div>
+          <Target className="text-[#00d2ff] w-8 h-8 opacity-50" />
+        </div>
+        <div className="cyber-glass-gold p-4 flex items-center justify-between border-[#D4AF37]/20">
+          <div>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">eCPM Promedio</p>
+            <p className="text-2xl font-heading text-white">50.00€</p>
+          </div>
+          <TrendingUp className="text-[#D4AF37] w-8 h-8 opacity-50" />
+        </div>
+      </div>
       
       <div className="mb-12">
-        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient">
-           <span className="w-1 h-6 bg-primary rounded-full shadow-[0_0_10px_#00d2ff]"></span>
-           Mis Pantallas Activas
+        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient-cyan">
+           <Monitor className="w-5 h-5" />
+           Red de Pantallas
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {pantallas && pantallas.length > 0 ? (
@@ -131,7 +169,7 @@ export default async function DashboardPage() {
               <div key={pantalla.id} className="cyber-card p-6 flex flex-col justify-between group">
                 <div className="mb-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-heading text-zinc-100 group-hover:text-primary transition-colors uppercase">{pantalla.nombre}</h3>
+                    <h3 className="text-lg font-heading text-zinc-100 group-hover:text-[#00d2ff] transition-colors uppercase">{pantalla.nombre}</h3>
                     <div className="flex flex-col items-end gap-1">
                       <span className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded-full tracking-tighter ${
                         pantalla.estado === 'activa' 
@@ -140,115 +178,114 @@ export default async function DashboardPage() {
                       }`}>
                         {pantalla.estado}
                       </span>
-                      {pantalla.es_propia && (
-                        <span className="text-[8px] bg-primary/20 text-primary px-1.5 py-0.5 rounded uppercase font-black tracking-widest border border-primary/30">
-                          Mi Pantalla
-                        </span>
-                      )}
-                      {pantalla.tiene_campana && !pantalla.es_propia && (
-                        <span className="text-[8px] bg-secondary/20 text-secondary px-1.5 py-0.5 rounded uppercase font-black tracking-widest border border-secondary/30">
-                          Publicidad
-                        </span>
-                      )}
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground font-sans line-clamp-1">{pantalla.ubicacion}</p>
                 </div>
                 
-                  <div className="flex justify-between items-center mt-4">
-                    <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
-                      <svg className="w-3 h-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      </svg>
-                      <span>{pantalla.ciudad}</span>
-                    </div>
-
-                    {pantalla.es_propia && (
-                      <div className="text-right">
-                        <p className="text-[8px] text-zinc-500 uppercase font-mono mb-1">Saldo Generado</p>
-                        <p className="text-sm font-black text-primary">{(pantalla.saldo_pendiente + pantalla.saldo_pagado).toFixed(2)}€</p>
-                      </div>
-                    )}
-
-                    {!pantalla.es_propia && (
-                      <Link href={`/player/${pantalla.id}`} target="_blank">
-                        <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-primary/20 hover:bg-primary hover:text-black transition-all">
-                          Player
-                        </Button>
-                      </Link>
-                    )}
+                <div className="flex justify-between items-center mt-4">
+                  <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
+                    <span className="w-2 h-2 rounded-full bg-[#00d2ff] animate-pulse" />
+                    <span>{pantalla.ciudad}</span>
                   </div>
+
+                  {!pantalla.es_propia && (
+                    <Link href={`/player/${pantalla.id}`} target="_blank">
+                      <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-[#00d2ff]/20 text-[#00d2ff] hover:bg-[#00d2ff] hover:text-black transition-all">
+                        Ver Player
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </div>
             ))
           ) : (
-            <div className="col-span-full py-12 text-center cyber-card border-dashed bg-primary/5 border-primary/20">
-              <div className="max-w-xs mx-auto">
-                <p className="text-zinc-100 font-heading uppercase text-sm mb-2">¿Tienes una pantalla física?</p>
-                <p className="text-muted-foreground text-[11px] mb-6 uppercase tracking-wider">Únela a la red Lumina para emitir tu propio contenido o ganar comisiones.</p>
-                <Link href="/host/dashboard">
-                  <Button size="sm" className="bg-primary text-black font-black uppercase text-[10px] tracking-widest hover:bg-primary/80">
-                    Vincular mi TV ahora
-                  </Button>
-                </Link>
-              </div>
+            <div className="col-span-full py-12 text-center cyber-card border-dashed bg-[#00d2ff]/5 border-[#00d2ff]/20">
+              <p className="text-[#00d2ff] font-heading uppercase text-sm mb-2">Sin pantallas activas</p>
+              <Link href="/host/dashboard">
+                <Button size="sm" className="cyber-button-cyan mt-4">Vincular mi TV ahora</Button>
+              </Link>
             </div>
           )}
         </div>
       </div>
 
       <div>
-        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient">
-           <span className="w-1 h-6 bg-secondary rounded-full shadow-[0_0_10px_#6c5ce7]"></span>
-           Mis Campañas
+        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient-gold">
+           <BarChart3 className="w-5 h-5" />
+           Rendimiento de Campañas
         </h2>
-        <div className="responsive-table-container cyber-card shadow-2xl overflow-hidden">
+        <div className="responsive-table-container cyber-card shadow-2xl overflow-hidden bg-black/40 border-white/5">
           {misCampanas && misCampanas.length > 0 ? (
             <table className="w-full text-sm text-left">
-              <thead className="bg-[#1a1a2e]/50 border-b border-border">
+              <thead className="bg-[#1a1a2e]/50 border-b border-white/5">
                 <tr>
-                  <th className="cyber-table-header">Campaña</th>
+                  <th className="cyber-table-header w-[25%]">Campaña</th>
                   <th className="cyber-table-header">Destino</th>
-                  <th className="cyber-table-header">Periodo</th>
-                  <th className="cyber-table-header">Reproducciones</th>
+                  <th className="cyber-table-header w-[30%]">Rendimiento (Entrega)</th>
+                  <th className="cyber-table-header">Economía</th>
                   <th className="cyber-table-header">Estado</th>
                   <th className="cyber-table-header text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/30">
-                {misCampanas.map((camp: any) => (
-                  <tr key={camp.id} className="cyber-table-row">
-                    <td className="px-6 py-4 font-heading text-zinc-100 uppercase text-xs">{camp.nombre_campana}</td>
-                    <td className="px-6 py-4 text-zinc-400 text-xs">{camp.pantallas?.nombre || 'General'}</td>
-                    <td className="px-6 py-4 text-zinc-500 font-mono text-[10px] whitespace-nowrap">{camp.fecha_inicio} » {camp.fecha_fin}</td>
-                    <td className="px-6 py-4">
-                        <span className="font-mono bg-primary/10 text-primary px-2 py-1 rounded border border-primary/20 text-[10px] uppercase">
-                            {profile?.plan_id === 'presencia' ? '—' : (camp.reproducciones_logs?.[0]?.count || 0)} vistas
+              <tbody className="divide-y divide-white/5">
+                {misCampanas.map((camp: any) => {
+                  const deliveryPercent = Math.min(100, Math.floor(((camp.impactos_reales || 0) / (camp.impactos_estimados || 1)) * 100))
+                  const costPerImpact = (camp.presupuesto_total / (camp.impactos_estimados || 1)).toFixed(3)
+                  
+                  return (
+                    <tr key={camp.id} className="cyber-table-row group">
+                      <td className="px-6 py-6">
+                        <p className="font-heading text-zinc-100 uppercase text-xs mb-1">{camp.nombre_campana}</p>
+                        <p className="text-[10px] text-zinc-500 font-mono italic">ID: {camp.id.split('-')[0]}</p>
+                      </td>
+                      <td className="px-6 py-4 text-zinc-400 text-xs">
+                        <div className="flex items-center gap-2">
+                          <Monitor className="w-3 h-3 text-[#00d2ff]" />
+                          {camp.pantallas?.nombre || 'Red Global'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden border border-white/5">
+                            <div 
+                              className="h-full bg-gradient-to-r from-[#00d2ff] to-[#D4AF37] transition-all duration-1000" 
+                              style={{ width: `${deliveryPercent}%` }}
+                            />
+                          </div>
+                          <span className="text-[10px] font-mono text-white w-12 text-right">{deliveryPercent}%</span>
+                        </div>
+                        <div className="flex justify-between mt-2">
+                           <span className="text-[9px] text-[#00d2ff] uppercase font-bold">{camp.impactos_reales || 0}</span>
+                           <span className="text-[9px] text-zinc-600 uppercase">Meta: {camp.impactos_estimados || 0} Visualizaciones</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="text-xs text-white font-heading">{camp.presupuesto_total.toFixed(2)}€</p>
+                        <p className="text-[9px] text-zinc-500 uppercase mt-0.5">{costPerImpact}€ / Impacto</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 rounded border text-[9px] font-bold uppercase tracking-tighter ${
+                          camp.estado === 'aprobada' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                          camp.estado === 'rechazada' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                          'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                        }`}>
+                          {camp.estado.replace(/_/g, ' ')}
                         </span>
-                        {profile?.plan_id === 'presencia' && (
-                          <p className="text-[8px] text-zinc-500 mt-1 uppercase tracking-tighter">🔒 Mejora a Impacto para ver datos</p>
-                        )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-[9px] font-bold uppercase tracking-tighter ${
-                        camp.estado === 'aprobada' ? 'bg-green-500/10 text-green-400' :
-                        camp.estado === 'rechazada' ? 'bg-red-500/10 text-red-400' :
-                        'bg-yellow-500/10 text-yellow-400'
-                      }`}>
-                        {camp.estado.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                       <DeleteCampaignButton campaignId={camp.id} />
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                         <DeleteCampaignButton campaignId={camp.id} />
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           ) : (
             <div className="p-12 text-center">
               <p className="text-muted-foreground italic mb-6 text-sm">No tienes ninguna campaña activa.</p>
               <Link href="/dashboard/nueva">
-                <button className="cyber-button-cyan shadow-lg">Crear Primera Campaña</button>
+                <button className="cyber-button-cyan shadow-[0_0_20px_rgba(0,210,255,0.2)]">Crear Primera Campaña</button>
               </Link>
             </div>
           )}

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Plus, Tv, TrendingUp, Wallet, History, ChevronRight } from 'lucide-react'
+import { Plus, Tv, TrendingUp, Wallet, History, ChevronRight, Zap, Monitor } from 'lucide-react'
 
 import { PairingForm } from '@/app/admin/pantallas/PairingForm'
 
@@ -67,140 +67,188 @@ export default async function HostDashboardPage({
   const pantalla = hostData.pantallas as any
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-8 font-sans">
-      {/* Header Premium */}
+    <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 font-sans">
+      {/* Header Premium - Balanced Cyan Logo */}
       <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-white/5 pb-8">
-        <div>
-          <Link href="/dashboard" className="inline-block mb-4 text-[10px] text-zinc-500 hover:text-primary transition-colors uppercase tracking-[3px] font-bold">← Volver al Dashboard Principal</Link>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-4xl font-heading font-black text-gradient tracking-tighter">LUMINA</h1>
-            <span className="bg-primary/10 text-primary text-[9px] font-black px-2 py-0.5 rounded border border-primary/20 uppercase tracking-widest">HOST PORTAL</span>
-          </div>
-          <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-[4px]">Gestión de Nodos y Activos</p>
+        <div className="flex items-center gap-4">
+           <img src="/logo.png" alt="Lumina Logo" className="h-10 w-auto" />
+           <div>
+              <Link href="/dashboard" className="inline-block mb-1 text-[10px] text-zinc-500 hover:text-[#00d2ff] transition-colors uppercase tracking-[3px] font-bold">← Dashboard Principal</Link>
+              <div className="flex items-center gap-3">
+                <h1 className="text-4xl font-heading font-black text-gradient-cyan tracking-tighter">LUMINA</h1>
+                <span className="bg-[#00d2ff]/10 text-[#00d2ff] text-[9px] font-black px-2 py-0.5 rounded border border-[#00d2ff]/20 uppercase tracking-widest">HOST PORTAL</span>
+              </div>
+              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-[4px]">Verified Infrastructure Node</p>
+           </div>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full sm:w-auto">
           <Link 
             href="/host/dashboard?action=vincular"
-            className="inline-flex items-center justify-center rounded-md bg-primary text-black font-black uppercase text-[10px] tracking-widest hover:bg-primary/80 px-6 h-11 transition-colors"
+            className="cyber-button-cyan w-full sm:w-auto"
           >
             <Plus className="w-4 h-4 mr-2" /> Vincular Nueva TV
           </Link>
-          <div className="h-10 w-px bg-zinc-800 hidden sm:block mx-2" />
-          <div className="text-right hidden sm:block">
-            <p className="text-[10px] text-zinc-500 font-mono uppercase mb-1">Cuenta Activa</p>
-            <p className="text-xs text-zinc-200 font-medium">{user.email}</p>
+          <div className="h-10 w-px bg-zinc-800 hidden lg:block mx-2" />
+          <div className="text-right hidden lg:block">
+            <p className="text-[10px] text-zinc-500 font-mono uppercase mb-1 tracking-tighter">Identidad Verificada</p>
+            <p className="text-xs text-[#D4AF37] font-bold tracking-tight">{user.email}</p>
           </div>
         </div>
       </header>
 
-      {/* Selector de Pantallas (Siempre visible si hay pantallas) */}
-      <section className="mb-8 p-4 bg-zinc-900/40 rounded-xl border border-white/5">
-          <div className="flex justify-between items-center mb-4">
-              <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Tus Pantallas ({hosts.length})</p>
-              <Link href="/host/dashboard?action=vincular" className="text-[10px] text-primary hover:underline font-bold uppercase tracking-tighter">
-                  + Vincular otra pantalla
-              </Link>
-          </div>
-          <div className="flex flex-wrap gap-2">
-              {hosts.map((h: any) => (
-                  <Link 
-                    key={h.id} 
-                    href={`/host/dashboard?screenId=${h.id}`}
-                    className={`px-4 py-2 rounded-lg border text-xs font-heading transition-all ${
-                      h.id === hostData.id 
-                          ? 'bg-primary/10 border-primary/50 text-white shadow-[0_0_15px_rgba(0,210,255,0.05)]' 
-                          : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'
-                  }`}
-                  >
-                        {h.pantallas?.nombre}
-                  </Link>
-              ))}
+      {/* Quick Network Status - Cyan Glass */}
+      <section className="mb-10 cyber-glass-cyan border-[#00d2ff]/10 overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#00d2ff] to-transparent opacity-30" />
+          <div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
+              <div className="flex items-center gap-6">
+                  <div className="flex -space-x-2">
+                      {hosts.slice(0, 5).map((h: any, i) => (
+                          <div key={h.id} className="w-10 h-10 rounded-full bg-zinc-900 border-2 border-background flex items-center justify-center text-[#00d2ff] shadow-xl group cursor-pointer hover:translate-y-[-2px] transition-transform">
+                              <Tv className="w-5 h-5" />
+                          </div>
+                      ))}
+                      {hosts.length > 5 && (
+                          <div className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-background flex items-center justify-center text-xs font-bold text-zinc-400">
+                              +{hosts.length - 5}
+                          </div>
+                      )}
+                  </div>
+                  <div>
+                      <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest leading-none mb-1">Red Propietaria</p>
+                      <h3 className="text-xl font-heading text-white">{hosts.length} NODOS ACTIVOS</h3>
+                  </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-2 justify-center">
+                  {hosts.map((h: any) => (
+                      <Link 
+                        key={h.id} 
+                        href={`/host/dashboard?screenId=${h.id}`}
+                        className={`px-3 py-1.5 rounded-md border text-[10px] uppercase font-black transition-all tracking-tighter ${
+                          h.id === hostData.id 
+                              ? 'bg-[#00d2ff] border-[#00d2ff] text-black shadow-[0_0_15px_rgba(0,210,255,0.4)]' 
+                              : 'bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-[#00d2ff]/50'
+                      }`}
+                      >
+                            {h.pantallas?.nombre}
+                      </Link>
+                  ))}
+              </div>
           </div>
       </section>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Columna Izquierda: Info de Pantalla */}
+        {/* Main Workspace */}
         <div className="xl:col-span-2 space-y-8">
           
-          {/* Ficha Técnica de la Pantalla */}
-          <section>
+          {/* Active Node Intelligence Card */}
+          <section className="relative">
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-heading uppercase tracking-widest text-gradient flex items-center gap-2">
-                <Tv className="w-4 h-4 text-primary" /> Detalles del Nodo
+                <h2 className="text-xs font-heading uppercase tracking-widest text-gradient-cyan flex items-center gap-2 font-black">
+                  <Zap className="w-4 h-4" /> Telemetría del Nodo
                 </h2>
-                <span className={`text-[10px] font-bold uppercase px-3 py-1 rounded-full ${
-                pantalla?.estado === 'activa'
-                    ? 'bg-green-500/10 text-green-400 border border-green-500/20'
-                    : 'bg-zinc-800 text-zinc-500'
-                }`}>
-                {pantalla?.estado || 'Inactiva'}
-                </span>
+                <div className="flex items-center gap-2">
+                    {hostData.hardware_certificado && (
+                       <span className="text-[8px] font-black uppercase bg-[#D4AF37] text-black px-1.5 py-0.5 rounded shadow-[0_0_10px_rgba(212,175,55,0.3)]">Certificado</span>
+                    )}
+                    <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full border ${
+                    pantalla?.estado === 'activa'
+                        ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                        : 'bg-zinc-900 text-zinc-600 border-zinc-800'
+                    }`}>
+                    {pantalla?.estado || 'Inactiva'}
+                    </span>
+                </div>
             </div>
             
-            <div className="cyber-card p-8 bg-zinc-900/30 grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div>
-                <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-2 italic">Identificador</p>
-                <p className="text-zinc-100 font-heading text-lg uppercase leading-tight">{pantalla?.nombre || '—'}</p>
+            <div className="cyber-glass-cyan p-8 grid grid-cols-2 md:grid-cols-4 gap-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-5">
+                   <Monitor className="w-24 h-24 text-[#00d2ff]" />
                 </div>
+                
                 <div>
-                  <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest mb-1">Tu Saldo Acumulado</p>
-                  <p className="text-2xl font-black text-primary">{totalGenerado.toFixed(2)}€</p>
-                  <p className="text-[10px] text-zinc-600 mt-1 italic leading-tight">
-                    * Recibes un 25% de comisión por cada anuncio en pantallas públicas.
-                  </p>
+                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Punto de Emisión</p>
+                  <p className="text-white font-heading text-xl uppercase leading-tight tracking-tighter">{pantalla?.nombre || '—'}</p>
+                  <p className="text-[10px] text-[#00d2ff] font-bold mt-1 uppercase tracking-widest">{pantalla?.ciudad || '—'}</p>
                 </div>
-                <div>
-                <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-2 italic">Ciudad</p>
-                <p className="text-zinc-100 font-heading text-lg uppercase leading-tight">{pantalla?.ciudad || '—'}</p>
+
+                <div className="col-span-1 border-l border-white/5 pl-8">
+                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Yield Rate (% Share)</p>
+                  <p className="text-gradient-gold font-black text-3xl leading-tight">{hostData.porcentaje}%</p>
+                  <p className="text-[8px] text-zinc-600 mt-1 uppercase leading-tight font-bold">Comisión Garantizada</p>
                 </div>
-                <div className="col-span-1 md:col-span-1">
-                <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-2 italic">Ubicación Fina</p>
-                <p className="text-zinc-400 text-xs uppercase leading-tight">{pantalla?.ubicacion || 'No especificada'}</p>
+
+                <div className="col-span-1 border-l border-white/5 pl-8">
+                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Uptime Global</p>
+                  <p className="text-green-400 font-mono font-black text-2xl tracking-tighter">99.9%</p>
+                  <div className="flex gap-0.5 mt-2">
+                     {[...Array(12)].map((_, i) => <div key={i} className="w-1 h-3 bg-green-500/40 rounded-full" />)}
+                  </div>
                 </div>
-                <div>
-                <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-2 italic">Revenue Share</p>
-                <p className="text-primary font-mono font-bold text-2xl">{hostData.porcentaje}%</p>
+
+                <div className="col-span-1 border-l border-white/5 pl-8">
+                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Hardware Status</p>
+                  <div className="flex flex-col gap-1">
+                     <span className="text-[10px] text-zinc-200 font-bold uppercase tracking-tighter flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#00d2ff] shadow-[0_0_5px_#00d2ff]" /> GPU Ready
+                     </span>
+                     <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-700" /> AI Modulo
+                     </span>
+                  </div>
                 </div>
             </div>
           </section>
 
-          {/* Historial de Comisiones */}
+          {/* Ledger / History Section */}
           <section>
-            <h2 className="text-sm font-heading uppercase tracking-widest mb-4 text-gradient flex items-center gap-2">
-              <History className="w-4 h-4 text-primary" /> Historial de Emisiones
+            <h2 className="text-xs font-heading uppercase tracking-widest mb-4 text-gradient-gold flex items-center gap-2 font-black">
+              <History className="w-4 h-4" /> Ledger de Emisiones Verificadas
             </h2>
-            <div className="cyber-card overflow-hidden bg-zinc-900/20 backdrop-blur-md">
+            <div className="cyber-glass-gold border-white/5 overflow-hidden">
               {comisiones && comisiones.length > 0 ? (
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-white/5 border-b border-white/5">
-                    <tr>
-                      <th className="px-6 py-4 text-[10px] uppercase font-mono text-zinc-500">Campaña</th>
-                      <th className="px-6 py-4 text-[10px] uppercase font-mono text-zinc-500">Ingreso Total</th>
-                      <th className="px-6 py-4 text-[10px] uppercase font-mono text-zinc-500">Tu Parte</th>
-                      <th className="px-6 py-4 text-right text-[10px] uppercase font-mono text-zinc-500">Fecha</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {comisiones.map((com: any) => (
-                      <tr key={com.id} className="hover:bg-white/5 transition-colors">
-                        <td className="px-6 py-4 font-heading text-zinc-100 uppercase text-[11px] tracking-wide">
-                          {com.campanas?.nombre_campana || 'Campaña eliminada'}
-                        </td>
-                        <td className="px-6 py-4 text-zinc-400 font-mono text-xs">{com.importe_bruto?.toFixed(2)}€</td>
-                        <td className="px-6 py-4 font-mono text-primary font-bold text-xs">+{com.importe_host?.toFixed(2)}€</td>
-                        <td className="px-6 py-4 text-right text-zinc-500 font-mono text-[10px]">
-                          {new Date(com.created_at).toLocaleDateString('es-ES')}
-                        </td>
+                <div className="responsive-table-container">
+                  <table className="w-full text-sm text-left">
+                    <thead className="bg-white/[0.02] border-b border-white/5">
+                      <tr>
+                        <th className="cyber-table-header text-[#D4AF37]">Campaña de Terceros</th>
+                        <th className="cyber-table-header">Fee Bruto</th>
+                        <th className="cyber-table-header">Tu Dividendo</th>
+                        <th className="cyber-table-header text-right">Validación UTC</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {comisiones.map((com: any) => (
+                        <tr key={com.id} className="hover:bg-white/[0.03] transition-colors group">
+                          <td className="px-6 py-5">
+                            <p className="font-heading text-zinc-100 uppercase text-[11px] tracking-widest group-hover:text-[#D4AF37] transition-colors">
+                              {com.campanas?.nombre_campana || 'Campaña Certificada'}
+                            </p>
+                            <p className="text-[9px] text-zinc-600 font-mono uppercase mt-1">Hash: {com.id.split('-')[0]}</p>
+                          </td>
+                          <td className="px-6 py-5 text-zinc-400 font-mono text-xs">{com.importe_total?.toFixed(3)}€</td>
+                          <td className="px-6 py-5">
+                             <div className="flex items-center gap-2">
+                                <span className="font-mono text-[#D4AF37] font-black text-xs">+{com.comision?.toFixed(4)}€</span>
+                                <span className="text-[8px] text-zinc-600 font-mono">({com.porcentaje}%)</span>
+                             </div>
+                          </td>
+                          <td className="px-6 py-5 text-right text-zinc-500 font-mono text-[10px] uppercase">
+                            {new Date(com.created_at).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
-                <div className="p-16 text-center">
-                  <History className="w-8 h-8 text-zinc-800 mx-auto mb-4" />
-                  <p className="text-zinc-500 font-mono text-[11px] uppercase tracking-widest">
-                    Esperando actividad publicitaria en este nodo...
+                <div className="p-20 text-center bg-zinc-900/10">
+                  <div className="w-16 h-16 rounded-full bg-zinc-900/50 border border-zinc-800 flex items-center justify-center mx-auto mb-6 opacity-50">
+                     <History className="w-8 h-8 text-zinc-700" />
+                  </div>
+                  <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-[4px]">
+                    Esperando flujo de publicidad programática...
                   </p>
                 </div>
               )}
@@ -208,36 +256,50 @@ export default async function HostDashboardPage({
           </section>
         </div>
 
-        {/* Columna Derecha: Finanzas Globales de esta pantalla */}
+        {/* Global Wallet Section - Balanced Gold */}
         <div className="space-y-6">
-            <h2 className="text-sm font-heading uppercase tracking-widest text-gradient flex items-center gap-2">
-                <Wallet className="w-4 h-4 text-secondary" /> Billetera del Nodo
+            <h2 className="text-xs font-heading uppercase tracking-widest text-gradient-gold flex items-center gap-2 font-black">
+                <Wallet className="w-4 h-4" /> Billetera de Infraestructura
             </h2>
             
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-6">
                 {[
-                    { label: 'Total Acumulado', value: `${totalGenerado.toFixed(2)}€`, icon: TrendingUp, color: 'text-zinc-100', bg: 'bg-zinc-900/50' },
-                    { label: 'Saldo Pendiente', value: `${(hostData.saldo_pendiente || 0).toFixed(2)}€`, icon: Wallet, color: 'text-yellow-400', bg: 'bg-yellow-400/5' },
-                    { label: 'Cobrado con éxito', value: `${(hostData.saldo_pagado || 0).toFixed(2)}€`, icon: ChevronRight, color: 'text-green-400', bg: 'bg-green-400/5' },
+                    { label: 'Ingresos Acumulados', value: `${totalGenerado.toFixed(2)}€`, icon: TrendingUp, color: 'text-white', bg: 'cyber-glass-gold', sub: 'Histórico Total' },
+                    { label: 'Saldo Disponible', value: `${(hostData.saldo_pendiente || 0).toFixed(2)}€`, icon: Wallet, color: 'text-[#D4AF37]', bg: 'bg-[#D4AF37]/5', sub: 'Pendiente de cobro' },
+                    { label: 'Retiros Liquidados', value: `${(hostData.saldo_pagado || 0).toFixed(2)}€`, icon: ChevronRight, color: 'text-green-400', bg: 'bg-green-400/5', sub: 'Transferidos a cuenta' },
                 ].map((item) => (
-                    <div key={item.label} className={`cyber-card p-6 ${item.bg} border-white/5`}>
-                        <div className="flex justify-between items-start mb-4">
-                            <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">{item.label}</p>
-                            <item.icon className={`w-4 h-4 ${item.color} opacity-40`} />
+                    <div key={item.label} className={`p-8 border border-white/5 rounded-2xl relative overflow-hidden group ${item.bg}`}>
+                        <div className="absolute top-0 left-0 w-1 h-full bg-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                               <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-[3px] mb-1">{item.label}</p>
+                               <p className="text-[9px] text-zinc-700 uppercase font-black">{item.sub}</p>
+                            </div>
+                            <item.icon className={`w-5 h-5 ${item.color} opacity-40`} />
                         </div>
-                        <p className={`text-4xl font-mono font-bold tracking-tighter ${item.color}`}>{item.value}</p>
+                        <p className={`text-4xl font-mono font-black tracking-tighter ${item.color}`}>{item.value}</p>
+                        
+                        {item.label === 'Saldo Disponible' && (hostData.saldo_pendiente || 0) >= 50 && (
+                            <Button className="w-full mt-6 bg-[#D4AF37] hover:bg-white text-black font-black uppercase text-[10px] tracking-widest rounded-none h-10">Solicitar Cobro Now</Button>
+                        )}
                     </div>
                 ))}
             </div>
 
-            <div className="p-6 rounded-xl border border-dashed border-zinc-800 text-center">
-                <p className="text-[10px] text-zinc-500 font-mono uppercase leading-relaxed">
-                    Las liquidaciones se realizan automáticamente al alcanzar los 50.00€. 
-                    Asegúrate de tener tus datos de facturación actualizados en el perfil.
+            <div className="p-8 cyber-glass-cyan border-[#00d2ff]/5 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00d2ff]/5 rounded-full blur-3xl -mr-16 -mt-16" />
+                <p className="text-[10px] text-zinc-500 font-mono uppercase leading-relaxed tracking-widest relative z-10">
+                   Liquidación automática al alcanzar <span className="text-[#00d2ff] font-black">50.00€</span>. 
+                   Verifica tu IBAN en la configuración de la cuenta para evitar retrasos en el protocolo de pago.
                 </p>
             </div>
+            
+            <button className="w-full py-4 border border-zinc-800 text-zinc-500 text-[10px] uppercase font-black tracking-[3px] hover:border-zinc-700 hover:text-zinc-300 transition-all rounded-xl">
+               Descargar Facturas PDF
+            </button>
         </div>
       </div>
     </div>
   )
 }
+

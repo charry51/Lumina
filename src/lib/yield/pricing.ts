@@ -1,66 +1,66 @@
-import { createClient } from '@/lib/supabase/server'
+export type ZonaType = 'standard' | 'gold' | 'vip'
+
+export const ZONA_MULTIPLIERS: Record<ZonaType, number> = {
+  standard: 1.0,
+  gold: 1.5,
+  vip: 2.5
+}
+
+// Precio base estimado por cada visualización (impacto), e.g., 5 céntimos
+export const BASE_COST_PER_IMPACT = 0.05
+
+export interface PricingParams {
+  zona?: ZonaType
+  duracionSegundos: number
+  prioridad: number
+  presupuestoTotal: number
+}
 
 /**
- * LUMINA — Yield Management Engine
- * Calcula el valor real de una pantalla basado en su ocupación actual.
+ * Calcula los impactos estimados (reproducciones completas) que obtendrá
+ * una campaña dado un presupuesto total, la duración del media, su prioridad
+ * y la zona donde se emitirá.
  */
+export function calculateEstimatedImpacts({
+  zona = 'standard',
+  duracionSegundos,
+  prioridad,
+  presupuestoTotal
+}: PricingParams): number {
+  if (presupuestoTotal <= 0 || duracionSegundos <= 0) return 0
 
-export async function calculateDynamicPrice(pantallaId: string) {
-  const supabase = await createClient()
-
-  // 1. Obtener datos de la pantalla y sus campañas activas
-  const { data: pantalla } = await supabase
-    .from('pantallas')
-    .select('precio_base, capacidad_maxima')
-    .eq('id', pantallaId)
-    .single()
-
-  if (!pantalla) return null
-
-  // 2. Contar campañas aprobadas o en emisión
-  const { count } = await supabase
-    .from('campanas')
-    .select('id', { count: 'exact', head: true })
-    .eq('pantalla_id', pantallaId)
-    .in('estado', ['aprobada', 'pre_aprobada', 'emitiendo'])
-
-  const ocupacion = count || 0
-  const ratio = ocupacion / (pantalla.capacidad_maxima || 10)
+  const zonaMultiplier = ZONA_MULTIPLIERS[zona]
   
-  let multiplicador = 1.0
+  // A mayor prioridad, más rápido gasta el budget (penalty de 10% por punto de prioridad)
+  const priorityPenalty = 1 + (prioridad * 0.1) 
+  
+  // Si el video es largo, gasta más presupuesto por cada vez que se emite. (Base normalizada a 10s)
+  const durationMultiplier = duracionSegundos / 10 
 
-  // Algoritmo de Yield:
-  if (ratio >= 0.8) {
-    multiplicador = 1.6 // +60% (Saturación)
-  } else if (ratio >= 0.6) {
-    multiplicador = 1.35 // +35% (Alta demanda)
-  } else if (ratio >= 0.4) {
-    multiplicador = 1.15 // +15% (Creciendo)
-  }
-
-  const nuevoPrecio = (pantalla.precio_base || 50) * multiplicador
-
-  return {
-    precio: Number(nuevoPrecio.toFixed(2)),
-    ocupacion,
-    ratio,
-    multiplicador
-  }
+  // Coste real por reproducir UNA vez este medio
+  const costPerImpact = BASE_COST_PER_IMPACT * zonaMultiplier * priorityPenalty * durationMultiplier
+  
+  return Math.floor(presupuestoTotal / costPerImpact)
 }
 
 /**
- * Sincroniza el precio de emisión en la base de datos
+ * Función inversa: Sugiere un presupuesto mínimo si el usuario tiene
+ * un objetivo en mente (ej: "Quiero 10.000 impactos")
  */
-export async function syncScreenPrice(pantallaId: string) {
-  const supabase = await createClient()
-  const result = await calculateDynamicPrice(pantallaId)
+export function calculateSuggestedBudget(
+  targetImpacts: number, 
+  zona: ZonaType = 'standard', 
+  duracionSegundos: number = 10,
+  prioridad: number = 1
+): number {
+   if (targetImpacts <= 0) return 0
 
-  if (result) {
-    await supabase
-      .from('pantallas')
-      .update({ precio_emision: result.precio })
-      .eq('id', pantallaId)
-    
-    console.log(`[Lumina Yield] Pantalla ${pantallaId}: Nuevo precio ${result.precio}€ (Ocupación: ${result.ocupacion})`)
-  }
+   const zonaMultiplier = ZONA_MULTIPLIERS[zona]
+   const priorityPenalty = 1 + (prioridad * 0.1) 
+   const durationMultiplier = duracionSegundos / 10
+
+   const costPerImpact = BASE_COST_PER_IMPACT * zonaMultiplier * priorityPenalty * durationMultiplier
+   
+   return parseFloat((targetImpacts * costPerImpact).toFixed(2))
 }
+

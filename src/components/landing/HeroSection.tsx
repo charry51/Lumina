@@ -1,0 +1,213 @@
+'use client'
+
+import Link from 'next/link'
+import { Monitor, MoveRight, Play, Server, Zap } from 'lucide-react'
+
+export default function HeroSection() {
+  return (
+    <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-20 overflow-hidden px-4">
+      {/* Elementos Decorativos de Fondo */}
+      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-[#00d2ff]/10 rounded-full blur-[120px] pointer-events-none opacity-50" />
+      <div className="absolute top-1/2 right-1/4 -translate-x-1/2 w-[400px] h-[400px] bg-[#D4AF37]/5 rounded-full blur-[120px] pointer-events-none opacity-30" />
+      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00d2ff]/30 to-transparent" />
+      
+      <div className="container mx-auto max-w-6xl relative z-10 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#00d2ff]/30 bg-[#00d2ff]/5 text-[#00d2ff] text-[10px] uppercase tracking-[0.2em] font-bold mb-8 shadow-[0_0_15px_rgba(0,210,255,0.1)]">
+          <Zap className="w-3 h-3 fill-current" />
+          Nueva Era: Programmatic OOH
+        </div>
+        
+        <h1 className="text-5xl md:text-8xl font-heading font-light tracking-tighter text-white mb-6 leading-[0.9]">
+          Domina la <br />
+          <span className="text-gradient-cyan font-medium">Atención</span> <span className="text-gradient-gold font-medium">Digital.</span>
+        </h1>
+        
+        <p className="text-zinc-400 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed mb-10">
+          Lumina transforma tus pantallas en activos inteligentes. 
+          Publicidad programática basada en <span className="text-white font-medium">rendimiento real</span>, no en suposiciones.
+        </p>
+        
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link href="/register" className="cyber-button-cyan group w-full sm:w-auto">
+            Empezar Ahora
+            <MoveRight className="w-4 h-4 inline-block ml-2 group-hover:translate-x-1 transition-transform" />
+          </Link>
+          <Link href="/login" className="px-8 py-3 rounded-full border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all text-[10px] uppercase tracking-widest font-bold w-full sm:w-auto">
+            Acceso Clientes
+          </Link>
+        </div>
+      </div>
+      
+      {/* Floating UI Elements Mockup: The Intelligence Engine */}
+      <div className="mt-20 relative w-full max-w-5xl mx-auto animate-float">
+          <div className="cyber-glass-cyan p-1 rounded-[2.2rem] shadow-[0_0_80px_rgba(0,210,255,0.15)] relative z-20">
+             <div className="bg-black/95 rounded-[2rem] overflow-hidden border border-white/10 aspect-video md:aspect-[21/9] relative">
+                {/* Simulated Dashboard UI */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#00d2ff]/10 via-black to-black p-6 md:p-10 flex flex-col">
+                    
+                    {/* Top Bar: System Status */}
+                    <div className="flex items-center justify-between border-b border-white/5 pb-6 mb-8">
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-[#00d2ff] animate-pulse shadow-[0_0_10px_#00d2ff]" />
+                                <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-[3px]">Bucle Elástico v2.0</span>
+                            </div>
+                            <div className="h-4 w-px bg-zinc-800" />
+                            <div className="flex items-center gap-2">
+                                <Server className="w-3 h-3 text-zinc-600" />
+                                <span className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest">Global Node Network</span>
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                             <div className="flex items-center gap-2 px-3 py-1 bg-zinc-900 border border-white/5 rounded-md">
+                                <span className="text-[9px] font-mono text-zinc-500 uppercase">Latency:</span>
+                                <span className="text-[9px] font-mono text-[#00d2ff] font-bold">14ms</span>
+                             </div>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-12 gap-8 flex-grow">
+                        {/* Stats Panel */}
+                        <div className="col-span-12 md:col-span-8 flex flex-col gap-6">
+                            <div className="grid grid-cols-3 gap-6">
+                                {/* Impressions Card */}
+                                <div className="cyber-glass-cyan border-white/5 p-5 flex flex-col justify-between group cursor-default">
+                                    <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-1 group-hover:text-[#00d2ff] transition-colors">Impressions</p>
+                                    <p className="text-2xl md:text-3xl font-heading text-white tracking-tighter">8.42M</p>
+                                    <div className="mt-4 h-8 w-full">
+                                        <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible">
+                                            <path d="M0,25 Q10,15 20,20 T40,10 T60,22 T80,5 T100,18" fill="none" stroke="#00d2ff" strokeWidth="2" className="opacity-70" />
+                                            <path d="M0,25 Q10,15 20,20 T40,10 T60,22 T80,5 T100,18 V30 H0 Z" fill="url(#gradCyan)" className="opacity-10" />
+                                            <defs>
+                                                <linearGradient id="gradCyan" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                    <stop offset="0%" style={{stopColor:'#00d2ff', stopOpacity:0.5}} />
+                                                    <stop offset="100%" style={{stopColor:'#00d2ff', stopOpacity:0}} />
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                    </div>
+                                </div>
+                                
+                                {/* Revenue Card (Gold) */}
+                                <div className="cyber-glass-gold border-white/5 p-5 flex flex-col justify-between group cursor-default">
+                                    <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-1 group-hover:text-[#D4AF37] transition-colors">Yield (24h)</p>
+                                    <p className="text-2xl md:text-3xl font-heading text-white tracking-tighter text-gradient-gold">$12,408</p>
+                                    <div className="mt-4 h-8 w-full">
+                                        <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible">
+                                            <path d="M0,20 Q15,25 30,15 T60,5 T100,12" fill="none" stroke="#D4AF37" strokeWidth="2" className="opacity-70" />
+                                            <path d="M0,20 Q15,25 30,15 T60,5 T100,12 V30 H0 Z" fill="url(#gradGold)" className="opacity-10" />
+                                            <defs>
+                                                <linearGradient id="gradGold" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                    <stop offset="0%" style={{stopColor:'#D4AF37', stopOpacity:0.5}} />
+                                                    <stop offset="100%" style={{stopColor:'#D4AF37', stopOpacity:0}} />
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {/* Active Nodes Card */}
+                                <div className="cyber-glass-cyan border-white/5 p-5 flex flex-col justify-between group cursor-default">
+                                    <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-1 group-hover:text-[#00d2ff] transition-colors">Elastic Nodes</p>
+                                    <p className="text-2xl md:text-3xl font-heading text-white tracking-tighter">1,240</p>
+                                    <div className="mt-4 flex items-center justify-between">
+                                        <div className="flex gap-0.5">
+                                            {[...Array(8)].map((_, i) => (
+                                                <div key={i} className="w-2 h-6 bg-[#00d2ff]/20 rounded-full overflow-hidden">
+                                                    <div className="w-full bg-[#00d2ff] animate-pulse" style={{height: `${Math.random() * 80 + 20}%`, animationDelay: `${i * 0.1}s`}} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <span className="text-[9px] font-mono text-zinc-600">ONLINE</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Execution Insight */}
+                            <div className="flex-grow rounded-xl bg-white/[0.02] border border-white/5 p-6 relative overflow-hidden group">
+                                <div className="flex flex-col gap-4 relative z-10">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Verification Map (Madrid Cluster)</h4>
+                                        <div className="flex gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#00d2ff]" />
+                                                <span className="text-[8px] text-zinc-600 uppercase">Standard</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+                                                <span className="text-[8px] text-zinc-600 uppercase">VIP Zone</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex-grow flex items-center justify-center p-4">
+                                        <div className="w-full h-32 relative">
+                                            {/* Abstract City Grid Simulation */}
+                                            <div className="absolute inset-0 grid grid-cols-12 grid-rows-6 opacity-10">
+                                                {[...Array(72)].map((_, i) => (
+                                                    <div key={i} className="border-[0.5px] border-white/20" />
+                                                ))}
+                                            </div>
+                                            {/* Nodes dots */}
+                                            {[...Array(12)].map((_, i) => (
+                                                <div 
+                                                    key={i} 
+                                                    className={`absolute w-1.5 h-1.5 rounded-full ${Math.random() > 0.3 ? 'bg-[#00d2ff]' : 'bg-[#D4AF37]'} animate-pulse opacity-40`}
+                                                    style={{
+                                                        top: `${Math.random() * 80 + 10}%`,
+                                                        left: `${Math.random() * 90 + 5}%`,
+                                                        animationDelay: `${Math.random() * 2}s`
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="absolute bottom-0 right-0 p-4 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity">
+                                    <Monitor className="w-32 h-32" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Live Feed Panel */}
+                        <div className="hidden md:flex col-span-4 flex-col gap-4">
+                            <h4 className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest flex items-center gap-2">
+                                <Play className="w-3 h-3 text-[#D4AF37]" /> Live Logic Feed
+                            </h4>
+                            <div className="flex-grow flex flex-col gap-4 overflow-hidden relative">
+                                <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-black to-transparent z-10" />
+                                {[
+                                    { time: '14:22:10', node: 'MAD-SOL04', action: 'Verified PoP', res: '+0.12€' },
+                                    { time: '14:22:08', node: 'BCN-RA21', action: 'Ads Switched', res: 'Elastic' },
+                                    { time: '14:22:04', node: 'LON-SQ12', action: 'Verified PoP', res: '+0.85€' },
+                                    { time: '14:21:59', node: 'PAR-CH01', action: 'Yield High', res: 'Gold' },
+                                    { time: '14:21:55', node: 'NYC-TS09', action: 'Verified PoP', res: '+1.42€' },
+                                ].map((item, i) => (
+                                    <div key={i} className="p-3 bg-white/[0.03] border border-white/5 rounded-lg flex flex-col gap-1 hover:border-white/20 transition-colors">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-[8px] font-mono text-zinc-600">{item.time}</span>
+                                            <span className={`text-[8px] font-mono font-bold ${item.res.includes('+') ? 'text-[#D4AF37]' : 'text-[#00d2ff]'}`}>{item.res}</span>
+                                        </div>
+                                        <p className="text-[10px] text-zinc-300 font-bold tracking-tight uppercase">{item.node}: {item.action}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {/* Overlay Glow */}
+                <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_120px_rgba(0,0,0,0.9)]" />
+             </div>
+          </div>
+          
+          {/* External Floating Chips */}
+          <div className="absolute -top-10 -right-10 cyber-glass-gold px-6 py-3 text-[12px] text-[#D4AF37] font-black tracking-[0.3em] hidden lg:block border-[#D4AF37]/40 shadow-[0_0_40px_rgba(212,175,55,0.2)] animate-float z-30">
+            +2.4M IMPACTOS / MES
+          </div>
+          <div className="absolute -bottom-10 -left-10 cyber-glass-cyan px-6 py-3 text-[12px] text-[#00d2ff] font-black tracking-[0.3em] hidden lg:block border-[#00d2ff]/40 shadow-[0_0_40px_rgba(0,210,255,0.2)] animate-float z-30 transform -translate-y-4">
+            REACH: 82% OPTIMIZED
+          </div>
+      </div>
+    </section>
+  )
+}
