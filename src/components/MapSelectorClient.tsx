@@ -42,13 +42,23 @@ function ChangeView({ center, zoom }: { center: [number, number], zoom: number }
   return null
 }
 
-function LocationMarker({ onSelect }: { onSelect?: (lat: number, lng: number) => void }) {
+function LocationMarker({ onSelect, externalPosition }: { onSelect?: (lat: number, lng: number) => void, externalPosition?: {lat: number, lng: number} | null }) {
   const [position, setPosition] = useState<[number, number] | null>(null)
   const map = useMap()
+
+  // Sincronizar vuelo si el prop externalPosition cambia (búsqueda automática)
+  useEffect(() => {
+    if (externalPosition && isFinite(externalPosition.lat) && isFinite(externalPosition.lng)) {
+      const newPos: [number, number] = [externalPosition.lat, externalPosition.lng]
+      setPosition(newPos)
+      map.flyTo(newPos, 15) // Zoom más cercano al buscar
+    }
+  }, [externalPosition, map])
 
   useMapEvents({
     click(e) {
       if (onSelect) {
+        // Al hacer clic, actualiza su propio estado que sobreescribe la busqueda
         setPosition([e.latlng.lat, e.latlng.lng])
         onSelect(e.latlng.lat, e.latlng.lng)
         map.flyTo(e.latlng, map.getZoom())
@@ -63,17 +73,21 @@ function LocationMarker({ onSelect }: { onSelect?: (lat: number, lng: number) =>
   )
 }
 
+export interface MapSelectorProps {
+  pantallas?: Pantalla[]
+  onTogglePantalla?: (id: string) => void
+  selectedIds?: string[]
+  onSelect?: (lat: number, lng: number) => void
+  externalPosition?: { lat: number; lng: number } | null
+}
+
 export default function MapSelectorClient({ 
   pantallas = [], 
   onTogglePantalla,
   selectedIds = [],
-  onSelect
-}: { 
-  pantallas?: Pantalla[],
-  onTogglePantalla?: (id: string) => void,
-  selectedIds?: string[],
-  onSelect?: (lat: number, lng: number) => void
-}) {
+  onSelect,
+  externalPosition
+}: MapSelectorProps) {
   // Centro aproximado de España por defecto
   const [center, setCenter] = useState<[number, number]>([40.4168, -3.7038])
 
@@ -98,7 +112,7 @@ export default function MapSelectorClient({
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         
-        {onSelect && <LocationMarker onSelect={onSelect} />}
+        {onSelect && <LocationMarker onSelect={onSelect} externalPosition={externalPosition} />}
 
         {pantallasConGeo.map((pantalla) => {
           const isSelected = selectedIds.includes(pantalla.id)

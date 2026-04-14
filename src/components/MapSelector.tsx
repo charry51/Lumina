@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic'
+import type { MapSelectorProps } from './MapSelectorClient'
 
 // Evitar el error de "window is not defined" renderizando Leaflet solo en el cliente
 const MapSelectorClient = dynamic(() => import('./MapSelectorClient'), {
@@ -10,4 +11,6 @@ const MapSelectorClient = dynamic(() => import('./MapSelectorClient'), {
   )
 })
 
-export default MapSelectorClient
+export default function MapSelector(props: MapSelectorProps) {
+  return <MapSelectorClient {...props} />
+}

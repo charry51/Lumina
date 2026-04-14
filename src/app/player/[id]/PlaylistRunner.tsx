@@ -272,7 +272,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
 
       {/* Contenido principal */}
       {isImage ? (
-        activeUrl && <img src={activeUrl} alt="Campaign Content" className="w-full h-full object-cover" />
+        activeUrl && <img src={activeUrl} alt="Campaign Content" className="w-full h-full object-contain" />
       ) : (
         activeUrl && (
           <video
@@ -283,7 +283,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
             muted
             playsInline
             loop={playlist.length === 1}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain bg-black"
             onEnded={handleNext}
             onError={() => {
               console.error('[Lumina] Error reproduciendo:', activeUrl)

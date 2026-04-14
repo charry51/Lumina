@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { activatePairingCode } from '@/app/vincular/actions'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -20,6 +20,27 @@ export function PairingForm() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [geocoding, setGeocoding] = useState(false)
+
+  // Auto-busqueda en mapa cuando cambia la ciudad (debounce 1s)
+  useEffect(() => {
+    if (!ciudad || ciudad.trim().length < 4) return
+    const delayDebounceFn = setTimeout(async () => {
+      setGeocoding(true)
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ciudad)}&limit=1`)
+        const data = await res.json()
+        if (data && data.length > 0) {
+          setCoords({ lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) })
+        }
+      } catch (err) {
+        console.error("Geocoding error:", err)
+      } finally {
+        setGeocoding(false)
+      }
+    }, 1000)
+    return () => clearTimeout(delayDebounceFn)
+  }, [ciudad])
 
   const handleActivate = async () => {
     if (!code || code.length < 6) {
@@ -103,11 +124,11 @@ export function PairingForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label className="text-zinc-400 text-xs uppercase tracking-widest">Ciudad</Label>
+          <Label className="text-zinc-400 text-xs uppercase tracking-widest">Dirección completa</Label>
           <Input
             value={ciudad}
             onChange={e => setCiudad(e.target.value)}
-            placeholder="Ej: Madrid"
+            placeholder="Ej: Madrid, C/ Mayor 1"
             className="bg-zinc-900 border-zinc-800 text-white h-10"
             disabled={loading}
           />
@@ -128,10 +149,12 @@ export function PairingForm() {
       <div className="flex flex-col gap-2">
         <Label className="text-zinc-400 text-xs uppercase tracking-widest mb-1 flex items-center gap-2">
             <MapPin className="w-3 h-3 text-primary" /> Posición en el Mapa
+            {geocoding && <span className="text-[9px] text-zinc-500 animate-pulse ml-2 lowercase">buscando...</span>}
         </Label>
         <div className="rounded-xl overflow-hidden border border-zinc-800 h-[200px] bg-zinc-950">
             <MapSelector 
                 onSelect={(lat, lng) => setCoords({ lat, lng })}
+                externalPosition={coords}
             />
         </div>
         {coords && (

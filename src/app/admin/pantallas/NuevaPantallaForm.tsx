@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,12 +15,38 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Tv, MapPin } from 'lucide-react'
+import MapSelector from '@/components/MapSelector'
 
 export function NuevaPantallaForm() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [tab, setTab] = useState<'manual' | 'vincular'>('vincular')
   const [esPublica, setEsPublica] = useState(true)
+  const [ciudad, setCiudad] = useState('')
+  const [latitud, setLatitud] = useState<string>('')
+  const [longitud, setLongitud] = useState<string>('')
+  const [geocoding, setGeocoding] = useState(false)
+
+  // Auto-busqueda en mapa cuando cambia la ciudad (debounce 1s)
+  useEffect(() => {
+    if (!ciudad || ciudad.trim().length < 4) return
+    const delayDebounceFn = setTimeout(async () => {
+      setGeocoding(true)
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ciudad)}&limit=1`)
+        const data = await res.json()
+        if (data && data.length > 0) {
+          setLatitud(data[0].lat)
+          setLongitud(data[0].lon)
+        }
+      } catch (err) {
+        console.error("Geocoding error:", err)
+      } finally {
+        setGeocoding(false)
+      }
+    }, 1000)
+    return () => clearTimeout(delayDebounceFn)
+  }, [ciudad])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -96,21 +122,53 @@ export function NuevaPantallaForm() {
               <Input id="nombre" name="nombre" placeholder="Ej: LED Centro Comercial" className="bg-zinc-950 border-zinc-800" disabled={loading} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ciudad" className="text-zinc-400 text-xs uppercase tracking-widest">Ciudad</Label>
-              <Input id="ciudad" name="ciudad" placeholder="Ej: Madrid" className="bg-zinc-950 border-zinc-800" disabled={loading} />
+              <Label htmlFor="ciudad" className="text-zinc-400 text-xs uppercase tracking-widest flex items-center justify-between">
+                 Dirección completa
+                 {geocoding && <span className="text-[9px] text-zinc-500 animate-pulse lowercase">buscando en mapa...</span>}
+              </Label>
+              <Input 
+                id="ciudad" name="ciudad" 
+                placeholder="Ej: Madrid, Calle Gran Vía 15" 
+                value={ciudad}
+                onChange={e => setCiudad(e.target.value)}
+                className="bg-zinc-950 border-zinc-800" disabled={loading} 
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="ubicacion" className="text-zinc-400 text-xs uppercase tracking-widest">Ubicación Fina</Label>
               <Input id="ubicacion" name="ubicacion" placeholder="Ej: Planta 2, Zona Restauración" className="bg-zinc-950 border-zinc-800" disabled={loading} />
             </div>
+
+            <div className="flex flex-col gap-2">
+              <div className="rounded-xl overflow-hidden border border-zinc-800 h-[150px] bg-zinc-950 w-full relative z-0">
+                  <MapSelector 
+                      onSelect={(lat, lng) => {
+                          setLatitud(lat.toString())
+                          setLongitud(lng.toString())
+                      }}
+                      externalPosition={(latitud && longitud) ? { lat: parseFloat(latitud), lng: parseFloat(longitud) } : null}
+                  />
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                   <Label htmlFor="latitud" className="text-zinc-400 text-xs uppercase tracking-widest">Latitud</Label>
-                  <Input id="latitud" name="latitud" placeholder="40.4168" type="number" step="any" className="bg-zinc-950 border-zinc-800" disabled={loading} />
+                  <Input 
+                    id="latitud" name="latitud" placeholder="40.4168" type="number" step="any" 
+                    value={latitud}
+                    onChange={e => setLatitud(e.target.value)}
+                    className="bg-zinc-950 border-zinc-800" disabled={loading} 
+                  />
               </div>
               <div className="space-y-2">
                   <Label htmlFor="longitud" className="text-zinc-400 text-xs uppercase tracking-widest">Longitud</Label>
-                  <Input id="longitud" name="longitud" placeholder="-3.7038" type="number" step="any" className="bg-zinc-950 border-zinc-800" disabled={loading} />
+                  <Input 
+                    id="longitud" name="longitud" placeholder="-3.7038" type="number" step="any" 
+                    value={longitud}
+                    onChange={e => setLongitud(e.target.value)}
+                    className="bg-zinc-950 border-zinc-800" disabled={loading} 
+                  />
               </div>
             </div>
             <div className="flex flex-col gap-2 py-2">
