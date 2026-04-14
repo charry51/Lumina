@@ -10,6 +10,14 @@ import { Label } from '@/components/ui/label'
 import { Tv, Loader2, CheckCircle2, MapPin } from 'lucide-react'
 import MapSelector from '@/components/MapSelector'
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 export function PairingForm() {
   const router = useRouter()
   const [code, setCode] = useState('')
@@ -17,6 +25,8 @@ export function PairingForm() {
   const [ciudad, setCiudad] = useState('')
   const [ubicacion, setUbicacion] = useState('')
   const [esPublica, setEsPublica] = useState(true)
+  const [tipoPantalla, setTipoPantalla] = useState('gimnasio')
+  const [densidadNivel, setDensidadNivel] = useState('medio')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -65,7 +75,9 @@ export function PairingForm() {
       ubicacion || ciudad, 
       esPublica,
       coords?.lat,
-      coords?.lng
+      coords?.lng,
+      tipoPantalla,
+      densidadNivel
     )
 
     if (result.success) {
@@ -135,6 +147,40 @@ export function PairingForm() {
         </div>
       </div>
 
+      {/* LUMINA v3.0: Categorización Categoría y Densidad */}
+      <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-2">
+            <Label className="text-zinc-400 text-xs uppercase tracking-widest">Tipo de Establecimiento</Label>
+            <Select value={tipoPantalla} onValueChange={setTipoPantalla}>
+              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-800">
+                <SelectItem value="bar">Bar (Standard)</SelectItem>
+                <SelectItem value="gimnasio">Gimnasio</SelectItem>
+                <SelectItem value="restaurante">Restaurante</SelectItem>
+                <SelectItem value="calle">Calle</SelectItem>
+                <SelectItem value="centro_comercial">Centro Comercial</SelectItem>
+                <SelectItem value="calle_principal">Calle Principal (Elite)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label className="text-zinc-400 text-xs uppercase tracking-widest">Densidad Población</Label>
+            <Select value={densidadNivel} onValueChange={setDensidadNivel}>
+              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-800">
+                <SelectItem value="bajo">Baja Densidad</SelectItem>
+                <SelectItem value="medio">Media</SelectItem>
+                <SelectItem value="alto">Alta</SelectItem>
+                <SelectItem value="muy_alto">Muy Alta / Capital</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+      </div>
+
       <div className="flex flex-col gap-2">
         <Label className="text-zinc-400 text-xs uppercase tracking-widest">Ubicación / Descripción</Label>
         <Input
@@ -157,11 +203,6 @@ export function PairingForm() {
                 externalPosition={coords}
             />
         </div>
-        {coords && (
-            <p className="text-[9px] text-zinc-500 font-mono text-center">
-                Coordenadas fijadas: {coords.lat.toFixed(4)}, {coords.lng.toFixed(4)}
-            </p>
-        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -177,7 +218,7 @@ export function PairingForm() {
                 }`}
             >
                 <span className="text-[10px] font-black uppercase tracking-tighter">🌐 Pública</span>
-                <span className="text-[8px] opacity-60 uppercase">Marketplace Lumina</span>
+                <span className="text-[8px] opacity-60 uppercase">Monetizar</span>
             </button>
             <button
                 type="button"
@@ -189,25 +230,20 @@ export function PairingForm() {
                 }`}
             >
                 <span className="text-[10px] font-black uppercase tracking-tighter">🔒 Privada</span>
-                <span className="text-[8px] opacity-60 uppercase">Uso Interno Solo</span>
+                <span className="text-[8px] opacity-60 uppercase">Uso Interno</span>
             </button>
         </div>
-        <p className="text-[9px] text-zinc-600 italic px-1">
-            {esPublica 
-                ? "* Cualquiera podrá contratar publicidad en esta pantalla. Tú ganas comisiones." 
-                : "* Solo tú podrás emitir contenido en esta pantalla. Estará oculta para otros."}
-        </p>
       </div>
 
       <Button
         onClick={handleActivate}
         disabled={loading}
-        className="bg-primary hover:bg-primary/90 text-black font-black h-12 uppercase tracking-widest text-xs mt-2"
+        className="bg-primary hover:bg-primary/90 text-black font-black h-12 uppercase tracking-widest text-xs mt-2 shadow-[0_0_20px_rgba(0,210,255,0.2)]"
       >
         {loading ? (
           <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Vinculando...</>
         ) : (
-          <><Tv className="w-4 h-4 mr-2" /> Activar Pantalla</>
+          <><Tv className="w-4 h-4 mr-2" /> Activar Pantalla Premium</>
         )}
       </Button>
     </div>

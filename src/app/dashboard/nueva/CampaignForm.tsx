@@ -17,7 +17,7 @@ import {
 import { Slider } from '@/components/ui/slider'
 import MapSelector from '@/components/MapSelector'
 import { createClient } from '@/lib/supabase/client'
-import { calculateEstimatedImpacts } from '@/lib/yield/pricing'
+import { calculateEstimatedImpacts, ScreenType, DensityLevel } from '@/lib/yield/pricing'
 
 type Pantalla = {
   id: string
@@ -28,6 +28,8 @@ type Pantalla = {
   longitud: number | null
   precio_emision: number
   precio_base: number
+  tipo_pantalla?: ScreenType
+  densidad_poblacion_nivel?: DensityLevel
 }
 
 export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: { pantallas: Pantalla[], userPlan?: string }) {
@@ -37,17 +39,33 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   const [isUploading, setIsUploading] = useState(false)
   const [selectedMapScreens, setSelectedMapScreens] = useState<string[]>([])
   
+  // LUMINA v3 targets for estimation
+  const [targetType, setTargetType] = useState<ScreenType>('gimnasio')
+  const [targetDensity, setTargetDensity] = useState<DensityLevel>('medio')
+  
   // LUMINA v2: Programmatic States
   const [presupuestoTotal, setPresupuestoTotal] = useState<number>(100)
   const [prioridad, setPrioridad] = useState<number>(1)
   const [duracion, setDuracion] = useState<number>(10)
   
-  // Calculamos impactos en tiempo real asumiendo 'standard' por defecto si no hay precio_base superior
+  // Mapeo de frecuencia según plan para el estimador
+  const planFrequency = userPlan.includes('Dominio') ? 4 : userPlan.includes('Expansión') ? 3 : userPlan.includes('Impacto') ? 2 : 1
+
+  // Calculamos impactos basados en la selección o el target por defecto
+  const selectedScreensFull = pantallas.filter(p => selectedMapScreens.includes(p.id))
+  
+  // Si hay pantallas seleccionadas, promediamos o usamos la más cara para ser conservadores
+  const effType = selectedScreensFull.length > 0 ? (selectedScreensFull[0].tipo_pantalla || 'gimnasio') : targetType
+  const effDensity = selectedScreensFull.length > 0 ? (selectedScreensFull[0].densidad_poblacion_nivel || 'medio') : targetDensity
+
   const impactosEstimados = calculateEstimatedImpacts({
     presupuestoTotal,
     prioridad,
     duracionSegundos: duracion,
-    zona: 'standard'
+    zona: 'standard', // Por simplicidad en el estimador inicial
+    tipoPantalla: effType,
+    densidadNivel: effDensity,
+    frecuenciaRelativa: planFrequency
   })
 
   const isPremium = userPlan.toLowerCase().includes('expansión') || userPlan.toLowerCase().includes('dominio')
@@ -125,7 +143,8 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         pantalla_idsRaw: (formData.get('pantalla_ids') as string) || '',
         presupuesto_total: presupuestoTotal,
         prioridad: prioridad,
-        impactos_estimados: impactosEstimados
+        impactos_estimados: impactosEstimados,
+        duracion_segundos: duracion
       }
 
       const result = await createCampaign(payloadData)
@@ -151,14 +170,16 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm">
       
       {/* LUMINA v2.0 - Programmatic Dashboard Card */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-[#D4AF37]/10">
          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-50" />
          
          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
-                  <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Presupuesto de Campaña (€)</Label>
-                  <p className="text-3xl font-light font-['Space_Grotesk'] tracking-tighter text-white">€{presupuestoTotal}</p>
+                  <div className="flex justify-between items-end">
+                    <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Presupuesto de Campaña</Label>
+                    <span className="text-xl font-heading text-white font-black">{presupuestoTotal}€</span>
+                  </div>
                   <Slider 
                     defaultValue={[100]} 
                     max={5000} step={50} min={50}
@@ -166,17 +187,31 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                     className="mt-2"
                   />
                 </div>
+
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between items-end">
+                    <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Duración del Anuncio</Label>
+                    <span className="text-xl font-heading text-white font-black">{duracion}s</span>
+                  </div>
+                  <Slider 
+                    defaultValue={[10]} 
+                    max={30} step={5} min={5}
+                    onValueChange={(val: number[]) => setDuracion(val[0])} 
+                    className="mt-2"
+                  />
+                  <p className="text-[9px] text-zinc-500 font-mono uppercase mt-1">Límite Protocolo: 5s - 30s</p>
+                </div>
                 
                 <div className="flex flex-col gap-2">
-                  <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Poder de Subasta (Prioridad)</Label>
+                  <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Prioridad de Subasta</Label>
                   <Select value={prioridad.toString()} onValueChange={(val: any) => setPrioridad(parseInt(val))}>
-                    <SelectTrigger className="bg-black/50 border-zinc-800 focus:border-[#D4AF37] h-10 w-full sm:w-[200px]">
+                    <SelectTrigger className="bg-black/50 border-zinc-800 focus:border-[#D4AF37] h-10 w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-900 border-zinc-800">
-                      <SelectItem value="1">Estándar (x1)</SelectItem>
-                      <SelectItem value="2">Acelerada (x2 Penalización Coste)</SelectItem>
-                      <SelectItem value="3">Takeover (x3 Dominante)</SelectItem>
+                      <SelectItem value="1">Base (Eficiencia máxima)</SelectItem>
+                      <SelectItem value="2">Acelerada (Gasto x2)</SelectItem>
+                      <SelectItem value="3">Takeover (Impacto Crítico)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -186,13 +221,16 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                 <span className="text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
                 {impactosEstimados > 0 ? (
                     <>
-                        <span className="text-5xl font-['Space_Grotesk'] text-white font-light tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        <span className="text-5xl font-heading text-white font-black tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                             {impactosEstimados.toLocaleString()}
                         </span>
-                        <span className="text-zinc-500 font-medium text-xs mt-2 uppercase tracking-widest">Impactos Garantizados</span>
+                        <div className="flex flex-col mt-2">
+                           <span className="text-zinc-500 font-medium text-[10px] uppercase tracking-widest">Impactos Garantizados</span>
+                           <span className="text-[#00d2ff] font-mono text-[9px] uppercase mt-1">Frecuencia Plan: {planFrequency}x</span>
+                        </div>
                     </>
                 ) : (
-                    <span className="text-zinc-500 text-sm italic">Sube el presupuesto...</span>
+                    <span className="text-zinc-500 text-sm italic">Configura tu campaña...</span>
                 )}
             </div>
          </div>
