@@ -8,15 +8,12 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Tv, Loader2, CheckCircle2, MapPin } from 'lucide-react'
-import MapSelector from '@/components/MapSelector'
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { 
+  getScreenTier, 
+  getTierMultiplier,
+  ScreenType, 
+  DensityLevel 
+} from '@/lib/yield/pricing'
 
 export function PairingForm() {
   const router = useRouter()
@@ -25,12 +22,15 @@ export function PairingForm() {
   const [ciudad, setCiudad] = useState('')
   const [ubicacion, setUbicacion] = useState('')
   const [esPublica, setEsPublica] = useState(true)
-  const [tipoPantalla, setTipoPantalla] = useState('gimnasio')
-  const [densidadNivel, setDensidadNivel] = useState('medio')
+  const [tipoPantalla, setTipoPantalla] = useState<ScreenType>('gimnasio')
+  const [densidadNivel, setDensidadNivel] = useState<DensityLevel>('medio')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [geocoding, setGeocoding] = useState(false)
+
+  const currentTier = getScreenTier(tipoPantalla, densidadNivel)
+  const multiplier = getTierMultiplier(tipoPantalla, densidadNivel)
 
   // Auto-busqueda en mapa cuando cambia la ciudad (debounce 1s)
   useEffect(() => {
@@ -49,7 +49,7 @@ export function PairingForm() {
           const addrObj = result.address || {}
           
           // 1. Detect Category (tipo_pantalla)
-          let detectedType = ''
+          let detectedType: ScreenType | '' = ''
           const mainStreetKeywords = ['avenida', 'gran via', 'plaza', 'mayor', 'diagonal', 'recoletos', 'castellana', 'square', 'broadway', 'boulevard', 'pau claris']
           const restaurantKeywords = ['restaurante', 'restaurant', 'grill', 'pizza', 'burger', 'comida', 'steakhouse', 'asador']
           const barKeywords = ['bar', 'pub', 'cafe', 'beer', 'bodega', 'taberna', 'cerveceria']
@@ -65,7 +65,7 @@ export function PairingForm() {
           if (detectedType) setTipoPantalla(detectedType)
 
           // 2. Detect Density (densidad_poblacion_nivel)
-          let detectedDensity = ''
+          let detectedDensity: DensityLevel | '' = ''
           const hugeCities = ['madrid', 'barcelona', 'london', 'paris', 'berlin', 'new york', 'roma', 'sevilla', 'valencia', 'malaga']
           const touristHubs = ['marbella', 'benidorm', 'ibiza', 'palma', 'adeje', 'torremolinos', 'salou', 'nerja', 'santiago de compostela', 'granada', 'cordoba', 'san sebastian']
           const highDensityTowns = ['hospitalet', 'badalona', 'santa coloma', 'mislata', 'burjassot', 'benetusser']
@@ -208,7 +208,7 @@ export function PairingForm() {
       <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <Label className="text-zinc-400 text-xs uppercase tracking-widest">Tipo de Establecimiento</Label>
-            <Select value={tipoPantalla} onValueChange={(v) => setTipoPantalla(v ?? 'bar')}>
+            <Select value={tipoPantalla} onValueChange={(v) => setTipoPantalla(v as ScreenType)}>
               <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
                 <SelectValue />
               </SelectTrigger>
@@ -224,7 +224,7 @@ export function PairingForm() {
           </div>
           <div className="flex flex-col gap-2">
             <Label className="text-zinc-400 text-xs uppercase tracking-widest">Densidad Población</Label>
-            <Select value={densidadNivel} onValueChange={(v) => setDensidadNivel(v ?? 'medio')}>
+            <Select value={densidadNivel} onValueChange={(v) => setDensidadNivel(v as DensityLevel)}>
               <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
                 <SelectValue />
               </SelectTrigger>
@@ -236,6 +236,28 @@ export function PairingForm() {
               </SelectContent>
             </Select>
           </div>
+      </div>
+
+      {/* NEW: Yield Tier Feedback */}
+      <div className={`p-4 rounded-xl border flex items-center justify-between transition-all duration-500 ${
+        currentTier === 'Elite' ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' :
+        currentTier === 'Plus' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 shadow-[0_0_15px_rgba(0,210,255,0.1)]' :
+        'bg-zinc-900 border-zinc-800'
+      }`}>
+        <div className="flex flex-col">
+          <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-mono">Potencial de Ingresos</span>
+          <span className={`text-sm font-black uppercase tracking-widest ${
+            currentTier === 'Elite' ? 'text-[#D4AF37]' :
+            currentTier === 'Plus' ? 'text-[#00d2ff]' :
+            'text-zinc-300'
+          }`}>{currentTier} TIER</span>
+        </div>
+        <div className="text-right">
+          <span className="text-[9px] text-zinc-600 uppercase block font-bold">Multiplicador Yield</span>
+          <span className={`text-xl font-mono font-black ${
+            currentTier === 'Elite' ? 'text-white' : 'text-zinc-400'
+          }`}>x{multiplier.toFixed(1)}</span>
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">
