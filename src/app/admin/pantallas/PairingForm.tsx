@@ -151,7 +151,7 @@ export function PairingForm() {
       <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <Label className="text-zinc-400 text-xs uppercase tracking-widest">Tipo de Establecimiento</Label>
-            <Select value={tipoPantalla} onValueChange={setTipoPantalla}>
+            <Select value={tipoPantalla} onValueChange={(v) => setTipoPantalla(v ?? 'bar')}>
               <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
                 <SelectValue />
               </SelectTrigger>
@@ -167,7 +167,7 @@ export function PairingForm() {
           </div>
           <div className="flex flex-col gap-2">
             <Label className="text-zinc-400 text-xs uppercase tracking-widest">Densidad Población</Label>
-            <Select value={densidadNivel} onValueChange={setDensidadNivel}>
+            <Select value={densidadNivel} onValueChange={(v) => setDensidadNivel(v ?? 'medio')}>
               <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
                 <SelectValue />
               </SelectTrigger>

@@ -34,7 +34,7 @@ export default async function PlayerPage({
         impactos_reales
     `)
     .or(`pantalla_id.eq.${id},pantalla_id.is.null`)
-    .eq('estado', 'aprobada')
+    .in('estado', ['aprobada', 'pre_aprobada'])
     .lte('fecha_inicio', today)
     .gte('fecha_fin', today)
   
