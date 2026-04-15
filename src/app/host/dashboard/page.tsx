@@ -159,6 +159,13 @@ export default async function HostDashboardPage({
                     }`}>
                     {pantalla?.estado || 'Inactiva'}
                     </span>
+                    {pantalla?.id && (
+                      <Link href={`/player/${pantalla.id}`} target="_blank">
+                        <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-[#00d2ff]/20 text-[#00d2ff] hover:bg-[#00d2ff] hover:text-black transition-all">
+                          <Monitor className="w-3 h-3 mr-1" /> Ver en Vivo
+                        </Button>
+                      </Link>
+                    )}
                 </div>
             </div>
             

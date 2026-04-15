@@ -173,9 +173,18 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
       }
     }
     
-    // Pick logically different campaign if possible to avoid static loops
+    // Pick next campaign
     const next = getNextCampaign(playlist)
-    setCurrentCampaign(next)
+    
+    // If it's the same campaign (single item loop), force video restart
+    if (next && currentCampaign && next.id === currentCampaign.id) {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0
+        videoRef.current.play().catch(e => console.warn('[Lumina] Loop play blocked:', e))
+      }
+    } else {
+      setCurrentCampaign(next)
+    }
   }, [currentCampaign, playlist, screenId, isOnline, getNextCampaign])
 
   // Autoplay
