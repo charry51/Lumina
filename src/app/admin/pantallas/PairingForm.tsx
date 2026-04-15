@@ -38,10 +38,48 @@ export function PairingForm() {
     const delayDebounceFn = setTimeout(async () => {
       setGeocoding(true)
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ciudad)}&limit=1`)
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(ciudad)}&limit=1`)
         const data = await res.json()
         if (data && data.length > 0) {
-          setCoords({ lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) })
+          const result = data[0]
+          setCoords({ lat: parseFloat(result.lat), lng: parseFloat(result.lon) })
+
+          // --- SMART DETECTION LOGIC ---
+          const lowerAddr = result.display_name.toLowerCase()
+          const addrObj = result.address || {}
+          
+          // 1. Detect Category (tipo_pantalla)
+          let detectedType = ''
+          const mainStreetKeywords = ['avenida', 'gran via', 'plaza', 'mayor', 'diagonal', 'recoletos', 'castellana', 'square', 'broadway', 'boulevard', 'pau claris']
+          const restaurantKeywords = ['restaurante', 'restaurant', 'grill', 'pizza', 'burger', 'comida', 'steakhouse', 'asador']
+          const barKeywords = ['bar', 'pub', 'cafe', 'beer', 'bodega', 'taberna', 'cerveceria']
+          
+          if (mainStreetKeywords.some(k => lowerAddr.includes(k))) {
+            detectedType = 'calle_principal'
+          } else if (restaurantKeywords.some(k => lowerAddr.includes(k))) {
+            detectedType = 'restaurante'
+          } else if (barKeywords.some(k => lowerAddr.includes(k))) {
+            detectedType = 'bar'
+          }
+
+          if (detectedType) setTipoPantalla(detectedType)
+
+          // 2. Detect Density (densidad_poblacion_nivel)
+          let detectedDensity = ''
+          const hugeCities = ['madrid', 'barcelona', 'london', 'paris', 'berlin', 'new york', 'roma', 'sevilla', 'valencia']
+          const cityName = (addrObj.city || addrObj.town || addrObj.municipality || '').toLowerCase()
+          
+          if (hugeCities.some(c => cityName.includes(c) || lowerAddr.includes(c))) {
+            detectedDensity = 'muy_alto'
+          } else if (addrObj.city || result.type === 'city') {
+            detectedDensity = 'alto'
+          } else if (addrObj.village || addrObj.hamlet) {
+            detectedDensity = 'bajo'
+          } else {
+            detectedDensity = 'medio'
+          }
+
+          if (detectedDensity) setDensidadNivel(detectedDensity)
         }
       } catch (err) {
         console.error("Geocoding error:", err)
