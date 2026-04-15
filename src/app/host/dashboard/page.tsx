@@ -3,8 +3,13 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Plus, Tv, TrendingUp, Wallet, History, ChevronRight, Zap, Monitor } from 'lucide-react'
-
 import { PairingForm } from '@/app/admin/pantallas/PairingForm'
+import { 
+  getScreenTier, 
+  getTierMultiplier, 
+  ScreenType, 
+  DensityLevel 
+} from '@/lib/yield/pricing'
 
 export default async function HostDashboardPage({
   searchParams,
@@ -20,7 +25,7 @@ export default async function HostDashboardPage({
   // Obtener todos los registros de host vinculados a este perfil
   const { data: hosts } = await supabase
     .from('hosts')
-    .select('*, pantallas(id, nombre, ciudad, estado, precio_emision, ubicacion)')
+    .select('*, pantallas(id, nombre, ciudad, estado, precio_emision, ubicacion, tipo_pantalla, densidad_poblacion_nivel)')
     .eq('perfil_id', user.id)
 
   const hasScreens = hosts && hosts.length > 0
@@ -65,6 +70,12 @@ export default async function HostDashboardPage({
 
   const totalGenerado = (hostData.saldo_pendiente || 0) + (hostData.saldo_pagado || 0)
   const pantalla = hostData.pantallas as any
+
+  // YIELD INTELLIGENCE
+  const screenType = pantalla?.tipo_pantalla as ScreenType || 'gimnasio'
+  const screenDensity = pantalla?.densidad_poblacion_nivel as DensityLevel || 'medio'
+  const yieldTier = getScreenTier(screenType, screenDensity)
+  const yieldMult = getTierMultiplier(screenType, screenDensity)
 
   return (
     <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 font-sans">
@@ -149,7 +160,21 @@ export default async function HostDashboardPage({
                   <Zap className="w-4 h-4" /> Telemetría del Nodo
                 </h2>
                 <div className="flex items-center gap-2">
-                    {hostData.hardware_certificado && (
+                    {/* YIELD TIER BADGE */}
+                    <div className={`px-2.5 py-1 rounded border text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${
+                      yieldTier === 'Elite' ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 text-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.2)]' :
+                      yieldTier === 'Plus' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 text-[#00d2ff]' :
+                      'bg-zinc-900 border-zinc-800 text-zinc-500'
+                    }`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${
+                        yieldTier === 'Elite' ? 'bg-[#D4AF37] shadow-[0_0_5px_#D4AF37]' :
+                        yieldTier === 'Plus' ? 'bg-[#00d2ff] shadow-[0_0_5px_#00d2ff]' :
+                        'bg-zinc-700'
+                      }`} />
+                      Yield: {yieldTier} (x{yieldMult.toFixed(1)})
+                    </div>
+
+                    {hostData.hardware_certified && (
                        <span className="text-[8px] font-black uppercase bg-[#D4AF37] text-black px-1.5 py-0.5 rounded shadow-[0_0_10px_rgba(212,175,55,0.3)]">Certificado</span>
                     )}
                     <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full border ${

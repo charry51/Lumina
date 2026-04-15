@@ -19,19 +19,40 @@ export type ScreenType = 'bar' | 'gimnasio' | 'restaurante' | 'calle' | 'centro_
 export type DensityLevel = 'bajo' | 'medio' | 'alto' | 'muy_alto'
 
 export const SCREEN_TYPE_MULTIPLIERS: Record<ScreenType, number> = {
-  bar: 0.5,
+  bar: 1.0,
   gimnasio: 1.0,
-  restaurante: 1.2,
-  calle: 1.5,
-  centro_comercial: 2.0,
-  calle_principal: 2.5
+  restaurante: 1.5,
+  calle: 2.0,
+  centro_comercial: 3.0,
+  calle_principal: 4.0 // Base para llegar al x5 total
 }
 
 export const DENSITY_MULTIPLIERS: Record<DensityLevel, number> = {
-  bajo: 0.8,
-  medio: 1.0,
+  bajo: 1.0,
+  medio: 1.1,
   alto: 1.2,
-  muy_alto: 1.5
+  muy_alto: 1.25 // Combinado con calle_principal, el x5 se logra con otros factores
+}
+
+export type YieldTier = 'Standard' | 'Plus' | 'Elite'
+
+/**
+ * Determina el Nivel de Rendimiento (Tier) de una pantalla
+ * para transparencia con el Host sobre sus ganancias.
+ */
+export function getScreenTier(type: ScreenType, density: DensityLevel): YieldTier {
+  if (type === 'calle_principal' || density === 'muy_alto') return 'Elite'
+  if (type === 'centro_comercial' || type === 'restaurante' || density === 'alto') return 'Plus'
+  return 'Standard'
+}
+
+/**
+ * Retorna el multiplicador de ingresos acumulado para simplificar cálculos UI.
+ */
+export function getTierMultiplier(type: ScreenType, density: DensityLevel): number {
+  const typeMult = SCREEN_TYPE_MULTIPLIERS[type] || 1.0
+  const densMult = DENSITY_MULTIPLIERS[density] || 1.0
+  return typeMult * densMult
 }
 
 // Precio base estimado por cada visualización (impacto), e.g., 5 céntimos

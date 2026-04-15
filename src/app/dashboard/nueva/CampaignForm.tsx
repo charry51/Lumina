@@ -99,6 +99,39 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
       return
     }
 
+    // --- NEW: DURATION VALIDATION (5s - 30s) ---
+    if (file.type.startsWith('video/')) {
+      try {
+        const video = document.createElement('video')
+        video.preload = 'metadata'
+        
+        const videoDuration = await new Promise<number>((resolve, reject) => {
+          video.onloadedmetadata = () => {
+            window.URL.revokeObjectURL(video.src)
+            resolve(video.duration)
+          }
+          video.onerror = () => reject('Error al cargar metadatos del video')
+          video.src = URL.createObjectURL(file)
+        })
+
+        if (videoDuration < 5) {
+          toast.error(`El video es demasiado corto (${Math.round(videoDuration)}s). El mínimo permitido es 5s.`)
+          setIsLoading(false)
+          return
+        }
+        if (videoDuration > 30.5) { // 0.5s margin for encoding variations
+          toast.error(`El video es demasiado largo (${Math.round(videoDuration)}s). El máximo permitido es 30s.`)
+          setIsLoading(false)
+          return
+        }
+      } catch (err) {
+        toast.error('No se pudo validar la duración del video. Intenta con otro archivo.')
+        setIsLoading(false)
+        return
+      }
+    }
+    // --- END VALIDATION ---
+
     try {
       // 1. SUBIDA DIRECTA A SUPABASE STORAGE
       const supabase = createClient()
