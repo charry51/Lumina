@@ -189,13 +189,11 @@ export default async function DashboardPage() {
                     <span>{pantalla.ciudad}</span>
                   </div>
 
-                  {!pantalla.es_propia && (
-                    <Link href={`/player/${pantalla.id}`} target="_blank">
-                      <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-[#00d2ff]/20 text-[#00d2ff] hover:bg-[#00d2ff] hover:text-black transition-all">
-                        Ver Player
-                      </Button>
-                    </Link>
-                  )}
+                  <Link href={`/player/${pantalla.id}`} target="_blank">
+                    <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-[#00d2ff]/20 text-[#00d2ff] hover:bg-[#00d2ff] hover:text-black transition-all">
+                      Ver en Vivo
+                    </Button>
+                  </Link>
                 </div>
               </div>
             ))
