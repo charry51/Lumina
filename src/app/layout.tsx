@@ -27,6 +27,8 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "next-themes";
+import { AccessibilityWidget } from "@/components/AccessibilityWidget";
 
 export default function RootLayout({
   children,
@@ -36,7 +38,8 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${dmSans.variable} ${spaceGrotesk.variable} ${jetbrains.variable} h-full antialiased dark`}
+      className={`${dmSans.variable} ${spaceGrotesk.variable} ${jetbrains.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         {/* Anti-Next Logo CSS injection */}
@@ -47,7 +50,10 @@ export default function RootLayout({
             display: none !important; 
           }
         `}} />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          {children}
+          <AccessibilityWidget />
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
