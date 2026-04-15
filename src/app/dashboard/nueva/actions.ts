@@ -18,6 +18,7 @@ export type CampaignData = {
   presupuesto_total?: number
   prioridad?: number
   impactos_estimados?: number
+  duracion_segundos?: number
 }
 
 export async function createCampaign(data: CampaignData) {
@@ -61,12 +62,19 @@ export async function createCampaign(data: CampaignData) {
       return { type: 'error', message: 'Por favor, completa todos los campos requeridos.' }
     }
 
+    // --- NUEVO: Validación de Duración (5s - 30s) ---
+    const duracion = data.duracion_segundos || 10
+    if (duracion < 5 || duracion > 30) {
+       return { type: 'error', message: 'La duración del anuncio debe estar entre 5 y 30 segundos.' }
+    }
+    // -----------------------------------------------
+
     // LUMINA v2: Límite de campañas basado en presupuesto, no en suscripciones fijas.
     // (Hemos eliminado las restricciones temporales de planes limitantes para asentar Programmatic)
     const totalNew = pantallaIds.length
 
     // 3. IA SCAN (Brain integration) - Ahora lo hace sobre la URL recibida
-    const iaResult = await analyzeVideo(publicUrl)
+    const iaResult = await analyzeVideo(publicUrl, duracion)
     let finalEstado = 'pendiente_aprobacion'
     
     if (iaResult.status === 'safe') {

@@ -10,11 +10,22 @@ export type IAResult = {
   reason?: string;
 }
 
-export async function analyzeVideo(videoUrl: string): Promise<IAResult> {
-  console.log(`[Lumina IA] Iniciando escaneo de seguridad: ${videoUrl}`);
+export async function analyzeVideo(videoUrl: string, duration?: number): Promise<IAResult> {
+  console.log(`[Lumina IA] Iniciando escaneo de seguridad: ${videoUrl} (${duration}s)`);
   
   // Simulamos un retraso de procesamiento de red de 2 segundos
   await new Promise(resolve => setTimeout(resolve, 2000));
+
+  // --- NEW: Duration Policy Check (AI Simulated) ---
+  if (duration !== undefined && (duration < 5 || duration > 30.5)) {
+    return {
+      status: 'rejected',
+      score: 1.0,
+      labels: ['policy_violation', 'invalid_duration'],
+      reason: `La duración del video (${Math.round(duration)}s) no cumple con el protocolo Lumina (5-30s).`
+    };
+  }
+  // --------------------------------------------------
 
   // Heurística de ejemplo: 
   // Si el nombre del archivo contiene palabras clave, simulamos detección

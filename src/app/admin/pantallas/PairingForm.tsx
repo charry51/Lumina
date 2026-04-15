@@ -66,15 +66,34 @@ export function PairingForm() {
 
           // 2. Detect Density (densidad_poblacion_nivel)
           let detectedDensity = ''
-          const hugeCities = ['madrid', 'barcelona', 'london', 'paris', 'berlin', 'new york', 'roma', 'sevilla', 'valencia']
-          const cityName = (addrObj.city || addrObj.town || addrObj.municipality || '').toLowerCase()
+          const hugeCities = ['madrid', 'barcelona', 'london', 'paris', 'berlin', 'new york', 'roma', 'sevilla', 'valencia', 'malaga']
+          const touristHubs = ['marbella', 'benidorm', 'ibiza', 'palma', 'adeje', 'torremolinos', 'salou', 'nerja', 'santiago de compostela', 'granada', 'cordoba', 'san sebastian']
+          const highDensityTowns = ['hospitalet', 'badalona', 'santa coloma', 'mislata', 'burjassot', 'benetusser']
           
-          if (hugeCities.some(c => cityName.includes(c) || lowerAddr.includes(c))) {
+          const touristKeywords = ['playa', 'beach', 'catedral', 'palacio', 'puerto', 'muelle', 'alhambra', 'sagrada familia', 'monumento', 'museum', 'museo', 'landmark', 'teatro', 'basilica', 'casco antiguo', 'historic']
+          
+          const cityName = (addrObj.city || addrObj.town || addrObj.municipality || '').toLowerCase()
+          const isHugeCity = hugeCities.some(c => cityName.includes(c) || lowerAddr.includes(c))
+          const isTouristHub = touristHubs.some(c => cityName.includes(c) || lowerAddr.includes(c))
+          const isHighDensityTown = highDensityTowns.some(c => cityName.includes(c) || lowerAddr.includes(c))
+          const isMainStreet = mainStreetKeywords.some(k => lowerAddr.includes(k))
+          const hasTouristMarker = touristKeywords.some(k => lowerAddr.includes(k))
+          
+          // SCORING LOGIC
+          if ((isHugeCity || isTouristHub || isHighDensityTown) && isMainStreet) {
             detectedDensity = 'muy_alto'
-          } else if (addrObj.city || result.type === 'city') {
-            detectedDensity = 'alto'
+          } else if (isTouristHub && hasTouristMarker) {
+            detectedDensity = 'muy_alto'
+          } else if (isHugeCity) {
+            if (result.type === 'residential' || result.type === 'living_street') {
+              detectedDensity = 'medio'
+            } else {
+              detectedDensity = 'alto'
+            }
+          } else if (isTouristHub || isHighDensityTown || addrObj.city || result.type === 'city') {
+            detectedDensity = (isMainStreet || hasTouristMarker) ? 'alto' : 'medio'
           } else if (addrObj.village || addrObj.hamlet) {
-            detectedDensity = 'bajo'
+            detectedDensity = hasTouristMarker ? 'medio' : 'bajo'
           } else {
             detectedDensity = 'medio'
           }
