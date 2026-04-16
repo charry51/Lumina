@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import HeroSection from '@/components/landing/HeroSection'
 import FeaturesSection from '@/components/landing/FeaturesSection'
+import ContactSection from '@/components/landing/ContactSection'
 import { Monitor } from 'lucide-react'
 
 export default async function Home() {
@@ -42,6 +43,8 @@ export default async function Home() {
         <div id="features">
            <FeaturesSection />
         </div>
+
+        <ContactSection />
         
         {/* CTA Final */}
         <section className="py-32 bg-black text-center relative overflow-hidden">
