@@ -1,0 +1,87 @@
+import { createClient } from '@/lib/supabase/server';
+import { Mail, Clock, CheckCircle2, AlertCircle, Eye } from 'lucide-react';
+import MessageDetail from './MessageDetail';
+
+export default async function AdminMessagesPage() {
+  const supabase = await createClient();
+
+  const { data: messages, error } = await supabase
+    .from('contact_messages')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    return (
+      <div className="p-8 text-center bg-red-500/10 border border-red-500/20 rounded-xl">
+        <p className="text-red-500 uppercase font-mono text-xs tracking-widest">Error cargando mensajes</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-heading text-white uppercase tracking-tighter">Buzón de Contacto</h1>
+          <p className="text-xs text-zinc-500 uppercase tracking-widest font-mono mt-1">Gestiona las consultas de preventa y soporte</p>
+        </div>
+        
+        <div className="flex gap-2">
+          <div className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-primary" />
+            <span className="text-[10px] font-bold uppercase text-zinc-400">Total: {messages?.length || 0}</span>
+          </div>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-1 gap-4">
+        {messages && messages.length > 0 ? (
+          messages.map((msg) => (
+            <div 
+              key={msg.id} 
+              className={`cyber-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 ${
+                msg.status === 'unread' ? 'border-primary/30 bg-primary/5' : 'border-zinc-800 bg-black/40'
+              }`}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter ${
+                    msg.status === 'unread' ? 'bg-primary text-black' : 
+                    msg.status === 'read' ? 'bg-zinc-800 text-zinc-400' : 
+                    'bg-green-500 text-black'
+                  }`}>
+                    {msg.status === 'unread' ? 'No Leído' : msg.status === 'read' ? 'Leído' : 'Respondido'}
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-mono flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {new Date(msg.created_at).toLocaleString()}
+                  </span>
+                </div>
+                
+                <h3 className="text-lg font-heading text-white uppercase truncate mb-1">{msg.subject}</h3>
+                <div className="flex items-center gap-2 text-xs text-zinc-400 mb-3">
+                  <span className="font-bold text-zinc-200">{msg.name}</span>
+                  <span className="text-zinc-600">•</span>
+                  <span className="font-mono">{msg.email}</span>
+                </div>
+                
+                <p className="text-sm text-zinc-500 line-clamp-1 italic">
+                  "{msg.message}"
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <MessageDetail message={msg} />
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="py-24 text-center cyber-card border-dashed opacity-50">
+             <Mail className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
+             <p className="text-zinc-500 uppercase tracking-widest text-xs font-bold">No hay mensajes pendientes</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

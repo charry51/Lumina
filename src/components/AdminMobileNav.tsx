@@ -47,6 +47,13 @@ export default function AdminMobileNav() {
               Red de Pantallas
             </Link>
             <Link 
+              href="/admin/mensajes" 
+              onClick={() => setIsOpen(false)}
+              className="text-2xl font-bold py-4 border-b border-zinc-800 text-zinc-300 hover:text-primary"
+            >
+              Mensajes
+            </Link>
+            <Link 
               href="/dashboard" 
               onClick={() => setIsOpen(false)}
               className="mt-8 text-lg font-medium text-zinc-500 hover:text-white"
