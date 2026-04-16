@@ -23,7 +23,7 @@ export default async function PlanesPage() {
   return (
     <div className="p-8 min-h-screen bg-background text-foreground font-sans">
       <header className="text-center mb-16">
-        <h1 className="text-5xl font-heading uppercase tracking-tighter text-zinc-100 mb-4">Planes de Emisión</h1>
+        <h1 className="text-5xl font-heading uppercase tracking-tighter text-foreground dark:text-zinc-100 mb-4">Planes de Emisión</h1>
         <p className="text-sm text-muted-foreground font-mono uppercase tracking-[3px] max-w-2xl mx-auto">
           Potencia tus pantallas con la mejor estrategia de contenidos.
         </p>
@@ -31,7 +31,7 @@ export default async function PlanesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
         {planes?.map((plan) => (
-          <div key={plan.id} className={`cyber-card p-6 flex flex-col transition-all relative ${
+          <div key={plan.id} className={`cyber-card light:bg-white light:border-slate-100 p-6 flex flex-col transition-all relative ${
             profile?.plan_id === plan.id ? 'ring-2 ring-primary ring-offset-4 ring-offset-background' : ''
           }`}>
             {profile?.plan_id === plan.id && (
@@ -51,7 +51,7 @@ export default async function PlanesPage() {
             )}
             
             <div className="mb-6 pt-4">
-              <h3 className="text-xl font-heading text-zinc-100 uppercase mb-2 tracking-tight">{plan.nombre}</h3>
+              <h3 className="text-xl font-heading text-foreground dark:text-zinc-100 light:text-black uppercase mb-2 tracking-tight">{plan.nombre}</h3>
               <div className="flex items-baseline gap-1">
                 <span className="text-4xl font-mono font-bold text-primary">{plan.precio_mensual}€</span>
                 <span className="text-[10px] text-zinc-500 font-mono uppercase">/ mensual</span>

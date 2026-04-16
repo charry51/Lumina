@@ -203,15 +203,15 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm">
       
       {/* LUMINA v2.0 - Programmatic Dashboard Card */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-[#D4AF37]/10">
-         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-50" />
+      <div className="bg-muted/50 border border-border rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-amber-600/10 dark:shadow-[#D4AF37]/10">
+         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-600 dark:via-[#D4AF37] to-transparent opacity-50" />
          
          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                   <div className="flex justify-between items-end">
-                    <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Presupuesto de Campaña</Label>
-                    <span className="text-xl font-heading text-white font-black">{presupuestoTotal}€</span>
+                    <Label className="text-muted-foreground font-medium tracking-widest text-[10px] uppercase">Presupuesto de Campaña</Label>
+                    <span className="text-xl font-heading text-foreground font-black">{presupuestoTotal}€</span>
                   </div>
                   <Slider 
                     defaultValue={[100]} 
@@ -223,8 +223,8 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
 
                 <div className="flex flex-col gap-2">
                   <div className="flex justify-between items-end">
-                    <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Duración del Anuncio</Label>
-                    <span className="text-xl font-heading text-white font-black">{duracion}s</span>
+                    <Label className="text-muted-foreground font-medium tracking-widest text-[10px] uppercase">Duración del Anuncio</Label>
+                    <span className="text-xl font-heading text-foreground font-black">{duracion}s</span>
                   </div>
                   <Slider 
                     defaultValue={[10]} 
@@ -232,16 +232,16 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                     onValueChange={(val: number[]) => setDuracion(val[0])} 
                     className="mt-2"
                   />
-                  <p className="text-[9px] text-zinc-500 font-mono uppercase mt-1">Límite Protocolo: 5s - 30s</p>
+                  <p className="text-[9px] text-muted-foreground font-mono uppercase mt-1">Límite Protocolo: 5s - 30s</p>
                 </div>
                 
                 <div className="flex flex-col gap-2">
-                  <Label className="text-zinc-400 font-medium tracking-widest text-[10px] uppercase">Prioridad de Subasta</Label>
+                  <Label className="text-muted-foreground font-medium tracking-widest text-[10px] uppercase">Prioridad de Subasta</Label>
                   <Select value={prioridad.toString()} onValueChange={(val: any) => setPrioridad(parseInt(val))}>
-                    <SelectTrigger className="bg-black/50 border-zinc-800 focus:border-[#D4AF37] h-10 w-full">
+                    <SelectTrigger className="bg-background border-border focus:border-amber-600 dark:focus:border-[#D4AF37] h-10 w-full">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-zinc-800">
+                    <SelectContent className="bg-popover border-border">
                       <SelectItem value="1">Base (Eficiencia máxima)</SelectItem>
                       <SelectItem value="2">Acelerada (Gasto x2)</SelectItem>
                       <SelectItem value="3">Takeover (Impacto Crítico)</SelectItem>
@@ -250,69 +250,69 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                 </div>
             </div>
             
-            <div className="bg-black/40 rounded-lg p-6 border border-[#D4AF37]/20 flex flex-col justify-center items-center text-center">
-                <span className="text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
+            <div className="bg-background/80 rounded-lg p-6 border border-amber-600/20 dark:border-[#D4AF37]/20 flex flex-col justify-center items-center text-center">
+                <span className="text-amber-600 dark:text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
                 {impactosEstimados > 0 ? (
                     <>
-                        <span className="text-5xl font-heading text-white font-black tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        <span className="text-5xl font-heading text-foreground font-black tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                             {impactosEstimados.toLocaleString()}
                         </span>
                         <div className="flex flex-col mt-2">
-                           <span className="text-zinc-500 font-medium text-[10px] uppercase tracking-widest">Impactos Garantizados</span>
-                           <span className="text-[#00d2ff] font-mono text-[9px] uppercase mt-1">Frecuencia Plan: {planFrequency}x</span>
+                           <span className="text-muted-foreground font-medium text-[10px] uppercase tracking-widest">Impactos Garantizados</span>
+                           <span className="text-primary font-mono text-[9px] uppercase mt-1">Frecuencia Plan: {planFrequency}x</span>
                         </div>
                     </>
                 ) : (
-                    <span className="text-zinc-500 text-sm italic">Configura tu campaña...</span>
+                    <span className="text-muted-foreground text-sm italic">Configura tu campaña...</span>
                 )}
             </div>
          </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="nombre_campana" className="text-zinc-400 font-medium">Nombre de la Creatividad</Label>
-        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Lanzamiento Perfume 2026" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 focus:border-[#D4AF37] text-zinc-100 h-11" />
+        <Label htmlFor="nombre_campana" className="text-muted-foreground font-medium">Nombre de la Creatividad</Label>
+        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Lanzamiento Perfume 2026" required disabled={isLoading} className="bg-background border-border focus:border-amber-600 dark:focus:border-[#D4AF37] text-foreground h-11" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="fecha_inicio" className="text-zinc-400 font-medium">Fecha de Inicio</Label>
-          <Input id="fecha_inicio" name="fecha_inicio" type="date" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
+          <Label htmlFor="fecha_inicio" className="text-muted-foreground font-medium">Fecha de Inicio</Label>
+          <Input id="fecha_inicio" name="fecha_inicio" type="date" required disabled={isLoading} className="bg-background border-border text-foreground h-11" />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="fecha_fin" className="text-zinc-400 font-medium">Fecha de Fin</Label>
-          <Input id="fecha_fin" name="fecha_fin" type="date" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
+          <Label htmlFor="fecha_fin" className="text-muted-foreground font-medium">Fecha de Fin</Label>
+          <Input id="fecha_fin" name="fecha_fin" type="date" required disabled={isLoading} className="bg-background border-border text-foreground h-11" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="hora_inicio" className="text-zinc-400 font-medium">Hora Inicio Emisión</Label>
-          <Input id="hora_inicio" name="hora_inicio" type="time" defaultValue="00:00" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
+          <Label htmlFor="hora_inicio" className="text-muted-foreground font-medium">Hora Inicio Emisión</Label>
+          <Input id="hora_inicio" name="hora_inicio" type="time" defaultValue="00:00" required disabled={isLoading} className="bg-background border-border text-foreground h-11" />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="hora_fin" className="text-zinc-400 font-medium">Hora Fin Emisión</Label>
-          <Input id="hora_fin" name="hora_fin" type="time" defaultValue="23:59" required disabled={isLoading} className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11" />
+          <Label htmlFor="hora_fin" className="text-muted-foreground font-medium">Hora Fin Emisión</Label>
+          <Input id="hora_fin" name="hora_fin" type="time" defaultValue="23:59" required disabled={isLoading} className="bg-background border-border text-foreground h-11" />
         </div>
       </div>
 
       <div className="flex flex-col gap-4 relative z-0">
-        <Label className="text-zinc-400 font-medium">Selección de Pantallas</Label>
+        <Label className="text-muted-foreground font-medium">Selección de Pantallas</Label>
         
         {isPremium ? (
           <div className="space-y-4">
-             <div className="p-4 bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-xl text-[#D4AF37] mb-2 flex items-center justify-between">
+             <div className="p-4 bg-amber-600/5 dark:bg-[#D4AF37]/5 border border-amber-600/20 dark:border-[#D4AF37]/20 rounded-xl text-amber-600 dark:text-[#D4AF37] mb-2 flex items-center justify-between">
                 <div>
-                   <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-[#D4AF37] text-black px-1.5 py-0.5 rounded">PRO</span></p>
+                   <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-amber-600 dark:bg-[#D4AF37] text-white dark:text-black px-1.5 py-0.5 rounded">PRO</span></p>
                    <p className="text-[11px] opacity-70">Selecciona las pantallas disponibles en el mapa.</p>
                 </div>
                 {selectedMapScreens.length > 0 && (
-                    <span className="bg-[#D4AF37] text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
+                    <span className="bg-amber-600 dark:bg-[#D4AF37] text-white dark:text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
                         {selectedMapScreens.length} Seleccionadas
                     </span>
                 )}
              </div>
-             <div className="h-[400px] rounded-xl overflow-hidden border border-zinc-800">
+             <div className="h-[400px] rounded-xl overflow-hidden border border-border">
                <MapSelector 
                   pantallas={pantallas} 
                   onTogglePantalla={toggleScreen}
@@ -323,10 +323,10 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
           </div>
         ) : (
           <Select name="pantalla_id" required disabled={isLoading}>
-            <SelectTrigger className="bg-zinc-900 border-zinc-800 text-zinc-100 h-11">
+            <SelectTrigger className="bg-background border-border text-foreground h-11">
               <SelectValue placeholder="Selecciona una pantalla de la lista..." />
             </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-100">
+            <SelectContent className="bg-popover border-border text-popover-foreground">
               {pantallas.length === 0 ? (
                 <SelectItem value="default" disabled>No hay pantallas disponibles</SelectItem>
               ) : (
@@ -352,26 +352,26 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="video" className="text-zinc-400 font-medium tracking-tight">Archivo (Imagen o Video)</Label>
-        <Input id="video" name="video" type="file" required disabled={isLoading} accept="image/*,video/mp4" className="bg-zinc-900 border-zinc-800 text-zinc-100 h-12 file:text-zinc-100 file:font-semibold" />
-        <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Resolución sugerida: 1920x1080 (HD)</p>
+        <Label htmlFor="video" className="text-muted-foreground font-medium tracking-tight">Archivo (Imagen o Video)</Label>
+        <Input id="video" name="video" type="file" required disabled={isLoading} accept="image/*,video/mp4" className="bg-background border-border text-foreground h-12 file:text-foreground file:font-semibold" />
+        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-1">Resolución sugerida: 1920x1080 (HD)</p>
       </div>
 
       {isUploading && (
         <div className="space-y-2">
-          <div className="w-full bg-zinc-800 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
             <div 
               className="bg-primary h-full transition-all duration-300 shadow-[0_0_10px_rgba(0,210,255,0.5)]" 
               style={{ width: `${uploadProgress}%` }}
             />
           </div>
-          <p className="text-[10px] text-zinc-500 font-mono text-center uppercase tracking-widest">
+          <p className="text-[10px] text-muted-foreground font-mono text-center uppercase tracking-widest">
             Subiendo archivo: {uploadProgress}%
           </p>
         </div>
       )}
 
-      <Button type="submit" className="mt-6 bg-[#D4AF37] hover:bg-[#b08d24] text-black font-black h-12 uppercase tracking-widest text-xs" disabled={isLoading}>
+      <Button type="submit" className="mt-6 bg-amber-600 dark:bg-[#D4AF37] hover:bg-amber-700 dark:hover:bg-[#b08d24] text-white dark:text-black font-black h-12 uppercase tracking-widest text-xs" disabled={isLoading}>
         {isLoading ? (isUploading ? 'Subiendo Media...' : 'Procesando IA...') : 'Lanzar Campaña'}
       </Button>
     </form>

@@ -25,7 +25,7 @@ export default async function AdminDashboardPage() {
     .limit(5)
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-zinc-950 min-h-screen text-zinc-100 font-sans">
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-zinc-100">Visión Global</h1>
         <p className="text-zinc-500">Métricas principales de la red Lumina.</p>

@@ -40,7 +40,7 @@ export default function HeroSection() {
       
       {/* Floating UI Elements Mockup: The Intelligence Engine */}
       <div className="mt-20 relative w-full max-w-5xl mx-auto animate-float">
-          <div className="cyber-glass-cyan p-1 rounded-[2.2rem] shadow-[0_0_80px_rgba(0,210,255,0.15)] relative z-20">
+          <div className="landing-glass-cyan p-1 rounded-[2.2rem] shadow-[0_0_80px_rgba(0,210,255,0.15)] relative z-20">
              <div className="bg-black/95 rounded-[2rem] overflow-hidden border border-white/10 aspect-video md:aspect-[21/9] relative">
                 {/* Simulated Dashboard UI */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#00d2ff]/10 via-black to-black p-6 md:p-10 flex flex-col">
@@ -71,7 +71,7 @@ export default function HeroSection() {
                         <div className="col-span-12 md:col-span-8 flex flex-col gap-6">
                             <div className="grid grid-cols-3 gap-6">
                                 {/* Impressions Card */}
-                                <div className="cyber-glass-cyan border-white/5 p-5 flex flex-col justify-between group cursor-default">
+                                <div className="landing-glass-cyan border-white/5 p-5 flex flex-col justify-between group cursor-default">
                                     <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-1 group-hover:text-[#00d2ff] transition-colors">Impressions</p>
                                     <p className="text-2xl md:text-3xl font-heading text-white tracking-tighter">8.42M</p>
                                     <div className="mt-4 h-8 w-full">
@@ -89,7 +89,7 @@ export default function HeroSection() {
                                 </div>
                                 
                                 {/* Revenue Card (Gold) */}
-                                <div className="cyber-glass-gold border-white/5 p-5 flex flex-col justify-between group cursor-default">
+                                <div className="landing-glass-gold border-white/5 p-5 flex flex-col justify-between group cursor-default">
                                     <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-1 group-hover:text-[#D4AF37] transition-colors">Yield (24h)</p>
                                     <p className="text-2xl md:text-3xl font-heading text-white tracking-tighter text-gradient-gold">$12,408</p>
                                     <div className="mt-4 h-8 w-full">
@@ -107,7 +107,7 @@ export default function HeroSection() {
                                 </div>
 
                                 {/* Active Nodes Card */}
-                                <div className="cyber-glass-cyan border-white/5 p-5 flex flex-col justify-between group cursor-default">
+                                <div className="landing-glass-cyan border-white/5 p-5 flex flex-col justify-between group cursor-default">
                                     <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mb-1 group-hover:text-[#00d2ff] transition-colors">Elastic Nodes</p>
                                     <p className="text-2xl md:text-3xl font-heading text-white tracking-tighter">1,240</p>
                                     <div className="mt-4 flex items-center justify-between">
@@ -201,10 +201,10 @@ export default function HeroSection() {
           </div>
           
           {/* External Floating Chips */}
-          <div className="absolute -top-10 -right-10 cyber-glass-gold px-6 py-3 text-[12px] text-[#D4AF37] font-black tracking-[0.3em] hidden lg:block border-[#D4AF37]/40 shadow-[0_0_40px_rgba(212,175,55,0.2)] animate-float z-30">
+          <div className="absolute -top-10 -right-10 landing-glass-gold px-6 py-3 text-[12px] text-[#D4AF37] font-black tracking-[0.3em] hidden lg:block border-[#D4AF37]/40 shadow-[0_0_40px_rgba(212,175,55,0.2)] animate-float z-30">
             +2.4M IMPACTOS / MES
           </div>
-          <div className="absolute -bottom-10 -left-10 cyber-glass-cyan px-6 py-3 text-[12px] text-[#00d2ff] font-black tracking-[0.3em] hidden lg:block border-[#00d2ff]/40 shadow-[0_0_40px_rgba(0,210,255,0.2)] animate-float z-30 transform -translate-y-4">
+          <div className="absolute -bottom-10 -left-10 landing-glass-cyan px-6 py-3 text-[12px] text-[#00d2ff] font-black tracking-[0.3em] hidden lg:block border-[#00d2ff]/40 shadow-[0_0_40px_rgba(0,210,255,0.2)] animate-float z-30 transform -translate-y-4">
             REACH: 82% OPTIMIZED
           </div>
       </div>

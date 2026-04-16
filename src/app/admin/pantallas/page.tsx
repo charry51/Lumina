@@ -12,7 +12,7 @@ export default async function AdminPantallasPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="p-8 font-[family-name:var(--font-geist-sans)]">
+    <div className="p-8 font-sans">
       <header className="mb-8 flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold text-zinc-100 uppercase tracking-tighter italic">RED DE <span className="text-[#D4AF37] NOT-italic">PANTALLAS</span></h1>

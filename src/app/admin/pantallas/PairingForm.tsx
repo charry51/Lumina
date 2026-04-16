@@ -14,6 +14,14 @@ import {
   ScreenType, 
   DensityLevel 
 } from '@/lib/yield/pricing'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import MapSelector from '@/components/MapSelector'
 
 export function PairingForm() {
   const router = useRouter()
@@ -153,8 +161,8 @@ export function PairingForm() {
     return (
       <div className="flex flex-col items-center gap-3 py-8 text-center">
         <CheckCircle2 className="w-12 h-12 text-green-400" />
-        <p className="text-green-400 font-heading font-black uppercase tracking-widest text-sm">¡Vinculada con éxito!</p>
-        <p className="text-zinc-500 text-xs">La TV se está conectando al reproductor...</p>
+        <p className="text-green-500 dark:text-green-400 font-heading font-black uppercase tracking-widest text-sm">¡Vinculada con éxito!</p>
+        <p className="text-muted-foreground text-xs">La TV se está conectando al reproductor...</p>
       </div>
     )
   }
@@ -170,35 +178,35 @@ export function PairingForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label className="text-zinc-400 text-xs uppercase tracking-widest">Código de la TV</Label>
+        <Label className="text-muted-foreground text-xs uppercase tracking-widest">Código de la TV</Label>
         <Input
           value={code}
           onChange={e => setCode(e.target.value.toUpperCase())}
           placeholder="LM-4F9"
           maxLength={6}
-          className="bg-zinc-900 border-zinc-800 text-white text-2xl font-mono h-14 tracking-[0.5em] uppercase text-center focus:border-primary"
+          className="bg-muted border-border text-foreground text-2xl font-mono h-14 tracking-[0.5em] uppercase text-center focus:border-primary"
           disabled={loading}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-2">
-          <Label className="text-zinc-400 text-xs uppercase tracking-widest">Nombre de la Pantalla</Label>
+          <Label className="text-muted-foreground text-xs uppercase tracking-widest">Nombre de la Pantalla</Label>
           <Input
             value={nombre}
             onChange={e => setNombre(e.target.value)}
             placeholder="Ej: TV Recepción Bar"
-            className="bg-zinc-900 border-zinc-800 text-white h-10"
+            className="bg-muted border-border text-foreground h-10"
             disabled={loading}
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label className="text-zinc-400 text-xs uppercase tracking-widest">Dirección completa</Label>
+          <Label className="text-muted-foreground text-xs uppercase tracking-widest">Dirección completa</Label>
           <Input
             value={ciudad}
             onChange={e => setCiudad(e.target.value)}
             placeholder="Ej: Madrid, C/ Mayor 1"
-            className="bg-zinc-900 border-zinc-800 text-white h-10"
+            className="bg-muted border-border text-foreground h-10"
             disabled={loading}
           />
         </div>
@@ -207,12 +215,12 @@ export function PairingForm() {
       {/* LUMINA v3.0: Categorización Categoría y Densidad */}
       <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
-            <Label className="text-zinc-400 text-xs uppercase tracking-widest">Tipo de Establecimiento</Label>
+            <Label className="text-muted-foreground text-xs uppercase tracking-widest">Tipo de Establecimiento</Label>
             <Select value={tipoPantalla} onValueChange={(v) => setTipoPantalla(v as ScreenType)}>
-              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
+              <SelectTrigger className="bg-muted border-border text-foreground h-10 text-[11px] uppercase font-bold tracking-tight">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-zinc-800">
+              <SelectContent className="bg-popover border-border">
                 <SelectItem value="bar">Bar (Standard)</SelectItem>
                 <SelectItem value="gimnasio">Gimnasio</SelectItem>
                 <SelectItem value="restaurante">Restaurante</SelectItem>
@@ -223,12 +231,12 @@ export function PairingForm() {
             </Select>
           </div>
           <div className="flex flex-col gap-2">
-            <Label className="text-zinc-400 text-xs uppercase tracking-widest">Densidad Población</Label>
+            <Label className="text-muted-foreground text-xs uppercase tracking-widest">Densidad Población</Label>
             <Select value={densidadNivel} onValueChange={(v) => setDensidadNivel(v as DensityLevel)}>
-              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-10 text-[11px] uppercase font-bold tracking-tight">
+              <SelectTrigger className="bg-muted border-border text-foreground h-10 text-[11px] uppercase font-bold tracking-tight">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-zinc-800">
+              <SelectContent className="bg-popover border-border">
                 <SelectItem value="bajo">Baja Densidad</SelectItem>
                 <SelectItem value="medio">Media</SelectItem>
                 <SelectItem value="alto">Alta</SelectItem>
@@ -242,41 +250,41 @@ export function PairingForm() {
       <div className={`p-4 rounded-xl border flex items-center justify-between transition-all duration-500 ${
         currentTier === 'Elite' ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' :
         currentTier === 'Plus' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 shadow-[0_0_15px_rgba(0,210,255,0.1)]' :
-        'bg-zinc-900 border-zinc-800'
+        'bg-muted/50 border-border'
       }`}>
         <div className="flex flex-col">
-          <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-mono">Potencial de Ingresos</span>
+          <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-mono">Potencial de Ingresos</span>
           <span className={`text-sm font-black uppercase tracking-widest ${
             currentTier === 'Elite' ? 'text-[#D4AF37]' :
             currentTier === 'Plus' ? 'text-[#00d2ff]' :
-            'text-zinc-300'
+            'text-foreground'
           }`}>{currentTier} TIER</span>
         </div>
         <div className="text-right">
-          <span className="text-[9px] text-zinc-600 uppercase block font-bold">Multiplicador Yield</span>
+          <span className="text-[9px] text-muted-foreground uppercase block font-bold">Multiplicador Yield</span>
           <span className={`text-xl font-mono font-black ${
-            currentTier === 'Elite' ? 'text-white' : 'text-zinc-400'
+            currentTier === 'Elite' ? 'text-amber-600 dark:text-[#D4AF37]' : 'text-muted-foreground'
           }`}>x{multiplier.toFixed(1)}</span>
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label className="text-zinc-400 text-xs uppercase tracking-widest">Ubicación / Descripción</Label>
+        <Label className="text-muted-foreground text-xs uppercase tracking-widest">Ubicación / Descripción</Label>
         <Input
           value={ubicacion}
           onChange={e => setUbicacion(e.target.value)}
           placeholder="Ej: Entrada principal, a la derecha"
-          className="bg-zinc-900 border-zinc-800 text-white h-10"
+          className="bg-muted border-border text-foreground h-10"
           disabled={loading}
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label className="text-zinc-400 text-xs uppercase tracking-widest mb-1 flex items-center gap-2">
+        <Label className="text-muted-foreground text-xs uppercase tracking-widest mb-1 flex items-center gap-2">
             <MapPin className="w-3 h-3 text-primary" /> Posición en el Mapa
-            {geocoding && <span className="text-[9px] text-zinc-500 animate-pulse ml-2 lowercase">buscando...</span>}
+            {geocoding && <span className="text-[9px] text-muted-foreground animate-pulse ml-2 lowercase">buscando...</span>}
         </Label>
-        <div className="rounded-xl overflow-hidden border border-zinc-800 h-[200px] bg-zinc-950">
+        <div className="rounded-xl overflow-hidden border border-border h-[200px] bg-muted/30">
             <MapSelector 
                 onSelect={(lat, lng) => setCoords({ lat, lng })}
                 externalPosition={coords}
@@ -285,15 +293,15 @@ export function PairingForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label className="text-zinc-400 text-xs uppercase tracking-widest mb-1">Visibilidad de la Pantalla</Label>
-        <div className="grid grid-cols-2 gap-2 bg-zinc-950 p-1 rounded-xl border border-zinc-800">
+        <Label className="text-muted-foreground text-xs uppercase tracking-widest mb-1">Visibilidad de la Pantalla</Label>
+        <div className="grid grid-cols-2 gap-2 bg-muted/30 p-1 rounded-xl border border-border">
             <button
                 type="button"
                 onClick={() => setEsPublica(true)}
                 className={`flex flex-col items-center gap-1 py-3 rounded-lg border transition-all ${
                     esPublica 
-                        ? 'bg-primary/20 border-primary/50 text-white shadow-[0_0_15px_rgba(0,210,255,0.1)]' 
-                        : 'border-transparent text-zinc-500 hover:text-zinc-400'
+                        ? 'bg-primary/20 border-primary/50 text-foreground shadow-[0_0_15px_rgba(0,210,255,0.1)]' 
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
             >
                 <span className="text-[10px] font-black uppercase tracking-tighter">🌐 Pública</span>
@@ -304,8 +312,8 @@ export function PairingForm() {
                 onClick={() => setEsPublica(false)}
                 className={`flex flex-col items-center gap-1 py-3 rounded-lg border transition-all ${
                     !esPublica 
-                        ? 'bg-zinc-800 border-zinc-700 text-white' 
-                        : 'border-transparent text-zinc-500 hover:text-zinc-400'
+                        ? 'bg-muted border-primary/30 text-foreground' 
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
             >
                 <span className="text-[10px] font-black uppercase tracking-tighter">🔒 Privada</span>

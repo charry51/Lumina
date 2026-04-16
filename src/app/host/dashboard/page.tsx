@@ -34,19 +34,19 @@ export default async function HostDashboardPage({
   // VISTA DE ONBOARDING (Si no tiene pantallas o pulsó "Vincular otra")
   if (!hasScreens || isAddingScreen) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] text-foreground p-8 font-sans flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-transparent text-foreground p-8 font-sans flex flex-col items-center justify-center">
         <div className="max-w-md w-full">
             <header className="mb-10 text-center">
-                <Link href="/dashboard" className="inline-block mb-4 text-[10px] text-zinc-500 hover:text-primary transition-colors uppercase tracking-[3px]">← Volver al Dashboard Principal</Link>
-                <h1 className="text-4xl font-heading font-black text-gradient mb-2">VINCULAR TV</h1>
-                <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-[3px]">Añade un nuevo nodo de emisión a tu cuenta</p>
+                <Link href="/dashboard" className="inline-block mb-4 text-[10px] text-muted-foreground hover:text-primary transition-colors uppercase tracking-[3px]">← Volver al Dashboard Principal</Link>
+                <h1 className="text-4xl font-heading font-black text-gradient-cyan mb-2">VINCULAR TV</h1>
+                <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[3px]">Añade un nuevo nodo de emisión a tu cuenta</p>
             </header>
 
-            <div className="cyber-card p-8 bg-zinc-900/50 backdrop-blur-xl border-primary/20">
+            <div className="cyber-card p-8 bg-card backdrop-blur-xl border-border shadow-xl">
                 <PairingForm />
             </div>
 
-            <p className="mt-8 text-center text-[10px] text-zinc-600 uppercase tracking-widest font-mono">
+            <p className="mt-8 text-center text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
                 ¿Necesitas ayuda técnica? lumina.app/soporte
             </p>
         </div>
@@ -56,9 +56,17 @@ export default async function HostDashboardPage({
 
   // Selección de la pantalla actual (por URL o la primera de la lista)
   const selectedHostId = params.screenId
-  const hostData = selectedHostId 
-    ? (hosts.find(h => h.id === selectedHostId) || hosts[0])
-    : hosts[0]
+  const hostData = Array.isArray(hosts) && hosts.length > 0
+    ? (selectedHostId ? (hosts.find(h => h.id === selectedHostId) || hosts[0]) : hosts[0])
+    : null
+
+  if (!hostData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+        <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-widest">Error al cargar datos del nodo...</p>
+      </div>
+    )
+  }
 
   // Obtener historial de comisiones para la pantalla seleccionada
   const { data: comisiones } = await supabase
@@ -69,7 +77,8 @@ export default async function HostDashboardPage({
     .limit(50)
 
   const totalGenerado = (hostData.saldo_pendiente || 0) + (hostData.saldo_pagado || 0)
-  const pantalla = hostData.pantallas as any
+  const rawPantalla = hostData.pantallas
+  const pantalla = (Array.isArray(rawPantalla) ? rawPantalla[0] : rawPantalla) as any
 
   // YIELD INTELLIGENCE
   const screenType = pantalla?.tipo_pantalla as ScreenType || 'gimnasio'
@@ -80,55 +89,60 @@ export default async function HostDashboardPage({
   return (
     <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 font-sans">
       {/* Header Premium - Balanced Cyan Logo */}
-      <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-white/5 pb-8">
+      <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-border pb-8">
         <div className="flex items-center gap-4">
            <img src="/logo.png" alt="Lumina Logo" className="h-10 w-auto" />
            <div>
-              <Link href="/dashboard" className="inline-block mb-1 text-[10px] text-zinc-500 hover:text-[#00d2ff] transition-colors uppercase tracking-[3px] font-bold">← Dashboard Principal</Link>
+              <Link href="/dashboard" className="inline-block mb-1 text-[10px] text-muted-foreground hover:text-primary transition-colors uppercase tracking-[3px] font-bold">← Dashboard Principal</Link>
               <div className="flex items-center gap-3">
                 <h1 className="text-4xl font-heading font-black text-gradient-cyan tracking-tighter">LUMINA</h1>
-                <span className="bg-[#00d2ff]/10 text-[#00d2ff] text-[9px] font-black px-2 py-0.5 rounded border border-[#00d2ff]/20 uppercase tracking-widest">HOST PORTAL</span>
+                <span className="bg-primary/10 text-primary text-[9px] font-black px-2 py-0.5 rounded border border-primary/20 uppercase tracking-widest">HOST PORTAL</span>
               </div>
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-[4px]">Verified Infrastructure Node</p>
+              <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[4px]">Verified Infrastructure Node</p>
            </div>
         </div>
         
         <div className="flex items-center gap-4 w-full sm:w-auto">
           <Link 
             href="/host/dashboard?action=vincular"
-            className="cyber-button-cyan w-full sm:w-auto"
+            className="cyber-button-cyan w-full sm:w-auto text-center"
           >
             <Plus className="w-4 h-4 mr-2" /> Vincular Nueva TV
           </Link>
-          <div className="h-10 w-px bg-zinc-800 hidden lg:block mx-2" />
-          <div className="text-right hidden lg:block">
-            <p className="text-[10px] text-zinc-500 font-mono uppercase mb-1 tracking-tighter">Identidad Verificada</p>
-            <p className="text-xs text-[#D4AF37] font-bold tracking-tight">{user.email}</p>
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard/perfil">
+               <Button variant="outline" className="h-9 border-border text-muted-foreground hover:text-foreground hover:bg-muted text-[10px] uppercase font-bold tracking-widest px-3">
+                  Mi Perfil
+               </Button>
+            </Link>
+            <div className="text-right hidden lg:block">
+              <p className="text-[10px] text-muted-foreground font-mono uppercase mb-1 tracking-tighter">Identidad Verificada</p>
+              <p className="text-xs text-amber-600 dark:text-[#D4AF37] font-bold tracking-tight">{user.email}</p>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Quick Network Status - Cyan Glass */}
-      <section className="mb-10 cyber-glass-cyan border-[#00d2ff]/10 overflow-hidden relative">
-          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#00d2ff] to-transparent opacity-30" />
+      <section className="mb-10 cyber-glass-cyan border-[#00d2ff]/10 overflow-hidden relative transition-all duration-500">
+          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-30" />
           <div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-6">
                   <div className="flex -space-x-2">
                       {hosts.slice(0, 5).map((h: any, i) => (
-                          <div key={h.id} className="w-10 h-10 rounded-full bg-zinc-900 border-2 border-background flex items-center justify-center text-[#00d2ff] shadow-xl group cursor-pointer hover:translate-y-[-2px] transition-transform">
+                          <div key={h.id} className="w-10 h-10 rounded-full bg-zinc-900 dark:bg-zinc-900 border-2 border-background flex items-center justify-center text-primary shadow-xl group cursor-pointer hover:translate-y-[-2px] transition-transform">
                               <Tv className="w-5 h-5" />
                           </div>
                       ))}
                       {hosts.length > 5 && (
-                          <div className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-background flex items-center justify-center text-xs font-bold text-zinc-400">
+                          <div className="w-10 h-10 rounded-full bg-zinc-800 dark:bg-zinc-800 border-2 border-background flex items-center justify-center text-xs font-bold text-zinc-400">
                               +{hosts.length - 5}
                           </div>
                       )}
                   </div>
-                  <div>
-                      <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest leading-none mb-1">Red Propietaria</p>
-                      <h3 className="text-xl font-heading text-white">{hosts.length} NODOS ACTIVOS</h3>
-                  </div>
+                      <div>
+                          <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest leading-none mb-1">Red Propietaria</p>
+                          <h3 className="text-xl font-heading text-foreground">{hosts.length} NODOS ACTIVOS</h3>
+                      </div>
               </div>
               
               <div className="flex flex-wrap gap-2 justify-center">
@@ -138,11 +152,11 @@ export default async function HostDashboardPage({
                         href={`/host/dashboard?screenId=${h.id}`}
                         className={`px-3 py-1.5 rounded-md border text-[10px] uppercase font-black transition-all tracking-tighter ${
                           h.id === hostData.id 
-                              ? 'bg-[#00d2ff] border-[#00d2ff] text-black shadow-[0_0_15px_rgba(0,210,255,0.4)]' 
-                              : 'bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-[#00d2ff]/50'
-                      }`}
+                            ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105' 
+                            : 'bg-muted border-border text-muted-foreground hover:text-primary hover:border-primary/50'
+                        }`}
                       >
-                            {h.pantallas?.nombre}
+                        {h.pantallas?.nombre}
                       </Link>
                   ))}
               </div>
@@ -179,8 +193,8 @@ export default async function HostDashboardPage({
                     )}
                     <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full border ${
                     pantalla?.estado === 'activa'
-                        ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                        : 'bg-zinc-900 text-zinc-600 border-zinc-800'
+                        ? 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20'
+                        : 'bg-muted text-muted-foreground border-border'
                     }`}>
                     {pantalla?.estado || 'Inactiva'}
                     </span>
@@ -196,37 +210,37 @@ export default async function HostDashboardPage({
             
             <div className="cyber-glass-cyan p-8 grid grid-cols-2 md:grid-cols-4 gap-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-5">
-                   <Monitor className="w-24 h-24 text-[#00d2ff]" />
+                   <Monitor className="w-24 h-24 text-primary" />
                 </div>
                 
                 <div>
-                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Punto de Emisión</p>
-                  <p className="text-white font-heading text-xl uppercase leading-tight tracking-tighter">{pantalla?.nombre || '—'}</p>
-                  <p className="text-[10px] text-[#00d2ff] font-bold mt-1 uppercase tracking-widest">{pantalla?.ciudad || '—'}</p>
+                  <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[2px] mb-3">Punto de Emisión</p>
+                  <p className="text-foreground font-heading text-xl uppercase leading-tight tracking-tighter">{pantalla?.nombre || '—'}</p>
+                  <p className="text-[10px] text-primary font-bold mt-1 uppercase tracking-widest">{pantalla?.ciudad || '—'}</p>
                 </div>
 
-                <div className="col-span-1 border-l border-white/5 pl-8">
-                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Yield Rate (% Share)</p>
+                <div className="col-span-1 border-l border-border pl-8">
+                  <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[2px] mb-3">Yield Rate (% Share)</p>
                   <p className="text-gradient-gold font-black text-3xl leading-tight">{hostData.porcentaje}%</p>
-                  <p className="text-[8px] text-zinc-600 mt-1 uppercase leading-tight font-bold">Comisión Garantizada</p>
+                  <p className="text-[8px] text-muted-foreground mt-1 uppercase leading-tight font-bold">Comisión Garantizada</p>
                 </div>
 
-                <div className="col-span-1 border-l border-white/5 pl-8">
-                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Uptime Global</p>
-                  <p className="text-green-400 font-mono font-black text-2xl tracking-tighter">99.9%</p>
+                <div className="col-span-1 border-l border-border pl-8">
+                  <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[2px] mb-3">Uptime Global</p>
+                  <p className="text-green-600 font-mono font-black text-2xl tracking-tighter">99.9%</p>
                   <div className="flex gap-0.5 mt-2">
                      {[...Array(12)].map((_, i) => <div key={i} className="w-1 h-3 bg-green-500/40 rounded-full" />)}
                   </div>
                 </div>
 
-                <div className="col-span-1 border-l border-white/5 pl-8">
-                  <p className="text-[9px] text-zinc-500 font-mono uppercase tracking-[2px] mb-3">Hardware Status</p>
+                <div className="col-span-1 border-l border-border pl-8">
+                  <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[2px] mb-3">Hardware Status</p>
                   <div className="flex flex-col gap-1">
-                     <span className="text-[10px] text-zinc-200 font-bold uppercase tracking-tighter flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#00d2ff] shadow-[0_0_5px_#00d2ff]" /> GPU Ready
+                     <span className="text-[10px] text-foreground dark:text-zinc-200 font-bold uppercase tracking-tighter flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_5px_rgba(0,210,255,0.5)]" /> GPU Ready
                      </span>
-                     <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-700" /> AI Modulo
+                     <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30" /> AI Modulo
                      </span>
                   </div>
                 </div>
@@ -238,35 +252,35 @@ export default async function HostDashboardPage({
             <h2 className="text-xs font-heading uppercase tracking-widest mb-4 text-gradient-gold flex items-center gap-2 font-black">
               <History className="w-4 h-4" /> Ledger de Emisiones Verificadas
             </h2>
-            <div className="cyber-glass-gold border-white/5 overflow-hidden">
+            <div className="cyber-glass-gold border-border overflow-hidden">
               {comisiones && comisiones.length > 0 ? (
                 <div className="responsive-table-container">
                   <table className="w-full text-sm text-left">
-                    <thead className="bg-white/[0.02] border-b border-white/5">
+                    <thead className="bg-muted/50 border-b border-border">
                       <tr>
-                        <th className="cyber-table-header text-[#D4AF37]">Campaña de Terceros</th>
+                        <th className="cyber-table-header text-amber-600 dark:text-[#D4AF37]">Campaña de Terceros</th>
                         <th className="cyber-table-header">Fee Bruto</th>
                         <th className="cyber-table-header">Tu Dividendo</th>
                         <th className="cyber-table-header text-right">Validación UTC</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                       {comisiones.map((com: any) => (
-                        <tr key={com.id} className="hover:bg-white/[0.03] transition-colors group">
+                        <tr key={com.id} className="hover:bg-muted/30 transition-colors group">
                           <td className="px-6 py-5">
-                            <p className="font-heading text-zinc-100 uppercase text-[11px] tracking-widest group-hover:text-[#D4AF37] transition-colors">
+                            <p className="font-heading text-foreground uppercase text-[11px] tracking-widest group-hover:text-primary transition-colors">
                               {com.campanas?.nombre_campana || 'Campaña Certificada'}
                             </p>
-                            <p className="text-[9px] text-zinc-600 font-mono uppercase mt-1">Hash: {com.id.split('-')[0]}</p>
+                            <p className="text-[9px] text-muted-foreground font-mono uppercase mt-1">Hash: {com.id.split('-')[0]}</p>
                           </td>
-                          <td className="px-6 py-5 text-zinc-400 font-mono text-xs">{com.importe_total?.toFixed(3)}€</td>
+                          <td className="px-6 py-5 text-muted-foreground font-mono text-xs">{com.importe_total?.toFixed(3)}€</td>
                           <td className="px-6 py-5">
                              <div className="flex items-center gap-2">
-                                <span className="font-mono text-[#D4AF37] font-black text-xs">+{com.comision?.toFixed(4)}€</span>
-                                <span className="text-[8px] text-zinc-600 font-mono">({com.porcentaje}%)</span>
+                                <span className="font-mono text-amber-600 dark:text-[#D4AF37] font-black text-xs">+{com.comision?.toFixed(4)}€</span>
+                                <span className="text-[8px] text-muted-foreground font-mono">({com.porcentaje}%)</span>
                              </div>
                           </td>
-                          <td className="px-6 py-5 text-right text-zinc-500 font-mono text-[10px] uppercase">
+                          <td className="px-6 py-5 text-right text-muted-foreground font-mono text-[10px] uppercase">
                             {new Date(com.created_at).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                           </td>
                         </tr>
@@ -275,11 +289,11 @@ export default async function HostDashboardPage({
                   </table>
                 </div>
               ) : (
-                <div className="p-20 text-center bg-zinc-900/10">
-                  <div className="w-16 h-16 rounded-full bg-zinc-900/50 border border-zinc-800 flex items-center justify-center mx-auto mb-6 opacity-50">
-                     <History className="w-8 h-8 text-zinc-700" />
+                <div className="p-20 text-center bg-muted/5">
+                  <div className="w-16 h-16 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-6 opacity-50">
+                     <History className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-[4px]">
+                  <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[4px]">
                     Esperando flujo de publicidad programática...
                   </p>
                 </div>
@@ -296,37 +310,37 @@ export default async function HostDashboardPage({
             
             <div className="grid grid-cols-1 gap-6">
                 {[
-                    { label: 'Ingresos Acumulados', value: `${totalGenerado.toFixed(2)}€`, icon: TrendingUp, color: 'text-white', bg: 'cyber-glass-gold', sub: 'Histórico Total' },
-                    { label: 'Saldo Disponible', value: `${(hostData.saldo_pendiente || 0).toFixed(2)}€`, icon: Wallet, color: 'text-[#D4AF37]', bg: 'bg-[#D4AF37]/5', sub: 'Pendiente de cobro' },
-                    { label: 'Retiros Liquidados', value: `${(hostData.saldo_pagado || 0).toFixed(2)}€`, icon: ChevronRight, color: 'text-green-400', bg: 'bg-green-400/5', sub: 'Transferidos a cuenta' },
+                    { label: 'Ingresos Acumulados', value: `${totalGenerado.toFixed(2)}€`, icon: TrendingUp, color: 'text-foreground dark:text-white', bg: 'cyber-glass-gold', sub: 'Histórico Total' },
+                    { label: 'Saldo Disponible', value: `${(hostData.saldo_pendiente || 0).toFixed(2)}€`, icon: Wallet, color: 'text-amber-600 dark:text-[#D4AF37]', bg: 'bg-amber-600/5 dark:bg-[#D4AF37]/5', sub: 'Pendiente de cobro' },
+                    { label: 'Retiros Liquidados', value: `${(hostData.saldo_pagado || 0).toFixed(2)}€`, icon: ChevronRight, color: 'text-green-600 dark:text-green-400', bg: 'bg-green-600/5 dark:bg-green-400/5', sub: 'Transferidos a cuenta' },
                 ].map((item) => (
-                    <div key={item.label} className={`p-8 border border-white/5 rounded-2xl relative overflow-hidden group ${item.bg}`}>
+                    <div key={item.label} className={`p-8 border border-border rounded-2xl relative overflow-hidden group ${item.bg}`}>
                         <div className="absolute top-0 left-0 w-1 h-full bg-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="flex justify-between items-start mb-6">
-                            <div>
-                               <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-[3px] mb-1">{item.label}</p>
-                               <p className="text-[9px] text-zinc-700 uppercase font-black">{item.sub}</p>
-                            </div>
+                             <div>
+                                <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[3px] mb-1">{item.label}</p>
+                                <p className="text-[9px] text-amber-600 dark:text-amber-700 uppercase font-black">{item.sub}</p>
+                             </div>
                             <item.icon className={`w-5 h-5 ${item.color} opacity-40`} />
                         </div>
                         <p className={`text-4xl font-mono font-black tracking-tighter ${item.color}`}>{item.value}</p>
                         
                         {item.label === 'Saldo Disponible' && (hostData.saldo_pendiente || 0) >= 50 && (
-                            <Button className="w-full mt-6 bg-[#D4AF37] hover:bg-white text-black font-black uppercase text-[10px] tracking-widest rounded-none h-10">Solicitar Cobro Now</Button>
+                            <Button className="w-full mt-6 bg-[#D4AF37] hover:bg-white text-black font-black uppercase text-[10px] tracking-widest rounded-none h-10 shadow-lg shadow-[#D4AF37]/20 transition-all">Solicitar Cobro Now</Button>
                         )}
                     </div>
                 ))}
             </div>
 
-            <div className="p-8 cyber-glass-cyan border-[#00d2ff]/5 text-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00d2ff]/5 rounded-full blur-3xl -mr-16 -mt-16" />
-                <p className="text-[10px] text-zinc-500 font-mono uppercase leading-relaxed tracking-widest relative z-10">
-                   Liquidación automática al alcanzar <span className="text-[#00d2ff] font-black">50.00€</span>. 
+            <div className="p-8 cyber-glass-cyan border-primary/10 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16" />
+                <p className="text-[10px] text-muted-foreground font-mono uppercase leading-relaxed tracking-widest relative z-10">
+                   Liquidación automática al alcanzar <span className="text-primary font-black">50.00€</span>. 
                    Verifica tu IBAN en la configuración de la cuenta para evitar retrasos en el protocolo de pago.
                 </p>
             </div>
             
-            <button className="w-full py-4 border border-zinc-800 text-zinc-500 text-[10px] uppercase font-black tracking-[3px] hover:border-zinc-700 hover:text-zinc-300 transition-all rounded-xl">
+            <button className="w-full py-4 border border-border text-muted-foreground text-[10px] uppercase font-black tracking-[3px] hover:border-primary/50 hover:text-primary transition-all rounded-xl">
                Descargar Facturas PDF
             </button>
         </div>
