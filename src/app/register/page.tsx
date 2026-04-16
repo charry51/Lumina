@@ -14,14 +14,14 @@ export default async function RegisterPage({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-background font-sans text-foreground">
       <div className="mb-12 text-center">
-        <h1 className="text-6xl font-heading text-zinc-100 uppercase tracking-tighter mb-2">Lumina</h1>
+        <h1 className="text-6xl font-heading text-foreground uppercase tracking-tighter mb-2">Lumina</h1>
         <p className="text-[10px] text-primary font-mono uppercase tracking-[6px] opacity-70">Sistemas de Inteligencia Visual</p>
       </div>
 
-      <div className="cyber-card w-full max-w-md p-8 relative">
+      <div className="cyber-card w-full max-w-md p-8 relative bg-card border border-border">
         <header className="mb-8">
-          <h2 className="text-2xl font-heading text-zinc-100 uppercase tracking-tight">Crea tu cuenta</h2>
-          <p className="text-xs text-zinc-500 font-sans tracking-wide">Únete a la red de cartelería digital más avanzada.</p>
+          <h2 className="text-2xl font-heading text-foreground uppercase tracking-tight">Crea tu cuenta</h2>
+          <p className="text-xs text-muted-foreground font-sans tracking-wide">Únete a la red de cartelería digital más avanzada.</p>
         </header>
 
         <form className="flex flex-col gap-6" action={signup}>
@@ -32,7 +32,7 @@ export default async function RegisterPage({
               name="email" 
               type="email" 
               placeholder="nombre@ejemplo.com" 
-              className="bg-zinc-950 border-zinc-800 focus:border-primary transition-all rounded-none font-mono text-xs py-5"
+              className="bg-background border-border focus:border-primary transition-all rounded-none font-mono text-xs py-5"
               required 
             />
           </div>
@@ -43,7 +43,7 @@ export default async function RegisterPage({
               name="password" 
               type="password" 
               placeholder="Mínimo 8 caracteres"
-              className="bg-zinc-950 border-zinc-800 focus:border-primary transition-all rounded-none font-mono text-xs py-5"
+              className="bg-background border-border focus:border-primary transition-all rounded-none font-mono text-xs py-5"
               required 
             />
           </div>
@@ -59,7 +59,7 @@ export default async function RegisterPage({
           </button>
         </form>
 
-        <footer className="mt-10 pt-6 border-t border-zinc-900 flex justify-center text-[10px] uppercase font-mono tracking-widest gap-2">
+        <footer className="mt-10 pt-6 border-t border-border flex justify-center text-[10px] uppercase font-mono tracking-widest gap-2">
           <span className="text-zinc-600">¿Ya tienes acceso?</span>
           <Link href="/login" className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-4">
             Inicia Sesión
