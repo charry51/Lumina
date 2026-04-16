@@ -52,12 +52,14 @@ export default function MessageDetail({ message }: { message: any }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="h-9 text-[10px] uppercase font-black tracking-widest border-zinc-800 hover:bg-zinc-900 text-zinc-400 hover:text-white">
-          <Eye className="w-3 h-3 mr-2" />
-          Ver y Responder
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger 
+        render={
+          <Button variant="outline" size="sm" className="h-9 text-[10px] uppercase font-black tracking-widest border-zinc-800 hover:bg-zinc-900 text-zinc-400 hover:text-white">
+            <Eye className="w-3 h-3 mr-2" />
+            Ver y Responder
+          </Button>
+        }
+      />
       
       <DialogContent className="max-w-2xl bg-zinc-950 border-zinc-900 border-2 shadow-2xl overflow-hidden p-0 gap-0">
         <DialogHeader className="p-6 bg-black border-b border-zinc-900">
