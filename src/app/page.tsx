@@ -9,7 +9,7 @@ export default async function Home() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-black flex flex-col selection:bg-[#D4AF37] selection:text-black">
+    <div className="dark min-h-screen bg-black flex flex-col selection:bg-[#D4AF37] selection:text-black">
       {/* Navigation Header */}
       <header className="fixed top-0 left-0 w-full z-[100] border-b border-white/[0.05] bg-black/50 backdrop-blur-md">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">

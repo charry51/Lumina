@@ -27,9 +27,8 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
           value={value}
           onChange={handleChange}
           className={cn(
-            "w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#D4AF37] hover:accent-[#b08d24] transition-all",
-            "focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50",
-            "slider-thumb-cyber",
+            "w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-amber-600 dark:accent-[#D4AF37] hover:accent-amber-700 dark:hover:accent-[#b08d24] transition-all",
+            "focus:outline-none focus:ring-2 focus:ring-amber-600/50 dark:focus:ring-[#D4AF37]/50",
             className
           )}
           {...props}
@@ -41,8 +40,8 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
             appearance: none;
             width: 18px;
             height: 18px;
-            background: #D4AF37;
-            border: 2px solid #000;
+            background: currentColor;
+            border: 2px solid var(--background, #fff);
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
@@ -55,12 +54,13 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
           input[type='range']::-moz-range-thumb {
             width: 18px;
             height: 18px;
-            background: #D4AF37;
-            border: 2px solid #000;
+            background: currentColor;
+            border: 2px solid var(--background, #fff);
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
           }
+          /* This class helps currentColor inherit the accent color definition if needed, though accent-color utility usually applies to the control natively */
         `}</style>
       </div>
     )

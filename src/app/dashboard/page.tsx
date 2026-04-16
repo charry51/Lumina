@@ -80,7 +80,7 @@ export default async function DashboardPage() {
   const campañasActivas = misCampanas?.filter(c => c.estado === 'aprobada').length || 0
 
   return (
-    <div className="p-8 min-h-screen bg-background text-foreground font-sans">
+    <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 font-sans">
       <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
         <div className="flex items-center gap-4">
           <img src="/logo.png" alt="Lumina Logo" className="h-10 w-auto" />
@@ -100,6 +100,12 @@ export default async function DashboardPage() {
                </Button>
             </Link>
           )}
+
+          <Link href="/dashboard/perfil">
+             <Button variant="outline" className="border-border hover:bg-muted flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
+                Mi Perfil
+             </Button>
+          </Link>
 
           <Link href="/dashboard/planes">
              <Button variant="outline" className="border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
@@ -126,35 +132,35 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      {/* STATS BANNER (More Blue/Balanced) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-        <div className="cyber-glass-cyan p-4 flex items-center justify-between border-[#00d2ff]/20">
+      {/* STATS BANNER */}
+      <div className="cyber-glass-cyan p-8 grid grid-cols-2 md:grid-cols-4 gap-8 relative overflow-hidden bg-card/50 backdrop-blur-md border-border shadow-sm">
+        <div className="cyber-glass-cyan p-4 flex items-center justify-between transition-all duration-500">
           <div>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Impactos Totales</p>
-            <p className="text-2xl font-heading text-white">{totalImpactos.toLocaleString()}</p>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">Impactos Totales</p>
+            <p className="text-2xl font-heading text-foreground">{totalImpactos.toLocaleString()}</p>
           </div>
-          <Zap className="text-[#00d2ff] w-8 h-8 opacity-50" />
+          <Zap className="text-primary w-8 h-8 opacity-50" />
         </div>
-        <div className="cyber-glass-gold p-4 flex items-center justify-between border-[#D4AF37]/20">
+        <div className="cyber-glass-gold p-4 flex items-center justify-between transition-all duration-500">
           <div>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Presupuesto Activo</p>
-            <p className="text-2xl font-heading text-white">{totalPresupuesto.toFixed(2)}€</p>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">Presupuesto Activo</p>
+            <p className="text-2xl font-heading text-foreground">{totalPresupuesto.toFixed(2)}€</p>
           </div>
-          <DollarSign className="text-[#D4AF37] w-8 h-8 opacity-50" />
+          <DollarSign className="text-amber-600 dark:text-[#D4AF37] w-8 h-8 opacity-50" />
         </div>
-        <div className="cyber-glass-cyan p-4 flex items-center justify-between border-[#00d2ff]/20">
+        <div className="cyber-glass-cyan p-4 flex items-center justify-between transition-all duration-500">
           <div>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Campaña Activas</p>
-            <p className="text-2xl font-heading text-white">{campañasActivas}</p>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">Campaña Activas</p>
+            <p className="text-2xl font-heading text-foreground dark:text-white">{campañasActivas}</p>
           </div>
-          <Target className="text-[#00d2ff] w-8 h-8 opacity-50" />
+          <Target className="text-primary w-8 h-8 opacity-50" />
         </div>
-        <div className="cyber-glass-gold p-4 flex items-center justify-between border-[#D4AF37]/20">
+        <div className="cyber-glass-gold p-4 flex items-center justify-between transition-all duration-500">
           <div>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">eCPM Promedio</p>
-            <p className="text-2xl font-heading text-white">50.00€</p>
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">eCPM Promedio</p>
+            <p className="text-2xl font-heading text-foreground dark:text-white">50.00€</p>
           </div>
-          <TrendingUp className="text-[#D4AF37] w-8 h-8 opacity-50" />
+          <TrendingUp className="text-amber-600 dark:text-[#D4AF37] w-8 h-8 opacity-50" />
         </div>
       </div>
       
@@ -166,15 +172,18 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {pantallas && pantallas.length > 0 ? (
             pantallas.map((pantalla: any) => (
-              <div key={pantalla.id} className="cyber-card p-6 flex flex-col justify-between group">
+              <div key={pantalla.id} className="cyber-card p-6 flex flex-col justify-between group h-full">
                 <div className="mb-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-heading text-zinc-100 group-hover:text-[#00d2ff] transition-colors uppercase">{pantalla.nombre}</h3>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {/* Placeholder for host navigation logic */}
+                    </div>
+                    <h3 className="text-lg font-heading text-foreground dark:text-zinc-100 group-hover:text-primary transition-colors uppercase">{pantalla.nombre}</h3>
                     <div className="flex flex-col items-end gap-1">
                       <span className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded-full tracking-tighter ${
                         pantalla.estado === 'activa' 
-                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                          : 'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                          ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
+                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border border-zinc-200 dark:border-zinc-700'
                       }`}>
                         {pantalla.estado}
                       </span>
@@ -185,12 +194,12 @@ export default async function DashboardPage() {
                 
                 <div className="flex justify-between items-center mt-4">
                   <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
-                    <span className="w-2 h-2 rounded-full bg-[#00d2ff] animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     <span>{pantalla.ciudad}</span>
                   </div>
 
                   <Link href={`/player/${pantalla.id}`} target="_blank">
-                    <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-[#00d2ff]/20 text-[#00d2ff] hover:bg-[#00d2ff] hover:text-black transition-all">
+                    <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-primary/20 text-primary hover:bg-primary hover:text-white transition-all">
                       Ver en Vivo
                     </Button>
                   </Link>
@@ -198,10 +207,10 @@ export default async function DashboardPage() {
               </div>
             ))
           ) : (
-            <div className="col-span-full py-12 text-center cyber-card border-dashed bg-[#00d2ff]/5 border-[#00d2ff]/20">
-              <p className="text-[#00d2ff] font-heading uppercase text-sm mb-2">Sin pantallas activas</p>
+            <div className="col-span-full py-16 text-center cyber-card border-dashed bg-primary/5 border-primary/20">
+              <p className="text-primary font-heading uppercase text-sm mb-2">Sin pantallas activas</p>
               <Link href="/host/dashboard">
-                <Button size="sm" className="cyber-button-cyan mt-4">Vincular mi TV ahora</Button>
+                <Button size="sm" className="cyber-button-cyan mt-4 shadow-lg shadow-primary/10">Vincular mi TV ahora</Button>
               </Link>
             </div>
           )}
@@ -213,20 +222,20 @@ export default async function DashboardPage() {
            <BarChart3 className="w-5 h-5" />
            Rendimiento de Campañas
         </h2>
-        <div className="responsive-table-container cyber-card shadow-2xl overflow-hidden bg-black/40 border-white/5">
+        <div className="responsive-table-container cyber-card shadow-2xl overflow-hidden bg-card border-border transition-all duration-500">
           {misCampanas && misCampanas.length > 0 ? (
             <table className="w-full text-sm text-left">
-              <thead className="bg-[#1a1a2e]/50 border-b border-white/5">
+              <thead className="bg-muted/50 border-b border-border">
                 <tr>
-                  <th className="cyber-table-header w-[25%]">Campaña</th>
-                  <th className="cyber-table-header">Destino</th>
-                  <th className="cyber-table-header w-[30%]">Rendimiento (Entrega)</th>
-                  <th className="cyber-table-header">Economía</th>
-                  <th className="cyber-table-header">Estado</th>
-                  <th className="cyber-table-header text-right">Acciones</th>
+                  <th className="cyber-table-header w-[25%] text-foreground">Campaña</th>
+                  <th className="cyber-table-header text-foreground">Destino</th>
+                  <th className="cyber-table-header w-[30%] text-foreground">Rendimiento (Entrega)</th>
+                  <th className="cyber-table-header text-foreground">Economía</th>
+                  <th className="cyber-table-header text-foreground">Estado</th>
+                  <th className="cyber-table-header text-right text-foreground">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-border">
                 {misCampanas.map((camp: any) => {
                   const deliveryPercent = Math.min(100, Math.floor(((camp.impactos_reales || 0) / (camp.impactos_estimados || 1)) * 100))
                   const costPerImpact = (camp.presupuesto_total / (camp.impactos_estimados || 1)).toFixed(3)
@@ -234,7 +243,7 @@ export default async function DashboardPage() {
                   return (
                     <tr key={camp.id} className="cyber-table-row group">
                       <td className="px-6 py-6">
-                        <p className="font-heading text-zinc-100 uppercase text-xs mb-1">{camp.nombre_campana}</p>
+                        <p className="font-heading text-foreground uppercase text-xs mb-1">{camp.nombre_campana}</p>
                         <p className="text-[10px] text-zinc-500 font-mono italic">ID: {camp.id.split('-')[0]}</p>
                       </td>
                       <td className="px-6 py-4 text-zinc-400 text-xs">
@@ -251,7 +260,7 @@ export default async function DashboardPage() {
                               style={{ width: `${deliveryPercent}%` }}
                             />
                           </div>
-                          <span className="text-[10px] font-mono text-white w-12 text-right">{deliveryPercent}%</span>
+                           <span className="text-[10px] font-mono text-foreground w-12 text-right">{deliveryPercent}%</span>
                         </div>
                         <div className="flex justify-between mt-2">
                            <span className="text-[9px] text-[#00d2ff] uppercase font-bold">{camp.impactos_reales || 0}</span>
@@ -259,7 +268,7 @@ export default async function DashboardPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-xs text-white font-heading">{camp.presupuesto_total.toFixed(2)}€</p>
+                        <p className="text-xs text-foreground font-heading">{camp.presupuesto_total.toFixed(2)}€</p>
                         <p className="text-[9px] text-zinc-500 uppercase mt-0.5">{costPerImpact}€ / Impacto</p>
                       </td>
                       <td className="px-6 py-4">

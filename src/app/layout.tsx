@@ -28,7 +28,6 @@ export const metadata: Metadata = {
 
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
-import { AccessibilityWidget } from "@/components/AccessibilityWidget";
 
 export default function RootLayout({
   children,
@@ -42,17 +41,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        {/* Anti-Next Logo CSS injection */}
-        <style dangerouslySetInnerHTML={{ __html: `
-          [data-nextjs-static-indicator], 
-          .nextjs-static-indicator-container, 
-          #nextjs-dev-overlay { 
-            display: none !important; 
-          }
-        `}} />
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           {children}
-          <AccessibilityWidget />
         </ThemeProvider>
         <Toaster />
       </body>

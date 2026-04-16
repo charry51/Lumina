@@ -211,7 +211,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   if (!currentCampaign) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0f] text-white p-12 text-center">
-        <div className="cyber-glass-gold p-12 max-w-2xl border-dashed border-2 animate-pulse-gold">
+        <div className="landing-glass-gold p-12 max-w-2xl border-dashed border-2 animate-pulse-gold">
           <h1 className="text-6xl font-heading mb-6 text-gradient-gold font-black">LUMINA</h1>
           <h2 className="text-2xl font-sans text-white/40 uppercase tracking-widest">Available Space</h2>
           <p className="mt-8 text-zinc-500 font-mono text-xs uppercase tracking-tighter">Waiting for programmatic auctions...</p>

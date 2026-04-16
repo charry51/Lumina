@@ -35,19 +35,19 @@ export default async function NuevaCampanaPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 bg-background text-foreground min-h-screen">
-      <header className="mb-8 border-b border-zinc-800 pb-6 flex items-center gap-6">
+      <header className="mb-8 border-b border-border pb-6 flex items-center gap-6">
         <img src="/logo.png" alt="Lumina Logo" className="h-12 w-auto" />
         <div>
-            <h1 className="text-2xl font-bold text-zinc-100 italic tracking-tight uppercase">CREAR <span className="text-[#D4AF37] NOT-italic">NUEVA CAMPAÑA</span></h1>
+            <h1 className="text-2xl font-bold text-foreground italic tracking-tight uppercase">CREAR <span className="text-amber-600 dark:text-[#D4AF37] NOT-italic">NUEVA CAMPAÑA</span></h1>
             <div className="flex items-center gap-2 mt-1">
-                <span className="text-[10px] bg-[#D4AF37]/10 text-[#D4AF37] font-bold px-3 py-1 rounded-full border border-[#D4AF37]/30 uppercase tracking-widest">
+                <span className="text-[10px] bg-amber-600/10 dark:bg-[#D4AF37]/10 text-amber-600 dark:text-[#D4AF37] font-bold px-3 py-1 rounded-full border border-amber-600/30 dark:border-[#D4AF37]/30 uppercase tracking-widest">
                     Modo: {profile.planes.nombre}
                 </span>
             </div>
         </div>
       </header>
       
-      <div className="p-8 border border-zinc-800 rounded-2xl shadow-2xl bg-zinc-950">
+      <div className="p-8 border border-border rounded-2xl shadow-2xl bg-card">
         <CampaignForm pantallas={pantallas || []} userPlan={profile.planes.nombre} />
       </div>
     </div>

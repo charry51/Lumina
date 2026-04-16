@@ -56,7 +56,7 @@ export default function FeaturesSection() {
              {features.map((feature, idx) => {
                 const isEven = idx % 2 === 0
                 return (
-                    <div key={idx} className={`${isEven ? 'cyber-glass-cyan hover:border-[#00d2ff]/50' : 'cyber-glass-gold hover:border-[#D4AF37]/50'} p-8 group transition-all duration-500`}>
+                    <div key={idx} className={`${isEven ? 'landing-glass-cyan hover:border-[#00d2ff]/50' : 'landing-glass-gold hover:border-[#D4AF37]/50'} p-8 group transition-all duration-500`}>
                         <div className={`w-12 h-12 rounded-lg ${isEven ? 'bg-[#00d2ff]/10 text-[#00d2ff] shadow-[0_4px_10px_rgba(0,210,255,0.1)]' : 'bg-[#D4AF37]/10 text-[#D4AF37] shadow-[0_4px_10px_rgba(212,175,55,0.1)]'} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
                             <feature.icon className="w-6 h-6" />
                         </div>

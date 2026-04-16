@@ -28,7 +28,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex font-[family-name:var(--font-geist-sans)]">
+    <div className="dark min-h-screen bg-zinc-950 text-zinc-100 flex font-[family-name:var(--font-geist-sans)]">
       {/* Navegación Móvil (Solo visible en < md) */}
       <AdminMobileNav />
 
