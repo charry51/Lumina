@@ -5,10 +5,14 @@ import { resend } from '@/lib/resend';
 import { revalidatePath } from 'next/cache';
 
 export async function sendContactMessage(formData: FormData) {
+  console.log('--- Intentando enviar mensaje de contacto ---');
+  
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const subject = formData.get('subject') as string;
   const message = formData.get('message') as string;
+
+  console.log('Datos recibidos:', { name, email, subject });
 
   if (!name || !email || !subject || !message) {
     return { error: 'Todos los campos son obligatorios' };
@@ -25,51 +29,61 @@ export async function sendContactMessage(formData: FormData) {
       ]);
 
     if (dbError) {
-       console.error('Error de Supabase (Simulado éxito para Frontend demo):', dbError);
-       // MODO FALLBACK: Si no existe la tabla, simplemente simulamos el éxito
-       // Importante crear la tabla contact_messages en Supabase con el archivo .sql
+       console.error('Error de Supabase:', dbError);
+       if (dbError.code === '42P01' || dbError.message.includes('not found')) {
+         return { error: 'Configuración incompleta: La tabla de base de datos no existe. Por favor, ejecuta el script SQL.' };
+       }
+       throw new Error(dbError.message);
     }
+
+    console.log('Mensaje guardado en DB correctamente.');
 
     // 2. Enviar email de notificación al admin
-    // Verificamos si existe la API de Resend para no romper el entorno
     if (process.env.RESEND_API_KEY) {
-      const { data: emailData, error: emailError } = await resend.emails.send({
-        from: 'Lumina <onboarding@resend.dev>',
-        to: ['charry51@example.com'], // Cambiar por el email real del admin
-        subject: `Nuevo mensaje de contacto: ${subject}`,
-        html: `
-          <div style="font-family: sans-serif; background: #0a0a0f; color: #f8f9fa; padding: 40px; border-radius: 12px;">
-            <h1 style="color: #00d2ff; text-transform: uppercase; letter-spacing: 2px;">Nuevo Mensaje</h1>
-            <p><strong>De:</strong> ${name} (${email})</p>
-            <p><strong>Asunto:</strong> ${subject}</p>
-            <hr style="border: none; border-top: 1px solid #2a2a3d; margin: 20px 0;" />
-            <p style="white-space: pre-wrap;">${message}</p>
-            <br />
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/mensajes" 
-               style="display: inline-block; background: #D4AF37; color: #0a0a0f; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">
-              Responder en el Panel
-            </a>
-          </div>
-        `
-      });
+      try {
+        const { data: emailData, error: emailError } = await resend.emails.send({
+          from: 'Lumina <onboarding@resend.dev>',
+          to: ['charry51@example.com'],
+          subject: `Nuevo mensaje de contacto: ${subject}`,
+          html: `
+            <div style="font-family: sans-serif; background: #0a0a0f; color: #f8f9fa; padding: 40px; border-radius: 12px;">
+              <h1 style="color: #00d2ff; text-transform: uppercase; letter-spacing: 2px;">Nuevo Mensaje</h1>
+              <p><strong>De:</strong> ${name} (${email})</p>
+              <p><strong>Asunto:</strong> ${subject}</p>
+              <hr style="border: none; border-top: 1px solid #2a2a3d; margin: 20px 0;" />
+              <p style="white-space: pre-wrap;">${message}</p>
+              <br />
+              <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/mensajes" 
+                 style="display: inline-block; background: #D4AF37; color: #0a0a0f; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">
+                Responder en el Panel
+              </a>
+            </div>
+          `
+        });
 
-      if (emailError) {
-        console.error('Error enviando email:', emailError);
+        if (emailError) {
+          console.error('Error enviando email (Resend):', emailError);
+          // No bloqueamos el éxito si el mensaje ya está en la DB
+        } else {
+          console.log('Email de notificación enviado.');
+        }
+      } catch (err) {
+        console.error('Excepción enviando email:', err);
       }
     } else {
-        console.warn('RESEND_API_KEY no encontrada. Email simulado localmente.');
+      console.warn('RESEND_API_KEY no configurada. Saltando envío de email.');
     }
 
-    // A pesar de cualquier error de configuración backend, permitimos a la UI continuar
-    // hasta que el admin termine la configuración de la DB y Resend.
     try {
-        revalidatePath('/admin/mensajes');
-    } catch(e) {}
+      revalidatePath('/admin/mensajes');
+    } catch (e) {
+      console.error('Error revalidando path:', e);
+    }
     
     return { success: true };
   } catch (error: any) {
-    console.error('Error crítico in sendContactMessage:', error);
-    return { error: 'Hubo un error crítico al enviar. Inténtalo de nuevo.' };
+    console.error('Error crítico en sendContactMessage:', error);
+    return { error: 'Error del servidor: ' + (error.message || 'Desconocido') };
   }
 }
 
