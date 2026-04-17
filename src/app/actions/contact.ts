@@ -93,7 +93,7 @@ export async function replyToMessage(messageId: string, replyText: string, userE
   }
 
   try {
-    const supabase = await createClient();
+    const supabase = await createAdminClient();
 
     // 1. Enviar el email vía Resend (solo si existe la API Key)
     if (process.env.RESEND_API_KEY) {

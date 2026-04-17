@@ -1,9 +1,9 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { Mail, Clock, CheckCircle2, AlertCircle, Eye } from 'lucide-react';
 import MessageDetail from './MessageDetail';
 
 export default async function AdminMessagesPage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   const { data: messages, error } = await supabase
     .from('contact_messages')
