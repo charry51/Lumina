@@ -12,18 +12,22 @@ import { Send, Mail, User, MessageSquare } from 'lucide-react';
 export default function ContactSection() {
   const [isPending, setIsPending] = useState(false);
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setIsPending(true);
+    
+    const formData = new FormData(e.currentTarget);
+    
     try {
       const result = await sendContactMessage(formData);
       if (result.error) {
         toast.error(result.error);
       } else {
         toast.success('¡Mensaje enviado correctamente! Te contactaremos pronto.');
-        (document.getElementById('contact-form') as HTMLFormElement)?.reset();
+        (e.target as HTMLFormElement).reset();
       }
     } catch (error) {
-      toast.error('Ocurrió un error inesperado.');
+      toast.error('Ocurrió un error inesperado al conectar con el servidor.');
     } finally {
       setIsPending(false);
     }
@@ -74,7 +78,7 @@ export default function ContactSection() {
           {/* Form Side */}
           <div className="lg:w-3/5">
             <div className="landing-glass-cyan p-8 md:p-12 relative" style={{ backgroundColor: 'rgba(18, 18, 26, 0.8)', borderColor: 'rgba(0, 210, 255, 0.2)' }}>
-              <form id="contact-form" action={handleSubmit} className="space-y-6">
+              <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold" style={{ color: '#a1a1aa' }}>Nombre Completo</Label>
