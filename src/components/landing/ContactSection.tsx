@@ -30,7 +30,7 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contacto" className="dark py-24 relative overflow-hidden bg-black text-foreground">
+    <section id="contacto" className="py-24 relative overflow-hidden bg-[#0a0a0f] text-zinc-100 dark">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none" />
@@ -73,8 +73,8 @@ export default function ContactSection() {
 
           {/* Form Side */}
           <div className="lg:w-3/5">
-            <div className="cyber-glass-cyan p-8 md:p-12 relative">
-              <form id="contact-form" action={handleSubmit} className="space-y-6 text-foreground">
+            <div className="landing-glass-cyan p-8 md:p-12 relative">
+              <form id="contact-form" action={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Nombre Completo</Label>
@@ -84,7 +84,7 @@ export default function ContactSection() {
                         id="name" 
                         name="name" 
                         placeholder="Juan Pérez" 
-                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl"
+                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl text-white placeholder:text-zinc-600"
                         required 
                       />
                     </div>
@@ -98,7 +98,7 @@ export default function ContactSection() {
                         name="email" 
                         type="email" 
                         placeholder="juan@empresa.com" 
-                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl"
+                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl text-white placeholder:text-zinc-600"
                         required 
                       />
                     </div>
@@ -111,7 +111,7 @@ export default function ContactSection() {
                     id="subject" 
                     name="subject" 
                     placeholder="Consulta sobre red de pantallas..." 
-                    className="bg-black/40 border-white/10 py-6 focus:border-primary transition-all rounded-xl"
+                    className="bg-black/40 border-white/10 py-6 focus:border-primary transition-all rounded-xl text-white placeholder:text-zinc-600"
                     required 
                   />
                 </div>
@@ -122,7 +122,7 @@ export default function ContactSection() {
                     id="message" 
                     name="message" 
                     placeholder="Cuéntanos más sobre tu proyecto..." 
-                    className="bg-black/40 border-white/10 min-h-[150px] focus:border-primary transition-all rounded-xl resize-none"
+                    className="bg-black/40 border-white/10 min-h-[150px] focus:border-primary transition-all rounded-xl resize-none text-white placeholder:text-zinc-600"
                     required 
                   />
                 </div>
