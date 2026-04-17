@@ -4,15 +4,10 @@ import { createClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
 import { revalidatePath } from 'next/cache';
 
-export async function sendContactMessage(formData: FormData) {
-  console.log('--- Intentando enviar mensaje de contacto ---');
-  
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const subject = formData.get('subject') as string;
   const message = formData.get('message') as string;
-
-  console.log('Datos recibidos:', { name, email, subject });
 
   if (!name || !email || !subject || !message) {
     return { error: 'Todos los campos son obligatorios' };
@@ -36,14 +31,12 @@ export async function sendContactMessage(formData: FormData) {
        throw new Error(dbError.message);
     }
 
-    console.log('Mensaje guardado en DB correctamente.');
-
     // 2. Enviar email de notificación al admin
     if (process.env.RESEND_API_KEY) {
       try {
         const { data: emailData, error: emailError } = await resend.emails.send({
           from: 'Lumina <onboarding@resend.dev>',
-          to: ['charry51@example.com'],
+          to: ['francharrielromero@gmail.com'],
           subject: `Nuevo mensaje de contacto: ${subject}`,
           html: `
             <div style="font-family: sans-serif; background: #0a0a0f; color: #f8f9fa; padding: 40px; border-radius: 12px;">
