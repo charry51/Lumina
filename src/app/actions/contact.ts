@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
 import { revalidatePath } from 'next/cache';
 
+export async function sendContactMessage(formData: FormData) {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const subject = formData.get('subject') as string;
