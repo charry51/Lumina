@@ -35,15 +35,23 @@ export async function createClient() {
 }
 
 export async function createAdminClient() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.error('CRITICAL: Supabase Admin environment variables are missing!');
-    throw new Error('Admin client configuration missing');
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) {
+    const missing = [];
+    if (!url) missing.push('NEXT_PUBLIC_SUPABASE_URL');
+    if (!key) missing.push('SUPABASE_SERVICE_ROLE_KEY');
+    
+    const errorMsg = `Admin client configuration missing: [${missing.join(', ')}]`;
+    console.error('CRITICAL:', errorMsg);
+    throw new Error(errorMsg);
   }
 
   // NOTE: SERVICE_ROLE_KEY bypasses RLS. Use ONLY in server context.
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    url,
+    key,
     {
       cookies: {
         getAll() { return [] },

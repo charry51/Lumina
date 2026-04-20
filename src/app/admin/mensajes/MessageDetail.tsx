@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Eye, Send, Mail, User, Calendar, MessageCircle } from 'lucide-react';
+import DeleteMessageButton from './DeleteMessageButton';
 
 export default function MessageDetail({ message }: { message: any }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,13 +68,16 @@ export default function MessageDetail({ message }: { message: any }) {
             <DialogTitle className="text-xl font-heading text-white uppercase tracking-tighter">
               Detalle del Mensaje
             </DialogTitle>
-            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter ${
-              message.status === 'unread' ? 'bg-primary text-black' : 
-              message.status === 'read' ? 'bg-zinc-800 text-zinc-400' : 
-              'bg-green-500 text-black'
-            }`}>
-              {message.status === 'unread' ? 'No Leído' : message.status === 'read' ? 'Leído' : 'Respondido'}
-            </span>
+            <div className="flex items-center gap-3">
+               <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter ${
+                 message.status === 'unread' ? 'bg-primary text-black' : 
+                 message.status === 'read' ? 'bg-zinc-800 text-zinc-400' : 
+                 'bg-green-500 text-black'
+               }`}>
+                 {message.status === 'unread' ? 'No Leído' : message.status === 'read' ? 'Leído' : 'Respondido'}
+               </span>
+               <DeleteMessageButton id={message.id} />
+            </div>
           </div>
         </DialogHeader>
 

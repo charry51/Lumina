@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { Mail, Clock } from 'lucide-react';
 import MessageDetail from './MessageDetail';
+import DeleteMessageButton from './DeleteMessageButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -82,6 +83,7 @@ export default async function AdminMessagesPage() {
 
                 <div className="flex items-center gap-3">
                   <MessageDetail message={msg} />
+                  <DeleteMessageButton id={msg.id} />
                 </div>
               </div>
             ))
