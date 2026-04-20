@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export async function createClient() {
   // Dynamic import of next/headers to prevent client-side bundling errors
@@ -34,44 +35,28 @@ export async function createClient() {
   )
 }
 
+/**
+ * Administrative client that bypasses RLS.
+ * Use ONLY in server-side contexts.
+ */
 export async function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  
-  /**
-   * CRITICAL FIX: Next.js (especially v16/Turbopack) prunes environment variables 
-   * that are not EXPLICITLY referenced by their full literal name.
-   * Using process.env[dynamicName] results in 'undefined' in production.
-   */
-  const key = 
-    process.env.SUPABASE_SERVICE_ROLE_KEY || 
-    process.env.SUPABASE_SERVICE_KEY || 
-    process.env.SERVICE_ROLE_KEY;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
-    const missingInfo = [];
-    if (!url) missingInfo.push('NEXT_PUBLIC_SUPABASE_URL missing');
-    if (!key) missingInfo.push('SERVICE_ROLE_KEY missing (Static reference failed)');
-
-    const errorMsg = `
-CRITICAL ERROR: Environment variables are invisible to the server.
-- Project Context: ${process.env.VERCEL_URL || 'Vercel Production'}
-- Key Status: SUPABASE_SERVICE_ROLE_KEY is ${process.env.SUPABASE_SERVICE_ROLE_KEY ? 'DEFINED' : 'UNDEFINED'}
-- Error: ${missingInfo.join(' | ')}
-    `.trim();
-
+    const errorMsg = `Admin client configuration missing: URL=${url ? 'OK' : 'MISSING'} | KEY=${key ? 'EXISTS' : 'MISSING'}`;
     console.error('CRITICAL:', errorMsg);
     throw new Error(errorMsg);
   }
 
-  // NOTE: SERVICE_ROLE_KEY bypasses RLS. Use ONLY in server context.
-  return createServerClient(
-    url,
-    key,
-    {
-      cookies: {
-        getAll() { return [] },
-        setAll() {}
-      },
+  // NOTE: For administrative tasks, we use the standard createClient 
+  // instead of createServerClient. This avoids the 'browser detection' warning 
+  // from @supabase/ssr that can occur in Server Actions, while still 
+  // bypassing RLS correctly.
+  return createSupabaseClient(url, key, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
     }
-  )
+  });
 }
