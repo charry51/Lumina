@@ -37,40 +37,26 @@ export async function createClient() {
 export async function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   
-  // ROBUST KEY CHECK: Look for common variations of the service role key
-  const keyNames = ['SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_KEY', 'SERVICE_ROLE_KEY'];
-  let key = '';
-
-  for (const name of keyNames) {
-    const val = process.env[name];
-    if (val) {
-      key = val;
-      break; 
-    }
-  }
+  /**
+   * CRITICAL FIX: Next.js (especially v16/Turbopack) prunes environment variables 
+   * that are not EXPLICITLY referenced by their full literal name.
+   * Using process.env[dynamicName] results in 'undefined' in production.
+   */
+  const key = 
+    process.env.SUPABASE_SERVICE_ROLE_KEY || 
+    process.env.SUPABASE_SERVICE_KEY || 
+    process.env.SERVICE_ROLE_KEY;
 
   if (!url || !key) {
-    // HARDCORE DIAGNOSTIC: List EVERY SINGLE ENV VAR keys
-    const allEnvNames = Object.keys(process.env);
-    
-    // Check for Vercel System variables specifically to identify PROJ and ENV
-    const vercelContext = {
-      project: process.env.VERCEL_PROJECT_ID || 'Unknown',
-      env: process.env.VERCEL_ENV || 'Unknown',
-      owner: process.env.VERCEL_GIT_REPO_OWNER || 'Unknown',
-      repo: process.env.VERCEL_GIT_REPO_SLUG || 'Unknown',
-      domain: process.env.VERCEL_URL || 'Unknown'
-    };
-
     const missingInfo = [];
     if (!url) missingInfo.push('NEXT_PUBLIC_SUPABASE_URL missing');
-    if (!key) missingInfo.push('SERVICE_ROLE_KEY missing');
+    if (!key) missingInfo.push('SERVICE_ROLE_KEY missing (Static reference failed)');
 
     const errorMsg = `
 CRITICAL ERROR: Environment variables are invisible to the server.
-- Errors: ${missingInfo.join(' | ')}
-- Context: Project=${vercelContext.project}, Env=${vercelContext.env}, Domain=${vercelContext.domain}
-- Visible Variables Map: [${allEnvNames.sort().join(', ')}]
+- Project Context: ${process.env.VERCEL_URL || 'Vercel Production'}
+- Key Status: SUPABASE_SERVICE_ROLE_KEY is ${process.env.SUPABASE_SERVICE_ROLE_KEY ? 'DEFINED' : 'UNDEFINED'}
+- Error: ${missingInfo.join(' | ')}
     `.trim();
 
     console.error('CRITICAL:', errorMsg);
