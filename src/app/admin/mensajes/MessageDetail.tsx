@@ -63,7 +63,7 @@ export default function MessageDetail({ message }: { message: any }) {
         }
       />
       
-      <DialogContent className="max-w-2xl bg-zinc-950 border-zinc-900 border-2 shadow-2xl overflow-hidden p-0 gap-0">
+      <DialogContent className="max-w-4xl bg-zinc-950 border-zinc-900 border-2 shadow-2xl overflow-hidden p-0 gap-0">
         <DialogHeader className="p-6 bg-black border-b border-zinc-900">
           <div className="flex justify-between items-start">
             <DialogTitle className="text-xl font-heading text-white uppercase tracking-tighter">
