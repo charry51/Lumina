@@ -24,7 +24,7 @@ export async function sendContactMessage(formData: FormData) {
     const { error: dbError } = await supabase
       .from('contact_messages')
       .insert([
-        { name, email, subject, message, status: 'unread', is_read: false }
+        { name, email, subject, message, status: 'unread' }
       ]);
 
     if (dbError) {
@@ -109,7 +109,6 @@ export async function replyToMessage(formData: FormData) {
       },
       body: JSON.stringify({ 
         status: 'replied',
-        is_read: true,
         admin_reply: reply
       })
     });
