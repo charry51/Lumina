@@ -40,23 +40,33 @@ export async function createAdminClient() {
   // ROBUST KEY CHECK: Look for common variations of the service role key
   const keyNames = ['SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_KEY', 'SERVICE_ROLE_KEY'];
   let key = '';
-  const foundNames: string[] = [];
 
   for (const name of keyNames) {
     const val = process.env[name];
     if (val) {
       key = val;
-      foundNames.push(name);
-      break; // Use the first one found
+      break; 
     }
   }
 
   if (!url || !key) {
     const missing = [];
     if (!url) missing.push('NEXT_PUBLIC_SUPABASE_URL');
-    if (!key) missing.push(`Key not found (tried: ${keyNames.join(', ')})`);
+    if (!key) {
+      // DIAGNOSTIC SCAN: Find ALL environment variable names that look like keys
+      // This is safe because we only return the NAMES, not the secrets.
+      const allEnvNames = Object.keys(process.env);
+      const suspiciousNames = allEnvNames.filter(name => 
+        name.includes('SUPABASE') || 
+        name.includes('KEY') || 
+        name.includes('SECRET') || 
+        name.includes('ROLE')
+      );
+      
+      missing.push(`Key not found. Diagnóstico de nombres disponibles en Vercel: [${suspiciousNames.length > 0 ? suspiciousNames.join(', ') : 'Ninguna variable encontrada'}]`);
+    }
     
-    const errorMsg = `Admin client configuration missing: [${missing.join(', ')}]`;
+    const errorMsg = `Admin client configuration missing: [${missing.join(' | ')}]`;
     console.error('CRITICAL:', errorMsg);
     throw new Error(errorMsg);
   }
