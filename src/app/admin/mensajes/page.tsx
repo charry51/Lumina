@@ -2,6 +2,8 @@ import { createAdminClient } from '@/lib/supabase/server';
 import { Mail, Clock, CheckCircle2, AlertCircle, Eye } from 'lucide-react';
 import MessageDetail from './MessageDetail';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminMessagesPage() {
   const supabase = await createAdminClient();
 
@@ -9,6 +11,8 @@ export default async function AdminMessagesPage() {
     .from('contact_messages')
     .select('*')
     .order('created_at', { ascending: false });
+
+  console.log(`[AdminMessages] Cargados ${messages?.length || 0} mensajes. Error:`, error);
 
   if (error) {
     return (
