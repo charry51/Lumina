@@ -82,55 +82,68 @@ export default function MessageDetail({ message }: { message: any }) {
           </div>
         </DialogHeader>
 
-        <div className="p-8 max-h-[60vh] overflow-y-auto space-y-8 scrollbar-thin scrollbar-thumb-zinc-800">
-          {/* User Info Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label className="text-[10px] uppercase text-zinc-500 font-bold tracking-widest flex items-center gap-1">
-                <User className="w-3 h-3" /> Remitente
-              </Label>
-              <p className="text-sm text-white font-medium">{message.name}</p>
+        <div className="p-8 max-h-[70vh] overflow-y-auto space-y-8 scrollbar-thin scrollbar-thumb-zinc-800 overflow-x-hidden">
+          {/* User Info List - Optimized to prevent overlap */}
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 border-b border-zinc-900 pb-6">
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <Label className="text-[9px] uppercase text-zinc-500 font-black tracking-[0.2em] flex items-center gap-1.5 mb-1">
+                  <User className="w-3 h-3 text-primary" /> Remitente
+                </Label>
+                <p className="text-base text-white font-heading uppercase truncate">{message.name}</p>
+              </div>
+              
+              <div className="space-y-1.5 flex-1 min-w-0 md:text-right">
+                <Label className="text-[9px] uppercase text-zinc-500 font-black tracking-[0.2em] flex items-center gap-1.5 md:justify-end mb-1">
+                  <Mail className="w-3 h-3 text-primary" /> Dirección de Email
+                </Label>
+                <p className="text-sm text-zinc-300 font-mono break-all">{message.email}</p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <Label className="text-[10px] uppercase text-zinc-500 font-bold tracking-widest flex items-center gap-1">
-                <Mail className="w-3 h-3" /> Email
+
+            <div className="space-y-1.5">
+              <Label className="text-[9px] uppercase text-zinc-500 font-black tracking-[0.2em] flex items-center gap-1.5 mb-1">
+                <Calendar className="w-3 h-3 text-primary" /> Fecha de Recepción
               </Label>
-              <p className="text-sm text-zinc-300 font-mono">{message.email}</p>
-            </div>
-            <div className="space-y-1 col-span-2">
-              <Label className="text-[10px] uppercase text-zinc-500 font-bold tracking-widest flex items-center gap-1">
-                <Calendar className="w-3 h-3" /> Fecha de Recepción
-              </Label>
-              <p className="text-sm text-zinc-400">{new Date(message.created_at).toLocaleString()}</p>
+              <p className="text-xs text-zinc-400 font-mono uppercase">
+                {new Date(message.created_at).toLocaleDateString()} — {new Date(message.created_at).toLocaleTimeString()}
+              </p>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-[10px] uppercase text-zinc-500 font-bold tracking-widest flex items-center gap-1">
-              <MessageCircle className="w-3 h-3" /> Mensaje Original
+          <div className="space-y-3">
+            <Label className="text-[9px] uppercase text-zinc-500 font-black tracking-[0.2em] flex items-center gap-1.5 mb-1">
+              <MessageCircle className="w-3 h-3 text-primary" /> Mensaje Original
             </Label>
-            <div className="p-5 bg-zinc-900/50 border border-zinc-900 rounded-xl">
-              <p className="text-sm text-zinc-300 leading-relaxed font-sans">{message.message}</p>
+            <div className="p-6 bg-zinc-900/30 border border-zinc-900 rounded-2xl relative group overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-colors duration-500" />
+              <p className="text-sm text-zinc-300 leading-relaxed font-sans whitespace-pre-wrap">{message.message}</p>
             </div>
           </div>
 
           {/* Previous Admin Reply if exists */}
           {message.admin_reply && (
-            <div className="space-y-2 pt-4 border-t border-zinc-900">
-              <Label className="text-[10px] uppercase text-green-500 font-bold tracking-widest">Respuesta Enviada</Label>
-              <div className="p-5 bg-green-500/5 border border-green-500/10 rounded-xl">
-                <p className="text-sm text-green-300/70 font-sans italic">{message.admin_reply}</p>
+            <div className="space-y-3 pt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-[1px] flex-1 bg-green-500/20" />
+                <Label className="text-[9px] uppercase text-green-500 font-black tracking-[0.2em] whitespace-nowrap">Respuesta Enviada</Label>
+                <div className="h-[1px] flex-1 bg-green-500/20" />
+              </div>
+              <div className="p-6 bg-green-500/5 border border-green-500/10 rounded-2xl border-dashed">
+                <p className="text-sm text-green-200/60 font-sans italic leading-relaxed">
+                  "{message.admin_reply}"
+                </p>
               </div>
             </div>
           )}
 
           {/* Reply Form */}
           {message.status !== 'replied' && (
-            <div className="space-y-3 pt-6 border-t border-zinc-900">
-              <Label className="text-[10px] uppercase text-primary font-bold tracking-widest">Escribir Respuesta</Label>
+            <div className="space-y-4 pt-4 border-t border-zinc-900">
+              <Label className="text-[9px] uppercase text-primary font-black tracking-[0.2em]">Escribir respuesta oficial</Label>
               <Textarea 
-                placeholder={`Hola ${message.name.split(' ')[0]}, gracias por contactar...`} 
-                className="bg-black border-zinc-800 min-h-[120px] focus:border-primary rounded-xl text-zinc-100 placeholder:text-zinc-700"
+                placeholder={`Hola ${message.name.split(' ')[0]}, gracias por contactar con Lumina...`} 
+                className="bg-black border-zinc-800 min-h-[140px] focus:ring-1 focus:ring-primary focus:border-primary rounded-2xl text-zinc-100 placeholder:text-zinc-700 p-6 transition-all duration-300"
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
               />
