@@ -36,12 +36,25 @@ export async function createClient() {
 
 export async function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  // ROBUST KEY CHECK: Look for common variations of the service role key
+  const keyNames = ['SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_KEY', 'SERVICE_ROLE_KEY'];
+  let key = '';
+  const foundNames: string[] = [];
+
+  for (const name of keyNames) {
+    const val = process.env[name];
+    if (val) {
+      key = val;
+      foundNames.push(name);
+      break; // Use the first one found
+    }
+  }
 
   if (!url || !key) {
     const missing = [];
     if (!url) missing.push('NEXT_PUBLIC_SUPABASE_URL');
-    if (!key) missing.push('SUPABASE_SERVICE_ROLE_KEY');
+    if (!key) missing.push(`Key not found (tried: ${keyNames.join(', ')})`);
     
     const errorMsg = `Admin client configuration missing: [${missing.join(', ')}]`;
     console.error('CRITICAL:', errorMsg);
