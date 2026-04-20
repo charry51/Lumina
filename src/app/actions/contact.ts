@@ -143,3 +143,36 @@ export async function replyToMessage(messageId: string, replyText: string, userE
     return { error: 'No se pudo enviar la respuesta: ' + errorMsg };
   }
 }
+
+export async function deleteMessage(messageId: string) {
+  if (!messageId) {
+    return { error: 'ID de mensaje no proporcionado' };
+  }
+
+  try {
+    const supabase = await createAdminClient();
+
+    const { error } = await supabase
+      .from('contact_messages')
+      .delete()
+      .eq('id', messageId);
+
+    if (error) {
+      console.error('Error al borrar mensaje:', error);
+      return { error: 'No se pudo borrar el mensaje: ' + error.message };
+    }
+
+    try {
+      const { revalidatePath } = await import('next/cache');
+      revalidatePath('/admin/mensajes');
+    } catch (e) {
+      console.error('Error revalidando tras borrado:', e);
+    }
+
+    return { success: true };
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : 'Desconocido';
+    console.error('Error crítico en deleteMessage:', errorMsg);
+    return { error: 'Error al procesar el borrado: ' + errorMsg };
+  }
+}
