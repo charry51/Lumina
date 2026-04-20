@@ -18,13 +18,18 @@ export async function sendContactMessage(formData: FormData) {
     const supabase = await createClient();
 
     // 1. Guardar en base de datos
-    const { error: dbError } = await supabase
+    const { data: insertData, error: dbError } = await supabase
       .from('contact_messages')
       .insert([
         { name, email, subject, message, status: 'unread' }
-      ]);
+      ])
+      .select();
 
     if (dbError) {
+       // ... error logic ...
+    }
+
+    console.log(`[ContactAction] Mensaje guardado con éxito. ID: ${insertData?.[0]?.id || 'Desconocido'}`);
        console.error('Error de Supabase:', dbError);
        if (dbError.code === '42P01' || dbError.message.includes('not found')) {
          return { error: 'Configuración incompleta: La tabla de base de datos no existe. Por favor, ejecuta el script SQL.' };
