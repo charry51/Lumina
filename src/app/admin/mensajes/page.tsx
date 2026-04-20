@@ -1,14 +1,18 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { Mail, Clock, CheckCircle2, AlertCircle, Eye } from 'lucide-react';
 import MessageDetail from './MessageDetail';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminMessagesPage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   const { data: messages, error } = await supabase
     .from('contact_messages')
     .select('*')
     .order('created_at', { ascending: false });
+
+  console.log(`[AdminMessages] Cargados ${messages?.length || 0} mensajes. Error:`, error);
 
   if (error) {
     return (
@@ -26,11 +30,14 @@ export default async function AdminMessagesPage() {
           <p className="text-xs text-zinc-500 uppercase tracking-widest font-mono mt-1">Gestiona las consultas de preventa y soporte</p>
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex flex-col items-end gap-1">
           <div className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary" />
             <span className="text-[10px] font-bold uppercase text-zinc-400">Total: {messages?.length || 0}</span>
           </div>
+          <span className="text-[9px] font-mono text-zinc-600 uppercase">
+            DB: {process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0] || 'Desconocido'}
+          </span>
         </div>
       </header>
 

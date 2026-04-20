@@ -12,25 +12,29 @@ import { Send, Mail, User, MessageSquare } from 'lucide-react';
 export default function ContactSection() {
   const [isPending, setIsPending] = useState(false);
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setIsPending(true);
+    
+    const formData = new FormData(e.currentTarget);
+    
     try {
       const result = await sendContactMessage(formData);
       if (result.error) {
         toast.error(result.error);
       } else {
         toast.success('¡Mensaje enviado correctamente! Te contactaremos pronto.');
-        (document.getElementById('contact-form') as HTMLFormElement)?.reset();
+        (e.target as HTMLFormElement).reset();
       }
     } catch (error) {
-      toast.error('Ocurrió un error inesperado.');
+      toast.error('Ocurrió un error inesperado al conectar con el servidor.');
     } finally {
       setIsPending(false);
     }
   }
 
   return (
-    <section id="contacto" className="py-24 relative overflow-hidden bg-black">
+    <section id="contacto" className="py-24 relative overflow-hidden bg-[#0a0a0f] text-zinc-100 dark" style={{ backgroundColor: '#0a0a0f', color: '#f8f9fa' }}>
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none" />
@@ -40,11 +44,11 @@ export default function ContactSection() {
           
           {/* Info Side */}
           <div className="lg:w-2/5">
-            <h2 className="text-4xl md:text-5xl font-heading text-white tracking-tighter mb-6">
+            <h2 className="text-4xl md:text-5xl font-heading text-white tracking-tighter mb-6" style={{ color: '#ffffff' }}>
               Hablemos de <br />
               <span className="text-gradient-gold">tu Visión</span>
             </h2>
-            <p className="text-zinc-400 font-sans leading-relaxed mb-10 max-w-sm">
+            <p className="text-zinc-400 font-sans leading-relaxed mb-10 max-w-sm" style={{ color: '#a0a0b8' }}>
               ¿Tienes dudas sobre cómo escalar tu red de pantallas o quieres una demo personalizada? Nuestro equipo de especialistas está listo.
             </p>
 
@@ -54,8 +58,8 @@ export default function ContactSection() {
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-0.5">Escríbenos</p>
-                  <p className="text-white font-mono text-sm">hola@lumina.app</p>
+                  <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-0.5" style={{ color: '#71717a' }}>Escríbenos</p>
+                  <p className="text-white font-mono text-sm" style={{ color: '#ffffff' }}>hola@lumina.app</p>
                 </div>
               </div>
               
@@ -64,8 +68,8 @@ export default function ContactSection() {
                   <MessageSquare className="w-5 h-5 text-amber-500" />
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-0.5">Soporte 24/7</p>
-                  <p className="text-white font-mono text-sm">Chat en vivo disponible</p>
+                  <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-0.5" style={{ color: '#71717a' }}>Soporte 24/7</p>
+                  <p className="text-white font-mono text-sm" style={{ color: '#ffffff' }}>Chat en vivo disponible</p>
                 </div>
               </div>
             </div>
@@ -73,24 +77,25 @@ export default function ContactSection() {
 
           {/* Form Side */}
           <div className="lg:w-3/5">
-            <div className="cyber-glass-cyan p-8 md:p-12 relative">
-              <form id="contact-form" action={handleSubmit} className="space-y-6 text-foreground">
+            <div className="landing-glass-cyan p-8 md:p-12 relative" style={{ backgroundColor: 'rgba(18, 18, 26, 0.8)', borderColor: 'rgba(0, 210, 255, 0.2)' }}>
+              <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Nombre Completo</Label>
+                    <Label htmlFor="name" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold" style={{ color: '#a1a1aa' }}>Nombre Completo</Label>
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                       <Input 
                         id="name" 
                         name="name" 
                         placeholder="Juan Pérez" 
-                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl"
+                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl text-white placeholder:text-zinc-600"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.1)' }}
                         required 
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Email Corporativo</Label>
+                    <Label htmlFor="email" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold" style={{ color: '#a1a1aa' }}>Email Corporativo</Label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                       <Input 
@@ -98,7 +103,8 @@ export default function ContactSection() {
                         name="email" 
                         type="email" 
                         placeholder="juan@empresa.com" 
-                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl"
+                        className="bg-black/40 border-white/10 pl-11 py-6 focus:border-primary transition-all rounded-xl text-white placeholder:text-zinc-600"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.1)' }}
                         required 
                       />
                     </div>
@@ -106,23 +112,25 @@ export default function ContactSection() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="subject" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Asunto</Label>
+                  <Label htmlFor="subject" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold" style={{ color: '#a1a1aa' }}>Asunto</Label>
                   <Input 
                     id="subject" 
                     name="subject" 
                     placeholder="Consulta sobre red de pantallas..." 
-                    className="bg-black/40 border-white/10 py-6 focus:border-primary transition-all rounded-xl"
+                    className="bg-black/40 border-white/10 py-6 focus:border-primary transition-all rounded-xl text-white placeholder:text-zinc-600"
+                    style={{ backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.1)' }}
                     required 
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Mensaje</Label>
+                  <Label htmlFor="message" className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold" style={{ color: '#a1a1aa' }}>Mensaje</Label>
                   <Textarea 
                     id="message" 
                     name="message" 
                     placeholder="Cuéntanos más sobre tu proyecto..." 
-                    className="bg-black/40 border-white/10 min-h-[150px] focus:border-primary transition-all rounded-xl resize-none"
+                    className="bg-black/40 border-white/10 min-h-[150px] focus:border-primary transition-all rounded-xl resize-none text-white placeholder:text-zinc-600"
+                    style={{ backgroundColor: 'rgba(0,0,0,0.4)', color: '#ffffff', borderColor: 'rgba(255,255,255,0.1)' }}
                     required 
                   />
                 </div>
