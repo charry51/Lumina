@@ -35,22 +35,42 @@ export async function sendContactMessage(formData: FormData) {
     // 2. Notify admin via Resend
     if (process.env.RESEND_API_KEY) {
       try {
+        console.log('[Resend] Enviando notificación de nuevo mensaje...');
         await resend.emails.send({
           from: 'Lumina <onboarding@resend.dev>',
           to: ['francharrielromero@gmail.com'],
-          subject: `Nuevo mensaje de contacto: ${subject}`,
+          subject: `🚀 NUEVO MENSAJE: ${subject}`,
           html: `
-            <div style="font-family: sans-serif; background: #0a0a0f; color: #f8f9fa; padding: 40px; border-radius: 12px;">
-              <h1 style="color: #00d2ff; text-transform: uppercase; letter-spacing: 2px;">Nuevo Mensaje</h1>
-              <p><strong>De:</strong> ${name} (${email})</p>
-              <p><strong>Asunto:</strong> ${subject}</p>
-              <hr style="border: none; border-top: 1px solid #2a2a3d; margin: 20px 0;" />
-              <p style="white-space: pre-wrap;">${message}</p>
+            <div style="background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; padding: 40px; border: 1px solid #333; border-radius: 16px; max-width: 600px; margin: 20px auto;">
+              <header style="border-bottom: 2px solid #00d2ff; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="color: #00d2ff; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; margin: 0;">Lumina Admin</h1>
+                <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">NOTIFICACIÓN DE SISTEMA</p>
+              </header>
+              
+              <main>
+                <div style="background: #111; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                  <p style="margin: 0 0 10px 0;"><strong style="color: #00d2ff;">Remitente:</strong> ${name}</p>
+                  <p style="margin: 0 0 10px 0;"><strong style="color: #00d2ff;">Email:</strong> ${email}</p>
+                  <p style="margin: 0;"><strong style="color: #00d2ff;">Asunto:</strong> ${subject}</p>
+                </div>
+                
+                <div style="border-left: 2px solid #333; padding-left: 20px; color: #ccc; font-style: italic;">
+                  <p style="white-space: pre-wrap; line-height: 1.6;">${message}</p>
+                </div>
+              </main>
+              
+              <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #222; text-align: center;">
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://lumina-eta-fawn.vercel.app'}/admin/mensajes" 
+                   style="background: #00d2ff; color: #000; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; font-size: 12px;">
+                  Responder en el Panel
+                </a>
+              </footer>
             </div>
           `
         });
+        console.log('[Resend] Notificación enviada con éxito.');
       } catch (err) {
-        console.error('Error enviando notificación:', err);
+        console.error('[Resend] Error enviando notificación:', err);
       }
     }
 
@@ -88,14 +108,37 @@ export async function replyToMessage(formData: FormData) {
 
     // 1. Send email via Resend
     try {
+      console.log(`[Resend] Enviando respuesta a ${email}...`);
       await resend.emails.send({
         from: 'Lumina <onboarding@resend.dev>',
         to: email,
         subject: 'Re: Tu consulta en Lumina',
-        text: reply + '\n\n---\nMensaje original:\n' + originalMessage,
+        html: `
+          <div style="background-color: #f8f9fa; color: #212529; font-family: sans-serif; padding: 40px; max-width: 600px; margin: 20px auto; border-radius: 8px; border: 1px solid #dee2e6;">
+            <header style="margin-bottom: 30px; text-align: center;">
+              <h1 style="color: #0a0a0f; font-size: 24px; margin: 0;">Lumina Support</h1>
+            </header>
+            
+            <main style="background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+              <p style="font-size: 16px; line-height: 1.6;">${reply.replace(/\n/g, '<br>')}</p>
+            </main>
+            
+            <div style="margin-top: 40px; padding: 20px; background: #e9ecef; border-radius: 4px; font-size: 13px; color: #495057;">
+              <p style="margin: 0 0 10px 0; font-weight: bold; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">Tu mensaje original:</p>
+              <div style="font-style: italic; border-left: 3px solid #ced4da; padding-left: 15px;">
+                ${originalMessage.replace(/\n/g, '<br>')}
+              </div>
+            </div>
+            
+            <footer style="margin-top: 40px; text-align: center; font-size: 12px; color: #adb5bd;">
+              <p>© ${new Date().getFullYear()} Lumina Digital Signage. Todos los derechos reservados.</p>
+            </footer>
+          </div>
+        `
       });
+      console.log('[Resend] Respuesta enviada con éxito.');
     } catch (err) {
-      console.error('Error enviando email de respuesta:', err);
+      console.error('[Resend] Error enviando email de respuesta:', err);
     }
 
     // 2. Mark as replied and read using DIRECT FETCH
