@@ -49,14 +49,14 @@ export async function createAdminClient() {
     throw new Error(errorMsg);
   }
 
-  // NOTE: For administrative tasks, we use the standard createClient 
-  // instead of createServerClient. This avoids the 'browser detection' warning 
-  // from @supabase/ssr that can occur in Server Actions, while still 
-  // bypassing RLS correctly.
+  // FORCE SERVER CONTEXT: 
+  // In some Next.js/Turbopack environments, 'window' might be polyfilled.
+  // We explicitly tell Supabase to ignore any browser-like environment.
   return createSupabaseClient(url, key, {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
+      persistSession: false,
+      detectSessionInUrl: false
     }
   });
 }
