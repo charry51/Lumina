@@ -1,6 +1,4 @@
-'use server';
-
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
 import { revalidatePath } from 'next/cache';
 
@@ -9,6 +7,8 @@ export async function sendContactMessage(formData: FormData) {
   const email = formData.get('email') as string;
   const subject = formData.get('subject') as string;
   const message = formData.get('message') as string;
+
+  console.log(`[ContactAction] Recibido mensaje de ${email}`);
 
   if (!name || !email || !subject || !message) {
     return { error: 'Todos los campos son obligatorios' };
