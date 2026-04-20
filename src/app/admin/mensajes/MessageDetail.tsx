@@ -30,12 +30,13 @@ export default function MessageDetail({ message }: { message: any }) {
 
     setIsPending(true);
     try {
-      const result = await replyToMessage(
-        message.id, 
-        replyText, 
-        message.email, 
-        message.subject
-      );
+      const formData = new FormData();
+      formData.append('messageId', message.id);
+      formData.append('email', message.email);
+      formData.append('reply', replyText);
+      formData.append('originalMessage', message.message);
+
+      const result = await replyToMessage(formData);
 
       if (result.error) {
         toast.error(result.error);
