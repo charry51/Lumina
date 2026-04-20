@@ -1,6 +1,5 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
-import { revalidatePath } from 'next/cache';
 
 export async function sendContactMessage(formData: FormData) {
   const name = formData.get('name') as string;
@@ -30,7 +29,7 @@ export async function sendContactMessage(formData: FormData) {
        if (dbError.code === '42P01' || dbError.message.includes('not found')) {
          return { error: 'Configuración incompleta: La tabla de base de datos no existe. Por favor, ejecuta el script SQL.' };
        }
-       throw new Error(dbError.message);
+       return { error: 'Error de base de datos: ' + dbError.message };
     }
 
     console.log(`[ContactAction] Mensaje guardado con éxito. ID: ${insertData?.[0]?.id || 'Desconocido'}`);
@@ -38,7 +37,7 @@ export async function sendContactMessage(formData: FormData) {
     // 2. Enviar email de notificación al admin
     if (process.env.RESEND_API_KEY) {
       try {
-        const { data: emailData, error: emailError } = await resend.emails.send({
+        const { error: emailError } = await resend.emails.send({
           from: 'Lumina <onboarding@resend.dev>',
           to: ['francharrielromero@gmail.com'],
           subject: `Nuevo mensaje de contacto: ${subject}`,
@@ -60,27 +59,26 @@ export async function sendContactMessage(formData: FormData) {
 
         if (emailError) {
           console.error('Error enviando email (Resend):', emailError);
-          // No bloqueamos el éxito si el mensaje ya está en la DB
         } else {
           console.log('Email de notificación enviado.');
         }
       } catch (err) {
         console.error('Excepción enviando email:', err);
       }
-    } else {
-      console.warn('RESEND_API_KEY no configurada. Saltando envío de email.');
     }
 
     try {
+      const { revalidatePath } = await import('next/cache');
       revalidatePath('/admin/mensajes');
     } catch (e) {
       console.error('Error revalidando path:', e);
     }
     
     return { success: true };
-  } catch (error: any) {
-    console.error('Error crítico en sendContactMessage:', error);
-    return { error: 'Error del servidor: ' + (error.message || 'Desconocido') };
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : 'Desconocido';
+    console.error('Error crítico en sendContactMessage:', errorMsg);
+    return { error: 'Error del servidor: ' + errorMsg };
   }
 }
 
@@ -94,25 +92,27 @@ export async function replyToMessage(messageId: string, replyText: string, userE
 
     // 1. Enviar el email vía Resend (solo si existe la API Key)
     if (process.env.RESEND_API_KEY) {
-      const { data: emailData, error: emailError } = await resend.emails.send({
-        from: 'Lumina Intelligence <onboarding@resend.dev>',
-        to: [userEmail],
-        subject: `RE: ${originalSubject} - Lumina`,
-        html: `
-          <div style="font-family: sans-serif; background: #ffffff; color: #000000; padding: 40px; border: 1px solid #e2e8f0; border-radius: 12px;">
-            <h2 style="color: #0056e0;">Respuesta de Lumina</h2>
-            <p style="white-space: pre-wrap; font-size: 16px; line-height: 1.6;">${replyText}</p>
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-            <p style="font-size: 12px; color: #64748b;">Gracias por contactar con Lumina Intelligence.</p>
-          </div>
-        `
-      });
+      try {
+        const { error: emailError } = await resend.emails.send({
+          from: 'Lumina Intelligence <onboarding@resend.dev>',
+          to: [userEmail],
+          subject: `RE: ${originalSubject} - Lumina`,
+          html: `
+            <div style="font-family: sans-serif; background: #ffffff; color: #000000; padding: 40px; border: 1px solid #e2e8f0; border-radius: 12px;">
+              <h2 style="color: #0056e0;">Respuesta de Lumina</h2>
+              <p style="white-space: pre-wrap; font-size: 16px; line-height: 1.6;">${replyText}</p>
+              <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+              <p style="font-size: 12px; color: #64748b;">Gracias por contactar con Lumina Intelligence.</p>
+            </div>
+          `
+        });
 
-      if (emailError) {
-        console.error('Error enviando respuesta resend:', emailError);
+        if (emailError) {
+          console.error('Error enviando respuesta resend:', emailError);
+        }
+      } catch (err) {
+        console.error('Error crítico en envío de email de respuesta:', err);
       }
-    } else {
-        console.warn('RESEND_API_KEY no encontrada. Respuesta de email simulada.');
     }
 
     // 2. Actualizar estado en DB
@@ -125,16 +125,21 @@ export async function replyToMessage(messageId: string, replyText: string, userE
       .eq('id', messageId);
 
     if (dbError) {
-        console.error('Error de base de datos simulado:', dbError);
+        console.error('Error de base de datos:', dbError);
+        return { error: 'Error al actualizar el estado del mensaje: ' + dbError.message };
     }
 
     try {
+        const { revalidatePath } = await import('next/cache');
         revalidatePath('/admin/mensajes');
-    } catch(e) {}
+    } catch(e) {
+        console.error('Error revalidando path admin:', e);
+    }
     
     return { success: true };
-  } catch (error: any) {
-    console.error('Error crítico in replyToMessage:', error);
-    return { error: 'No se pudo enviar la respuesta.' };
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : 'Desconocido';
+    console.error('Error crítico en replyToMessage:', errorMsg);
+    return { error: 'No se pudo enviar la respuesta: ' + errorMsg };
   }
 }

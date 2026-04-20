@@ -52,7 +52,7 @@ export default function MessageDetail({ message }: { message: any }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger 
+      <DialogTrigger
         render={
           <Button variant="outline" size="sm" className="h-9 text-[10px] uppercase font-black tracking-widest border-zinc-800 hover:bg-zinc-900 text-zinc-400 hover:text-white">
             <Eye className="w-3 h-3 mr-2" />
@@ -124,7 +124,7 @@ export default function MessageDetail({ message }: { message: any }) {
             <div className="space-y-3 pt-6 border-t border-zinc-900">
               <Label className="text-[10px] uppercase text-primary font-bold tracking-widest">Escribir Respuesta</Label>
               <Textarea 
-                placeholder="Hola ${message.name.split(' ')[0]}, gracias por contactar..." 
+                placeholder={`Hola ${message.name.split(' ')[0]}, gracias por contactar...`} 
                 className="bg-black border-zinc-800 min-h-[120px] focus:border-primary rounded-xl text-zinc-100 placeholder:text-zinc-700"
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}

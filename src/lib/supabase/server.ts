@@ -1,12 +1,12 @@
 import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 
 export async function createClient() {
+  // Dynamic import of next/headers to prevent client-side bundling errors
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies()
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     console.error('CRITICAL: Supabase environment variables are missing!');
-    // Return a dummy client that will fail on calls but won't crash the server during initialization
     return createServerClient('https://missing.supabase.co', 'missing', {
         cookies: { getAll() { return [] }, setAll() {} }
     });
@@ -32,19 +32,21 @@ export async function createClient() {
       },
     }
   )
-}export async function createAdminClient() {
+}
+
+export async function createAdminClient() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     console.error('CRITICAL: Supabase Admin environment variables are missing!');
     throw new Error('Admin client configuration missing');
   }
 
-  // NOTE: SERVICE_ROLE_KEY bypasses RLS. Use ONLY in server components/actions.
+  // NOTE: SERVICE_ROLE_KEY bypasses RLS. Use ONLY in server context.
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY,
     {
       cookies: {
-        getAll() { return [] }, // Admin client doesn't need to read user cookies for auth bypass
+        getAll() { return [] },
         setAll() {}
       },
     }
