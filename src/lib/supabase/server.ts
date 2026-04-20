@@ -50,23 +50,29 @@ export async function createAdminClient() {
   }
 
   if (!url || !key) {
-    const missing = [];
-    if (!url) missing.push('NEXT_PUBLIC_SUPABASE_URL');
-    if (!key) {
-      // DIAGNOSTIC SCAN: Find ALL environment variable names that look like keys
-      // This is safe because we only return the NAMES, not the secrets.
-      const allEnvNames = Object.keys(process.env);
-      const suspiciousNames = allEnvNames.filter(name => 
-        name.includes('SUPABASE') || 
-        name.includes('KEY') || 
-        name.includes('SECRET') || 
-        name.includes('ROLE')
-      );
-      
-      missing.push(`Key not found. Diagnóstico de nombres disponibles en Vercel: [${suspiciousNames.length > 0 ? suspiciousNames.join(', ') : 'Ninguna variable encontrada'}]`);
-    }
+    // HARDCORE DIAGNOSTIC: List EVERY SINGLE ENV VAR keys
+    const allEnvNames = Object.keys(process.env);
     
-    const errorMsg = `Admin client configuration missing: [${missing.join(' | ')}]`;
+    // Check for Vercel System variables specifically to identify PROJ and ENV
+    const vercelContext = {
+      project: process.env.VERCEL_PROJECT_ID || 'Unknown',
+      env: process.env.VERCEL_ENV || 'Unknown',
+      owner: process.env.VERCEL_GIT_REPO_OWNER || 'Unknown',
+      repo: process.env.VERCEL_GIT_REPO_SLUG || 'Unknown',
+      domain: process.env.VERCEL_URL || 'Unknown'
+    };
+
+    const missingInfo = [];
+    if (!url) missingInfo.push('NEXT_PUBLIC_SUPABASE_URL missing');
+    if (!key) missingInfo.push('SERVICE_ROLE_KEY missing');
+
+    const errorMsg = `
+CRITICAL ERROR: Environment variables are invisible to the server.
+- Errors: ${missingInfo.join(' | ')}
+- Context: Project=${vercelContext.project}, Env=${vercelContext.env}, Domain=${vercelContext.domain}
+- Visible Variables Map: [${allEnvNames.sort().join(', ')}]
+    `.trim();
+
     console.error('CRITICAL:', errorMsg);
     throw new Error(errorMsg);
   }
