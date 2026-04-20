@@ -1,6 +1,5 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
-import { revalidatePath } from 'next/cache';
 
 export async function sendContactMessage(formData: FormData) {
   const name = formData.get('name') as string;
@@ -69,6 +68,7 @@ export async function sendContactMessage(formData: FormData) {
     }
 
     try {
+      const { revalidatePath } = await import('next/cache');
       revalidatePath('/admin/mensajes');
     } catch (e) {
       console.error('Error revalidando path:', e);
@@ -130,6 +130,7 @@ export async function replyToMessage(messageId: string, replyText: string, userE
     }
 
     try {
+        const { revalidatePath } = await import('next/cache');
         revalidatePath('/admin/mensajes');
     } catch(e) {
         console.error('Error revalidando path admin:', e);
