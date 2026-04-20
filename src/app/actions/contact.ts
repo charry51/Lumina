@@ -26,16 +26,14 @@ export async function sendContactMessage(formData: FormData) {
       .select();
 
     if (dbError) {
-       // ... error logic ...
-    }
-
-    console.log(`[ContactAction] Mensaje guardado con éxito. ID: ${insertData?.[0]?.id || 'Desconocido'}`);
        console.error('Error de Supabase:', dbError);
        if (dbError.code === '42P01' || dbError.message.includes('not found')) {
          return { error: 'Configuración incompleta: La tabla de base de datos no existe. Por favor, ejecuta el script SQL.' };
        }
        throw new Error(dbError.message);
     }
+
+    console.log(`[ContactAction] Mensaje guardado con éxito. ID: ${insertData?.[0]?.id || 'Desconocido'}`);
 
     // 2. Enviar email de notificación al admin
     if (process.env.RESEND_API_KEY) {
