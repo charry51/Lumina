@@ -249,14 +249,14 @@ export function PairingForm() {
       {/* NEW: Yield Tier Feedback */}
       <div className={`p-4 rounded-xl border flex items-center justify-between transition-all duration-500 ${
         currentTier === 'Elite' ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' :
-        currentTier === 'Plus' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 shadow-[0_0_15px_rgba(0,210,255,0.1)]' :
+        currentTier === 'Premium' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 shadow-[0_0_15px_rgba(0,210,255,0.1)]' :
         'bg-muted/50 border-border'
       }`}>
         <div className="flex flex-col">
           <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-mono">Potencial de Ingresos</span>
           <span className={`text-sm font-black uppercase tracking-widest ${
             currentTier === 'Elite' ? 'text-[#D4AF37]' :
-            currentTier === 'Plus' ? 'text-[#00d2ff]' :
+            currentTier === 'Premium' ? 'text-[#00d2ff]' :
             'text-foreground'
           }`}>{currentTier} TIER</span>
         </div>
