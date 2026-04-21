@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { activatePairingCode, getPairingMetadata } from '@/app/vincular/actions'
 import { 
   getScreenTier, 
@@ -15,6 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Tv, Loader2, CheckCircle2, MapPin } from 'lucide-react'
 import MapSelector from '@/components/MapSelector'
 
 export function PairingForm() {

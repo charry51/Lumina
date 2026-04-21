@@ -225,6 +225,8 @@ export async function deleteMessage(messageId: string) {
  * Admin action to send a direct message to a screen host.
  */
 export async function sendDirectMessageToHost(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const email = formData.get('email') as string;
   const subject = formData.get('subject') as string;
   const message = formData.get('message') as string;
