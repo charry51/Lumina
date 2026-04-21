@@ -187,12 +187,49 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     }
   }, [currentCampaign, playlist, screenId, isOnline, getNextCampaign])
 
-  // Autoplay
+  // Autoplay & Visibility checks (Anti-Fraud)
   useEffect(() => {
     if (videoRef.current && hasHydrated) {
-      videoRef.current.play().catch(e => console.warn('Autoplay blocked:', e))
+      // Intentar reproducir si es visible
+      if (!document.hidden) {
+        videoRef.current.play().catch(e => console.warn('Autoplay blocked:', e))
+      }
     }
   }, [currentCampaign, hasHydrated])
+
+  useEffect(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return
+
+    const handleVisibilityChange = () => {
+      if (!videoRef.current) return
+      if (document.hidden) {
+        console.log('[Lumina Anti-Fraud] Pantalla oculta, pausando reproducción.')
+        videoRef.current.pause()
+      } else {
+        videoRef.current.play().catch(e => console.warn(e))
+      }
+    }
+
+    const handleBlur = () => {
+      if (videoRef.current) videoRef.current.pause()
+    }
+
+    const handleFocus = () => {
+      if (videoRef.current && !document.hidden) {
+        videoRef.current.play().catch(e => console.warn(e))
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', handleBlur)
+    window.addEventListener('focus', handleFocus)
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('blur', handleBlur)
+      window.removeEventListener('focus', handleFocus)
+    }
+  }, [hasHydrated])
 
   const isImage = currentCampaign?.url_video ? /\.(jpg|jpeg|png|webp|gif)$/i.test(currentCampaign.url_video) : false
   const activeUrl = currentCampaign ? (cachedUrls[currentCampaign.url_video] || currentCampaign.url_video) : null
@@ -200,7 +237,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   // Image Rotation
   useEffect(() => {
     let timer: NodeJS.Timeout
-    if (isImage && currentCampaign && hasHydrated) {
+    if (isImage && currentCampaign && hasHydrated && !document.hidden) {
       timer = setTimeout(handleNext, 10000)
     }
     return () => { if (timer) clearTimeout(timer) }

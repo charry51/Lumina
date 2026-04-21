@@ -7,7 +7,7 @@ ADD COLUMN IF NOT EXISTS impactos_reales INTEGER DEFAULT 0;
 -- 2. Función para incrementar el contador de impactos y calcular comisiones (v3.1 con Bono IA)
 CREATE OR REPLACE FUNCTION increment_campaign_impacts()
 RETURNS TRIGGER AS $$
-DECLARE
+    DECLARE
     v_cost_per_hit DECIMAL(10,5);
     v_host_id UUID;
     v_host_porcentaje DECIMAL(5,2);
@@ -15,6 +15,7 @@ DECLARE
     v_comision DECIMAL(10,5);
     v_presupuesto_total DECIMAL(10,2);
     v_impactos_estimados INTEGER;
+    v_pantalla_org_id UUID;
 BEGIN
     -- 1. Incrementar contador de la campaña
     UPDATE campanas
@@ -26,14 +27,16 @@ BEGIN
     IF v_impactos_estimados > 0 THEN
         v_cost_per_hit := v_presupuesto_total / v_impactos_estimados;
         
-        -- 3. Buscar el host asociado a esta pantalla
-        SELECT id, porcentaje, modulo_ia_activo INTO v_host_id, v_host_porcentaje, v_modulo_ia 
-        FROM hosts 
-        WHERE pantalla_id = NEW.pantalla_id;
+        -- 3. Buscar el host asociado a esta pantalla y el dueño de la pantalla
+        SELECT h.id, h.porcentaje, h.modulo_ia_activo, p.organizacion_id 
+        INTO v_host_id, v_host_porcentaje, v_modulo_ia, v_pantalla_org_id
+        FROM hosts h
+        JOIN pantallas p ON p.id = h.pantalla_id
+        WHERE h.pantalla_id = NEW.pantalla_id;
         
-        -- 4. Si hay host, generar comisión
-        IF v_host_id IS NOT NULL THEN
-            -- APLICAR BONO IA (Floor de 30% si tienen el módulo activo, pero respetando si el base es superior)
+        -- 4. Si hay host Y no es autopublicidad ( advertiser_org != screen_org ), generar comisión
+        IF v_host_id IS NOT NULL AND (NEW.organizacion_id IS DISTINCT FROM v_pantalla_org_id) THEN
+            -- APLICAR BONO IA
             IF v_modulo_ia = true AND v_host_porcentaje < 30.00 THEN
                 v_host_porcentaje := 30.00;
             END IF;

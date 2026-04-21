@@ -1,0 +1,206 @@
+'use client'
+
+import * as React from 'react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger, 
+  DialogFooter 
+} from '@/components/ui/dialog'
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select'
+import { createSupportTicket, TicketCategory, TicketPriority } from '@/app/actions/support'
+import { toast } from 'sonner'
+import { LifeBuoy, Loader2, Upload, Paperclip } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+
+export function NewTicketDialog() {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [archivoUrl, setArchivoUrl] = useState<string | null>(null)
+  const supabase = createClient()
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Math.random()}.${fileExt}`
+    const filePath = `tickets/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('support-attachments')
+      .upload(filePath, file)
+
+    if (uploadError) {
+      toast.error('Error al subir archivo: ' + uploadError.message)
+      setUploading(false)
+      return
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('support-attachments')
+      .getPublicUrl(filePath)
+
+    setArchivoUrl(publicUrl)
+    setUploading(false)
+    toast.success('Archivo subido')
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+    if (archivoUrl) formData.append('archivo_url', archivoUrl)
+
+    const res = await createSupportTicket(formData)
+    if (res.success) {
+      toast.success('Ticket creado correctamente. El soporte te responderá pronto.')
+      setOpen(false)
+      setArchivoUrl(null)
+    } else {
+      toast.error(res.error || 'Error al crear ticket')
+    }
+    setLoading(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={
+        <Button className="bg-[#00d2ff] text-black hover:bg-[#00d2ff]/90 font-black uppercase tracking-widest text-[10px] gap-2 px-6 h-12 shadow-[0_0_20px_rgba(0,210,255,0.2)] transition-all active:scale-95">
+          <LifeBuoy className="w-4 h-4" /> Nuevo Ticket de Soporte
+        </Button>
+      } />
+      <DialogContent className="bg-zinc-950 border-zinc-900 text-white sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle className="text-[#00d2ff] font-heading font-black uppercase tracking-[0.2em] text-sm flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#00d2ff] animate-pulse" />
+            Abrir Incidencia Técnica
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Categoría Principal</Label>
+              <Select name="categoria" required defaultValue="Otros">
+                <SelectTrigger className="bg-zinc-900 border-zinc-800 text-xs font-bold h-11">
+                  <SelectValue placeholder="Selecciona..." />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectItem value="Hardware / Pantalla">📡 Hardware / Pantalla</SelectItem>
+                  <SelectItem value="Facturación / Pagos">💰 Facturación / Pagos</SelectItem>
+                  <SelectItem value="Contenido / Campañas">🎬 Contenido / Campañas</SelectItem>
+                  <SelectItem value="Reportar Error">⚠️ Reportar Error</SelectItem>
+                  <SelectItem value="Otros">❓ Otros</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Prioridad</Label>
+              <Select name="prioridad" defaultValue="MEDIA">
+                <SelectTrigger className="bg-zinc-900 border-zinc-800 text-xs font-bold h-11">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectItem value="BAJA">Baja</SelectItem>
+                  <SelectItem value="MEDIA">Media</SelectItem>
+                  <SelectItem value="ALTA">Alta</SelectItem>
+                  <SelectItem value="URGENTE">Urgente</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Asunto</Label>
+            <Input 
+              name="asunto" 
+              required 
+              placeholder="Ej: Problema con la carga de videos en TV 1" 
+              className="bg-zinc-900 border-zinc-800 h-11 text-sm focus-visible:ring-[#00d2ff]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Descripción del Problema</Label>
+            <Textarea 
+              name="mensaje" 
+              required 
+              placeholder="Describe lo que sucede con el máximo detalle posible..." 
+              className="bg-zinc-900 border-zinc-800 min-h-[120px] text-sm leading-relaxed focus-visible:ring-[#00d2ff]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Adjuntar Foto (Opcional)</Label>
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
+                <Input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleFileUpload} 
+                  disabled={uploading}
+                  className="hidden" 
+                  id="ticket-photo"
+                />
+                <label 
+                  htmlFor="ticket-photo"
+                  className="flex items-center justify-between px-4 h-11 bg-zinc-900 border border-zinc-800 rounded-md cursor-pointer hover:bg-zinc-800 transition-colors text-xs text-zinc-400"
+                >
+                  <span className="flex items-center gap-2">
+                    {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Paperclip className="w-3 h-3" />}
+                    {archivoUrl ? 'Foto lista ✓' : (uploading ? 'Subiendo...' : 'Seleccionar archivo')}
+                  </span>
+                  <Upload className="w-3 h-3 opacity-50" />
+                </label>
+              </div>
+              {archivoUrl && (
+                <div className="w-11 h-11 rounded border border-primary/30 overflow-hidden">
+                  <img src={archivoUrl} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter className="pt-4">
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={() => setOpen(false)} 
+              className="text-[10px] uppercase font-bold text-zinc-500 hover:text-white"
+            >
+              Cancelar
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={loading || uploading} 
+              className="bg-[#00d2ff] text-black hover:bg-[#00d2ff]/80 font-black uppercase tracking-widest text-[10px] px-8 h-11"
+            >
+              {loading ? (
+                <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> Creando...</>
+              ) : (
+                'Abrir Ticket'
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
