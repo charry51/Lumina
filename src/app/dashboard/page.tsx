@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
 import { DeleteCampaignButton } from './DeleteCampaignButton'
-import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, ShieldCheck } from 'lucide-react'
+import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, ShieldCheck, LifeBuoy } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
