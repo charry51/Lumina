@@ -19,31 +19,52 @@ export type ScreenType = 'bar' | 'gimnasio' | 'restaurante' | 'calle' | 'centro_
 export type DensityLevel = 'bajo' | 'medio' | 'alto' | 'muy_alto'
 
 export const SCREEN_TYPE_MULTIPLIERS: Record<ScreenType, number> = {
-  bar: 1.0,
+  bar: 0.5,
   gimnasio: 1.0,
-  restaurante: 1.5,
-  calle: 2.0,
-  centro_comercial: 3.0,
-  calle_principal: 4.0 // Base para llegar al x5 total
+  restaurante: 1.2,
+  calle: 1.5,
+  centro_comercial: 2.0,
+  calle_principal: 2.5 
 }
 
 export const DENSITY_MULTIPLIERS: Record<DensityLevel, number> = {
-  bajo: 1.0,
-  medio: 1.1,
+  bajo: 0.8,
+  medio: 1.0,
   alto: 1.2,
-  muy_alto: 1.25 // Combinado con calle_principal, el x5 se logra con otros factores
+  muy_alto: 1.5 
 }
 
-export type YieldTier = 'Standard' | 'Plus' | 'Elite'
+export type YieldTier = 'Bajo Valor' | 'Estandar' | 'Premium' | 'Elite'
 
 /**
  * Determina el Nivel de Rendimiento (Tier) de una pantalla
  * para transparencia con el Host sobre sus ganancias.
  */
 export function getScreenTier(type: ScreenType, density: DensityLevel): YieldTier {
-  if (type === 'calle_principal' || density === 'muy_alto') return 'Elite'
-  if (type === 'centro_comercial' || type === 'restaurante' || density === 'alto') return 'Plus'
-  return 'Standard'
+  if (type === 'calle_principal') return 'Elite'
+  if (type === 'centro_comercial' || type === 'restaurante') return 'Premium'
+  if (type === 'gimnasio') return 'Estandar'
+  return 'Bajo Valor'
+}
+
+/**
+ * Calcula el porcentaje de comisión para el Host según el tipo y densidad.
+ */
+export function calculateHostCommission(type: ScreenType, density: DensityLevel): number {
+  const tier = getScreenTier(type, density)
+  
+  if (tier === 'Elite') return 35
+  if (tier === 'Estandar') return 25
+  if (tier === 'Bajo Valor') return 20
+  
+  // Premium: 28-32% basado en densidad
+  if (tier === 'Premium') {
+    if (density === 'muy_alto') return 32
+    if (density === 'alto') return 30
+    return 28 // bajo o medio
+  }
+  
+  return 25 // fallback
 }
 
 /**
@@ -80,7 +101,6 @@ export function calculateEstimatedImpacts({
   duracionSegundos,
   prioridad,
   presupuestoTotal,
-  frecuenciaRelativa = 1
 }: PricingParams): number {
   if (presupuestoTotal <= 0 || duracionSegundos <= 0) return 0
 
