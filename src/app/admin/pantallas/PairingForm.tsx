@@ -9,6 +9,9 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Tv, Loader2, CheckCircle2, MapPin } from 'lucide-react'
 import { 
+  getPairingMetadata 
+} from '@/app/vincular/actions'
+import { 
   getScreenTier, 
   getTierMultiplier,
   ScreenType, 
@@ -33,89 +36,128 @@ export function PairingForm() {
   const [tipoPantalla, setTipoPantalla] = useState<ScreenType>('gimnasio')
   const [densidadNivel, setDensidadNivel] = useState<DensityLevel>('medio')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [originalGPS, setOriginalGPS] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(false)
+  const [fetchingMetadata, setFetchingMetadata] = useState(false)
   const [success, setSuccess] = useState(false)
   const [geocoding, setGeocoding] = useState(false)
+  const [tamanoPulgadas, setTamanoPulgadas] = useState(40)
+  const [resolucion, setResolucion] = useState('')
+  const [esTactil, setEsTactil] = useState(false)
+  const [sospechoso, setSospechoso] = useState(false)
 
   const currentTier = getScreenTier(tipoPantalla, densidadNivel)
   const multiplier = getTierMultiplier(tipoPantalla, densidadNivel)
 
-  // Auto-busqueda en mapa cuando cambia la ciudad (debounce 1s)
+  // 1. Efecto: Al introducir el código completo, buscar ubicación de la TV
   useEffect(() => {
-    if (!ciudad || ciudad.trim().length < 4) return
-    const delayDebounceFn = setTimeout(async () => {
-      setGeocoding(true)
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(ciudad)}&limit=1`)
-        const data = await res.json()
-        if (data && data.length > 0) {
-          const result = data[0]
-          setCoords({ lat: parseFloat(result.lat), lng: parseFloat(result.lon) })
-
-          // --- SMART DETECTION LOGIC ---
-          const lowerAddr = result.display_name.toLowerCase()
-          const addrObj = result.address || {}
-          
-          // 1. Detect Category (tipo_pantalla)
-          let detectedType: ScreenType | '' = ''
-          const mainStreetKeywords = ['avenida', 'gran via', 'plaza', 'mayor', 'diagonal', 'recoletos', 'castellana', 'square', 'broadway', 'boulevard', 'pau claris']
-          const restaurantKeywords = ['restaurante', 'restaurant', 'grill', 'pizza', 'burger', 'comida', 'steakhouse', 'asador']
-          const barKeywords = ['bar', 'pub', 'cafe', 'beer', 'bodega', 'taberna', 'cerveceria']
-          
-          if (mainStreetKeywords.some(k => lowerAddr.includes(k))) {
-            detectedType = 'calle_principal'
-          } else if (restaurantKeywords.some(k => lowerAddr.includes(k))) {
-            detectedType = 'restaurante'
-          } else if (barKeywords.some(k => lowerAddr.includes(k))) {
-            detectedType = 'bar'
+    if (code.length === 6) {
+      const fetchTVLocation = async () => {
+        setFetchingMetadata(true)
+        const res = await getPairingMetadata(code)
+        
+        // Anti-Fraud logic based on resolution & expiration
+        if (res.capturado_at) {
+          const captureTime = new Date(res.capturado_at).getTime()
+          const now = Date.now()
+          if (now - captureTime > 10 * 60 * 1000) {
+            toast.error('El código ha expirado (más de 10 min). Por seguridad, la TV debe mostrar uno nuevo.')
+            setFetchingMetadata(false)
+            return
           }
-
-          if (detectedType) setTipoPantalla(detectedType)
-
-          // 2. Detect Density (densidad_poblacion_nivel)
-          let detectedDensity: DensityLevel | '' = ''
-          const hugeCities = ['madrid', 'barcelona', 'london', 'paris', 'berlin', 'new york', 'roma', 'sevilla', 'valencia', 'malaga']
-          const touristHubs = ['marbella', 'benidorm', 'ibiza', 'palma', 'adeje', 'torremolinos', 'salou', 'nerja', 'santiago de compostela', 'granada', 'cordoba', 'san sebastian']
-          const highDensityTowns = ['hospitalet', 'badalona', 'santa coloma', 'mislata', 'burjassot', 'benetusser']
-          
-          const touristKeywords = ['playa', 'beach', 'catedral', 'palacio', 'puerto', 'muelle', 'alhambra', 'sagrada familia', 'monumento', 'museum', 'museo', 'landmark', 'teatro', 'basilica', 'casco antiguo', 'historic']
-          
-          const cityName = (addrObj.city || addrObj.town || addrObj.municipality || '').toLowerCase()
-          const isHugeCity = hugeCities.some(c => cityName.includes(c) || lowerAddr.includes(c))
-          const isTouristHub = touristHubs.some(c => cityName.includes(c) || lowerAddr.includes(c))
-          const isHighDensityTown = highDensityTowns.some(c => cityName.includes(c) || lowerAddr.includes(c))
-          const isMainStreet = mainStreetKeywords.some(k => lowerAddr.includes(k))
-          const hasTouristMarker = touristKeywords.some(k => lowerAddr.includes(k))
-          
-          // SCORING LOGIC
-          if ((isHugeCity || isTouristHub || isHighDensityTown) && isMainStreet) {
-            detectedDensity = 'muy_alto'
-          } else if (isTouristHub && hasTouristMarker) {
-            detectedDensity = 'muy_alto'
-          } else if (isHugeCity) {
-            if (result.type === 'residential' || result.type === 'living_street') {
-              detectedDensity = 'medio'
-            } else {
-              detectedDensity = 'alto'
-            }
-          } else if (isTouristHub || isHighDensityTown || addrObj.city || result.type === 'city') {
-            detectedDensity = (isMainStreet || hasTouristMarker) ? 'alto' : 'medio'
-          } else if (addrObj.village || addrObj.hamlet) {
-            detectedDensity = hasTouristMarker ? 'medio' : 'bajo'
-          } else {
-            detectedDensity = 'medio'
-          }
-
-          if (detectedDensity) setDensidadNivel(detectedDensity)
         }
-      } catch (err) {
-        console.error("Geocoding error:", err)
-      } finally {
-        setGeocoding(false)
+
+        if (res.lat && res.lng) {
+          const freshCoords = { lat: res.lat, lng: res.lng }
+          setCoords(freshCoords)
+          setOriginalGPS(freshCoords)
+          toast.success('Ubicación de la TV detectada por GPS')
+          
+          if (res.resolucion) setResolucion(res.resolucion)
+          if (res.es_tactil) setEsTactil(res.es_tactil)
+          
+          if (res.tamano_pulgadas_estimado) setTamanoPulgadas(res.tamano_pulgadas_estimado)
+          
+          // Suspicious constraints: touch device OR very small resolution
+          let isSuspicious = false
+          if (res.es_tactil) isSuspicious = true
+          if (res.resolucion) {
+             const [w, h] = res.resolucion.split('x').map(Number)
+             if (w < 800 && h < 800) isSuspicious = true // Mobile typical
+          }
+          if (res.tamano_pulgadas_estimado && res.tamano_pulgadas_estimado < 20) isSuspicious = true // Demasiado pequeño para signage
+          setSospechoso(isSuspicious)
+
+          // Trigger automatic address analysis
+          AnalyzeLocation(res.lat, res.lng)
+        } else if (res.error) {
+          toast.error(res.error)
+        }
+        setFetchingMetadata(false)
       }
-    }, 1000)
-    return () => clearTimeout(delayDebounceFn)
-  }, [ciudad])
+      fetchTVLocation()
+    }
+  }, [code])
+
+  // Función para analizar ubicación e IA (Refactorizada de useEffect)
+  const AnalyzeLocation = async (lat: number, lng: number) => {
+    setGeocoding(true)
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`)
+      const result = await res.json()
+      
+      if (result && result.display_name) {
+        setCiudad(result.display_name)
+        setUbicacion(result.display_name)
+
+        const lowerAddr = result.display_name.toLowerCase()
+        const addrObj = result.address || {}
+
+        // --- SMART DETECTION LOGIC ---
+        let detectedType: ScreenType | '' = ''
+        const mainStreetKeywords = ['avenida', 'gran via', 'plaza', 'mayor', 'diagonal', 'recoletos', 'castellana', 'square', 'broadway', 'boulevard', 'pau claris']
+        
+        if (mainStreetKeywords.some(k => lowerAddr.includes(k))) {
+          detectedType = 'calle_principal'
+        }
+        if (detectedType) setTipoPantalla(detectedType)
+
+        // DENSITY DETECTION
+        let detectedDensity: DensityLevel | '' = ''
+        const hugeCities = ['madrid', 'barcelona', 'london', 'paris', 'berlin', 'new york', 'roma', 'sevilla', 'valencia', 'malaga']
+        const cityName = (addrObj.city || addrObj.town || addrObj.municipality || '').toLowerCase()
+        const isHugeCity = hugeCities.some(c => cityName.includes(c) || lowerAddr.includes(c))
+        
+        if (isHugeCity && mainStreetKeywords.some(k => lowerAddr.includes(k))) {
+          detectedDensity = 'muy_alto'
+        } else if (isHugeCity) {
+          detectedDensity = 'alto'
+        } else {
+          detectedDensity = 'medio'
+        }
+
+        if (detectedDensity) setDensidadNivel(detectedDensity)
+      }
+    } catch (err) {
+      console.error("Analysis error:", err)
+    } finally {
+      setGeocoding(false)
+    }
+  }
+
+  // --- HAIVERSINE DISTANCE (Radius Lock) ---
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371e3; // metres
+    const φ1 = lat1 * Math.PI/180;
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // in metres
+  }
 
   const handleActivate = async () => {
     if (!code || code.length < 6) {
@@ -142,7 +184,11 @@ export function PairingForm() {
       coords?.lat,
       coords?.lng,
       tipoPantalla,
-      densidadNivel
+      densidadNivel,
+      resolucion,
+      esTactil,
+      tamanoPulgadas,
+      sospechoso
     )
 
     if (result.success) {
@@ -201,14 +247,16 @@ export function PairingForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label className="text-muted-foreground text-xs uppercase tracking-widest">Dirección completa</Label>
-          <Input
-            value={ciudad}
-            onChange={e => setCiudad(e.target.value)}
-            placeholder="Ej: Madrid, C/ Mayor 1"
-            className="bg-muted border-border text-foreground h-10"
-            disabled={loading}
-          />
+          <Label className="text-muted-foreground text-xs uppercase tracking-widest">Dirección (Detectada por GPS)</Label>
+          <div className="relative">
+            <Input
+              value={ciudad}
+              readOnly
+              placeholder="Detectando ubicación..."
+              className="bg-zinc-900 border-zinc-800 text-zinc-500 h-10 cursor-not-allowed italic"
+            />
+            {geocoding && <Loader2 className="w-4 h-4 absolute right-3 top-3 animate-spin text-primary" />}
+          </div>
         </div>
       </div>
 
@@ -232,8 +280,8 @@ export function PairingForm() {
           </div>
           <div className="flex flex-col gap-2">
             <Label className="text-muted-foreground text-xs uppercase tracking-widest">Densidad Población</Label>
-            <Select value={densidadNivel} onValueChange={(v) => setDensidadNivel(v as DensityLevel)}>
-              <SelectTrigger className="bg-muted border-border text-foreground h-10 text-[11px] uppercase font-bold tracking-tight">
+            <Select value={densidadNivel} disabled>
+              <SelectTrigger className="bg-zinc-900 border-zinc-800 text-zinc-500 h-10 text-[11px] uppercase font-bold tracking-tight cursor-not-allowed">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
@@ -245,6 +293,33 @@ export function PairingForm() {
             </Select>
           </div>
       </div>
+
+      <div className="flex flex-col gap-2">
+        <Label className="text-muted-foreground text-xs uppercase tracking-widest flex justify-between">
+           <span>Tamaño de la Pantalla (Detección Automática)</span>
+           <span className="text-[10px] text-[#00d2ff] font-mono tracking-tighter uppercase font-black">Lumina Telemetry Active</span>
+        </Label>
+        <div className="bg-[#00d2ff]/5 border border-[#00d2ff]/30 rounded-lg h-12 flex items-center px-4 justify-between">
+          <span className="text-xl font-black text-white font-mono">{tamanoPulgadas}"</span>
+          <span className="text-[9px] text-[#00d2ff] uppercase font-bold tracking-widest">Hardware Verificado</span>
+        </div>
+        <p className="text-[9px] text-zinc-500 italic">El tamaño físico se detecta automáticamente analizando la densidad de píxeles y el hardware del equipo.</p>
+      </div>
+
+      {/* WARNING FLAG ANTI-FRAUDE */}
+      {sospechoso && (
+         <div className="p-4 border-2 border-red-500/50 bg-red-500/10 rounded-xl flex flex-col gap-2 mt-2">
+             <div className="flex items-center gap-2 text-red-500 font-black uppercase tracking-widest text-sm">
+                <span>⚠️</span> EQUIPO SOSPECHOSO (RIESGO ALTO)
+             </div>
+             <p className="text-xs text-red-400/80">
+                 El sistema ha detectado que el dispositivo emisor es <strong>{esTactil ? 'TÁCTIL' : ''}</strong> y tiene una resolución de <strong>{resolucion}</strong>. 
+                 Esto no corresponde a una pantalla publicitaria estándar.
+                 <br/><br/>
+                 Se permitirá el registro de la pantalla (ej. para Tótems verticales), pero la cuenta quedará marcada y bajo observación manual para evitar fraudes.
+             </p>
+         </div>
+      )}
 
       {/* NEW: Yield Tier Feedback */}
       <div className={`p-4 rounded-xl border flex items-center justify-between transition-all duration-500 ${
@@ -284,11 +359,26 @@ export function PairingForm() {
             <MapPin className="w-3 h-3 text-primary" /> Posición en el Mapa
             {geocoding && <span className="text-[9px] text-muted-foreground animate-pulse ml-2 lowercase">buscando...</span>}
         </Label>
-        <div className="rounded-xl overflow-hidden border border-border h-[200px] bg-muted/30">
+        <div className="rounded-xl overflow-hidden border border-border h-[200px] bg-muted/30 relative">
             <MapSelector 
-                onSelect={(lat, lng) => setCoords({ lat, lng })}
+                onSelect={(lat, lng) => {
+                  if (originalGPS) {
+                    const dist = calculateDistance(lat, lng, originalGPS.lat, originalGPS.lng)
+                    if (dist > 100) {
+                      toast.error('Margen de corrección excedido (máx 100m)')
+                      return
+                    }
+                  }
+                  setCoords({ lat, lng })
+                }}
                 externalPosition={coords}
             />
+            {originalGPS && (
+              <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-md border border-[#00d2ff]/30 px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+                <div className="w-2 h-2 bg-[#00d2ff] rounded-full animate-pulse" />
+                <span className="text-[9px] text-[#00d2ff] font-black uppercase tracking-widest">GPS Verificado (±100m)</span>
+              </div>
+            )}
         </div>
       </div>
 

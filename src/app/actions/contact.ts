@@ -36,7 +36,7 @@ export async function sendContactMessage(formData: FormData) {
     if (process.env.RESEND_API_KEY) {
       try {
         console.log('[Resend] Enviando notificación de nuevo mensaje...');
-        await resend.emails.send({
+        const resendRes = await resend.emails.send({
           from: 'Lumina <onboarding@resend.dev>',
           to: ['francharrielromero@gmail.com'],
           subject: `🚀 NUEVO MENSAJE: ${subject}`,
@@ -68,7 +68,11 @@ export async function sendContactMessage(formData: FormData) {
             </div>
           `
         });
-        console.log('[Resend] Notificación enviada con éxito.');
+        if (resendRes.error) {
+          console.error('[Resend] Fallo devuelto por la API:', resendRes.error);
+        } else {
+          console.log('[Resend] Notificación enviada con éxito.');
+        }
       } catch (err) {
         console.error('[Resend] Error enviando notificación:', err);
       }
@@ -109,7 +113,7 @@ export async function replyToMessage(formData: FormData) {
     // 1. Send email via Resend
     try {
       console.log(`[Resend] Enviando respuesta a ${email}...`);
-      await resend.emails.send({
+      const resendRes = await resend.emails.send({
         from: 'Lumina <onboarding@resend.dev>',
         to: email,
         subject: 'Re: Tu consulta en Lumina',
@@ -136,7 +140,11 @@ export async function replyToMessage(formData: FormData) {
           </div>
         `
       });
-      console.log('[Resend] Respuesta enviada con éxito.');
+      if (resendRes.error) {
+        console.error('[Resend] Fallo devuelto por la API (Reply):', resendRes.error);
+      } else {
+        console.log('[Resend] Respuesta enviada con éxito.');
+      }
     } catch (err) {
       console.error('[Resend] Error enviando email de respuesta:', err);
     }
@@ -210,5 +218,63 @@ export async function deleteMessage(messageId: string) {
       success: false, 
       error: error instanceof Error ? error.message : 'Error al procesar el borrado' 
     };
+  }
+}
+
+/**
+ * Admin action to send a direct message to a screen host.
+ */
+export async function sendDirectMessageToHost(formData: FormData) {
+  const email = formData.get('email') as string;
+  const subject = formData.get('subject') as string;
+  const message = formData.get('message') as string;
+
+  if (!email || !subject || !message) {
+    return { success: false, error: 'Todos los campos son obligatorios' };
+  }
+
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    // Auth Check
+    const { data: perfil } = await supabase.from('perfiles').select('rol').eq('id', user?.id).single();
+    if (perfil?.rol !== 'superadmin') {
+      return { success: false, error: 'No autorizado' };
+    }
+
+    if (process.env.RESEND_API_KEY) {
+      console.log(`[Resend] Enviando mensaje directo a host ${email}...`);
+      const resendRes = await resend.emails.send({
+        from: 'Lumina <onboarding@resend.dev>',
+        to: email,
+        reply_to: 'soporte@lumina.com',
+        subject: `Lumina: ${subject}`,
+        html: `
+          <div style="background-color: #f8f9fa; color: #212529; font-family: sans-serif; padding: 40px; max-width: 600px; margin: 20px auto; border-radius: 8px; border: 1px solid #dee2e6;">
+            <header style="margin-bottom: 30px; text-align: left; border-bottom: 2px solid #00d2ff; padding-bottom: 20px;">
+              <h1 style="color: #00d2ff; font-size: 20px; margin: 0; text-transform: uppercase;">Mensaje del Equipo Lumina</h1>
+            </header>
+            <main style="background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+              <p style="font-size: 15px; line-height: 1.6;">${message.replace(/\n/g, '<br>')}</p>
+            </main>
+            <footer style="margin-top: 40px; text-align: center; font-size: 12px; color: #adb5bd;">
+              <p>© ${new Date().getFullYear()} Lumina Digital Signage. Todos los derechos reservados.</p>
+              <p>Por favor, responde a este correo si tienes dudas adicionales.</p>
+            </footer>
+          </div>
+        `
+      });
+      if (resendRes.error) {
+        console.error('[Resend] Fallo devuelto por la API (DirectHost):', resendRes.error);
+        return { success: false, error: 'Error de Resend: ' + resendRes.error.message };
+      }
+      return { success: true };
+    } else {
+      return { success: false, error: 'Resend no está configurado en el servidor' };
+    }
+  } catch (error) {
+    console.error('Error al enviar mensaje directo:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
   }
 }

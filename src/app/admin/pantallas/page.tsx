@@ -5,10 +5,10 @@ import { NuevaPantallaForm } from './NuevaPantallaForm'
 export default async function AdminPantallasPage() {
   const supabase = await createClient()
 
-  // Leer pantallas con datos de Host y Perfil (Email)
+  // Leer pantallas con datos de Host y Perfil (Email) de forma robusta
   const { data: pantallas, error } = await supabase
     .from('pantallas')
-    .select('*, hosts(perfiles(nombre_empresa)), creador:perfiles!creado_por(nombre_empresa)')
+    .select('*, hosts(perfiles(nombre_empresa, email)), creador:perfiles!creado_por(nombre_empresa, email)')
     .order('created_at', { ascending: false })
 
   return (
