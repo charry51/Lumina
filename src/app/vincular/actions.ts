@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { calculateHostCommission, type ScreenType, type DensityLevel } from '@/lib/yield/pricing'
 
 /**
  * Genera un código único de 6 caracteres para vincular una TV.
@@ -108,20 +109,13 @@ export async function activatePairingCode(
 
   // 4. Lógica de Host Automático: Si no es superadmin, vincular como host
   if (perfil?.rol !== 'superadmin') {
-    // Cálculo dinámico de comisión según el tipo (Handwritten Note logic)
-    // Bar: 20%, Gym: 25%, Rest: 28%, Calle: 30%, CC: 32%, Calle Principal: 35%
-    let porcentajeBase = 25.00
-    if (tipoPantalla === 'bar') porcentajeBase = 20.00
-    else if (tipoPantalla === 'restaurante') porcentajeBase = 28.00
-    else if (tipoPantalla === 'calle') porcentajeBase = 30.00
-    else if (tipoPantalla === 'centro_comercial') porcentajeBase = 32.00
-    else if (tipoPantalla === 'calle_principal') porcentajeBase = 35.00
+    const porcentaje = calculateHostCommission(tipoPantalla as ScreenType, densidadNivel as DensityLevel)
 
     await supabase.from('hosts').insert({
       perfil_id: user.id,
       pantalla_id: pantalla.id,
       nombre_local: nombre,
-      porcentaje: porcentajeBase,
+      porcentaje,
       saldo_pendiente: 0,
       saldo_pagado: 0
     })

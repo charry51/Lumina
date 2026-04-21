@@ -177,12 +177,14 @@ export default async function HostDashboardPage({
                     {/* YIELD TIER BADGE */}
                     <div className={`px-2.5 py-1 rounded border text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${
                       yieldTier === 'Elite' ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 text-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.2)]' :
-                      yieldTier === 'Plus' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 text-[#00d2ff]' :
+                      yieldTier === 'Premium' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 text-[#00d2ff]' :
+                      yieldTier === 'Estandar' ? 'bg-primary/5 border-primary/20 text-primary' :
                       'bg-zinc-900 border-zinc-800 text-zinc-500'
                     }`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${
                         yieldTier === 'Elite' ? 'bg-[#D4AF37] shadow-[0_0_5px_#D4AF37]' :
-                        yieldTier === 'Plus' ? 'bg-[#00d2ff] shadow-[0_0_5px_#00d2ff]' :
+                        yieldTier === 'Premium' ? 'bg-[#00d2ff] shadow-[0_0_5px_#00d2ff]' :
+                        yieldTier === 'Estandar' ? 'bg-primary' :
                         'bg-zinc-700'
                       }`} />
                       Yield: {yieldTier} (x{yieldMult.toFixed(1)})

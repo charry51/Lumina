@@ -114,7 +114,7 @@ export default function HeroSection() {
                                         <div className="flex gap-0.5">
                                             {[...Array(8)].map((_, i) => (
                                                 <div key={i} className="w-2 h-6 bg-[#00d2ff]/20 rounded-full overflow-hidden">
-                                                    <div className="w-full bg-[#00d2ff] animate-pulse" style={{height: `${Math.random() * 80 + 20}%`, animationDelay: `${i * 0.1}s`}} />
+                                                    <div className="w-full bg-[#00d2ff] animate-pulse" style={{height: `${((i * 13) % 80) + 20}%`, animationDelay: `${i * 0.15}s`}} />
                                                 </div>
                                             ))}
                                         </div>
@@ -151,11 +151,11 @@ export default function HeroSection() {
                                             {[...Array(12)].map((_, i) => (
                                                 <div 
                                                     key={i} 
-                                                    className={`absolute w-1.5 h-1.5 rounded-full ${Math.random() > 0.3 ? 'bg-[#00d2ff]' : 'bg-[#D4AF37]'} animate-pulse opacity-40`}
+                                                    className={`absolute w-1.5 h-1.5 rounded-full ${(i % 3 === 0) ? 'bg-[#D4AF37]' : 'bg-[#00d2ff]'} animate-pulse opacity-40`}
                                                     style={{
-                                                        top: `${Math.random() * 80 + 10}%`,
-                                                        left: `${Math.random() * 90 + 5}%`,
-                                                        animationDelay: `${Math.random() * 2}s`
+                                                        top: `${((i * 17) % 80) + 10}%`,
+                                                        left: `${((i * 23) % 90) + 5}%`,
+                                                        animationDelay: `${(i * 0.3) % 2}s`
                                                     }}
                                                 />
                                             ))}
