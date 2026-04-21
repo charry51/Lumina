@@ -51,6 +51,9 @@ export default async function AdminLayout({
           <Link href="/admin/mensajes" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
             Mensajes de Contacto
           </Link>
+          <Link href="/admin/soporte" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
+            Soporte Técnico
+          </Link>
         </nav>
         <div className="p-4 border-t border-zinc-900">
           <Link href="/dashboard" className="block px-4 py-2 text-sm text-zinc-500 hover:text-white transition-colors">

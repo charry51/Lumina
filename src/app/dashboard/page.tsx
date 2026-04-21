@@ -114,6 +114,12 @@ export default async function DashboardPage() {
              </Button>
           </Link>
 
+          <Link href="/dashboard/soporte">
+             <Button variant="outline" className="border-border hover:bg-muted flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
+                Soporte
+             </Button>
+          </Link>
+
           <Link href="/host/dashboard">
              <Button variant="outline" className="border-[#00d2ff]/30 text-[#00d2ff] hover:bg-[#00d2ff]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
                 <Monitor className="w-3 h-3" />
