@@ -8,7 +8,14 @@ import { calculateHostCommission, type ScreenType, type DensityLevel } from '@/l
  * Genera un código único de 6 caracteres para vincular una TV.
  * La TV llama a esto al arrancar. No requiere sesión.
  */
-export async function generatePairingCode(deviceId: string): Promise<{ code: string } | { error: string }> {
+export async function generatePairingCode(
+  deviceId: string, 
+  latitud?: number, 
+  longitud?: number,
+  resolucion?: string,
+  esTactil?: boolean,
+  tamanoPulgadasEstimado?: number
+): Promise<{ code: string } | { error: string }> {
   const supabase = await createClient()
 
   // Generar un código corto único tipo "LM-4F9"
@@ -28,7 +35,12 @@ export async function generatePairingCode(deviceId: string): Promise<{ code: str
     code,
     device_id: deviceId,
     expires_at: expiresAt,
-    estado: 'pendiente'
+    estado: 'pendiente',
+    latitud,
+    longitud,
+    resolucion,
+    es_tactil: esTactil,
+    tamano_pulgadas_estimado: tamanoPulgadasEstimado
   })
 
   if (error) return { error: error.message }
@@ -48,7 +60,11 @@ export async function activatePairingCode(
   latitud?: number,
   longitud?: number,
   tipoPantalla: string = 'gimnasio',
-  densidadNivel: string = 'medio'
+  densidadNivel: string = 'medio',
+  resolucion?: string,
+  esTactil?: boolean,
+  tamanoPulgadas?: number,
+  sospechoso?: boolean
 ): Promise<{ success: boolean; pantallaId?: string; error?: string }> {
   const supabase = await createClient()
 
@@ -98,7 +114,12 @@ export async function activatePairingCode(
       es_publica: esPublica,
       tipo_pantalla: tipoPantalla,
       densidad_poblacion_nivel: densidadNivel,
-      organizacion_id: perfil?.organizacion_id
+      organizacion_id: perfil?.organizacion_id,
+      creado_por: user.id,
+      resolucion,
+      es_tactil: esTactil,
+      tamano_pulgadas: tamanoPulgadas,
+      sospechoso
     })
     .select('id')
     .single()
@@ -163,5 +184,39 @@ export async function checkPairingStatus(deviceId: string): Promise<{
   return {
     estado: data.estado as 'pendiente' | 'vinculado' | 'expirado',
     pantallaId: data.pantalla_id || undefined
+  }
+}
+
+/**
+ * Obtiene los metadatos de vinculación (GPS) para el admin.
+ */
+export async function getPairingMetadata(code: string): Promise<{
+  lat?: number
+  lng?: number
+  resolucion?: string
+  es_tactil?: boolean
+  tamano_pulgadas_estimado?: number
+  capturado_at?: string
+  error?: string
+}> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('pairing_codes')
+    .select('latitud, longitud, resolucion, es_tactil, capturado_at, tamano_pulgadas_estimado')
+    .eq('code', code.toUpperCase())
+    .eq('estado', 'pendiente')
+    .gt('expires_at', new Date().toISOString())
+    .single()
+
+  if (error || !data) return { error: 'Código no encontrado o expirado' }
+
+  return {
+    lat: data.latitud,
+    lng: data.longitud,
+    resolucion: data.resolucion,
+    es_tactil: data.es_tactil,
+    tamano_pulgadas_estimado: data.tamano_pulgadas_estimado,
+    capturado_at: data.capturado_at
   }
 }
