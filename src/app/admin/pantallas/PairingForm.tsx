@@ -1,16 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { activatePairingCode } from '@/app/vincular/actions'
-import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Tv, Loader2, CheckCircle2, MapPin } from 'lucide-react'
-import { 
-  getPairingMetadata 
-} from '@/app/vincular/actions'
+import { activatePairingCode, getPairingMetadata } from '@/app/vincular/actions'
 import { 
   getScreenTier, 
   getTierMultiplier,
