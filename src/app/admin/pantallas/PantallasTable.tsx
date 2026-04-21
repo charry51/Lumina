@@ -35,11 +35,11 @@ function ContactHostDialog({ email, screenName }: { email: string, screenName: s
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger render={
         <button className="flex items-center gap-1 text-[10px] text-[#00d2ff] hover:text-white transition-colors bg-[#00d2ff]/10 px-2 py-1 rounded w-fit">
           <span>✉️</span> Contactar Dueño
         </button>
-      </DialogTrigger>
+      } />
       <DialogContent className="bg-zinc-950 border-zinc-800 text-white sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-[#00d2ff] uppercase tracking-widest text-sm font-black">
