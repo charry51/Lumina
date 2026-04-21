@@ -54,6 +54,34 @@ export async function createSupportTicket(formData: FormData) {
 
     if (msgErr) throw msgErr
 
+    // 3. Notificar al Admin por email si está configurado
+    const adminEmail = process.env.ADMIN_EMAIL
+    if (adminEmail) {
+      try {
+        await resend.emails.send({
+          from: 'Lumina Support <onboarding@resend.dev>',
+          to: adminEmail,
+          subject: `NEW TICKET: [${categoria}] ${asunto}`,
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; color: #333;">
+              <h2 style="color: #00d2ff;">Nuevo Ticket de Soporte</h2>
+              <p><strong>Usuario ID:</strong> ${user.id}</p>
+              <p><strong>Categoría:</strong> ${categoria}</p>
+              <p><strong>Prioridad:</strong> ${prioridad}</p>
+              <p><strong>Asunto:</strong> ${asunto}</p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+              <p><strong>Mensaje:</strong></p>
+              <p style="white-space: pre-wrap;">${mensajeInitial}</p>
+              <br />
+              <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/soporte/${ticket.id}" style="background: #00d2ff; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Responder en Panel Admin</a>
+            </div>
+          `
+        })
+      } catch (err) {
+        console.error('Error sending admin notification:', err)
+      }
+    }
+
     revalidatePath('/dashboard/soporte')
     revalidatePath('/admin/soporte')
     return { success: true, ticketId: ticket.id }
@@ -92,7 +120,7 @@ export async function replyToSupportTicket(
 
     if (msgErr) throw msgErr
 
-    // 2. Si es admin, actualizar estado a EN_PROCESO y notificar por email
+    // 2. Si es admin, actualizar estado a EN_PROCESO y notificar por email al usuario
     if (esAdmin) {
       await supabase
         .from('soporte_tickets')
@@ -108,7 +136,7 @@ export async function replyToSupportTicket(
 
       if (ticket?.perfiles?.email) {
         await resend.emails.send({
-          from: 'Lumina Support <soporte@lumina.com>',
+          from: 'Lumina Support <onboarding@resend.dev>',
           to: ticket.perfiles.email,
           replyTo: 'soporte@lumina.com',
           subject: `Re: [Soporte #${ticketId.slice(0, 5)}] ${ticket.asunto}`,
@@ -127,11 +155,34 @@ export async function replyToSupportTicket(
         })
       }
     } else {
-        // Si responde el usuario, volver a marcar como PENDIENTE para el admin
+        // Si responde el usuario, volver a marcar como PENDIENTE para el admin y notificarle
         await supabase
         .from('soporte_tickets')
         .update({ estado: 'PENDIENTE', updated_at: new Date().toISOString() })
         .eq('id', ticketId)
+
+        const adminEmail = process.env.ADMIN_EMAIL
+        if (adminEmail) {
+          try {
+            await resend.emails.send({
+              from: 'Lumina Support <onboarding@resend.dev>',
+              to: adminEmail,
+              subject: `REPLY: Support #${ticketId.slice(0, 5)}`,
+              html: `
+                <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                   <h2 style="color: #00d2ff;">El usuario ha respondido</h2>
+                   <p><strong>Ticket ID:</strong> ${ticketId}</p>
+                   <p><strong>Mensaje:</strong></p>
+                   <p style="white-space: pre-wrap;">${mensaje}</p>
+                   <br />
+                   <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/soporte/${ticketId}" style="background: #00d2ff; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Ir a Consultas</a>
+                </div>
+              `
+            })
+          } catch (err) {
+            console.error('Error notifying admin of user reply:', err)
+          }
+        }
     }
 
     revalidatePath(`/dashboard/soporte/${ticketId}`)
