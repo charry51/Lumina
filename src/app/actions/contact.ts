@@ -250,7 +250,7 @@ export async function sendDirectMessageToHost(formData: FormData) {
       const resendRes = await resend.emails.send({
         from: 'Lumina <onboarding@resend.dev>',
         to: email,
-        reply_to: 'soporte@lumina.com',
+        replyTo: 'soporte@lumina.com',
         subject: `Lumina: ${subject}`,
         html: `
           <div style="background-color: #f8f9fa; color: #212529; font-family: sans-serif; padding: 40px; max-width: 600px; margin: 20px auto; border-radius: 8px; border: 1px solid #dee2e6;">

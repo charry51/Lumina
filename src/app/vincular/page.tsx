@@ -251,7 +251,7 @@ export default function VincularPage() {
               El código ha caducado. Genera uno nuevo.
             </p>
             <button
-              onClick={initPairing}
+              onClick={() => initPairing()}
               className="bg-[#00d2ff] hover:bg-[#00bbdd] text-black font-black px-12 py-4 rounded-xl text-xl uppercase tracking-widest transition-all"
             >
               Generar nuevo código
