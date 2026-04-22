@@ -1,5 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
 import CampaignForm from './CampaignForm'
 
 export default async function NuevaCampanaPage() {
@@ -35,12 +38,21 @@ export default async function NuevaCampanaPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 bg-background text-foreground min-h-screen">
-      <header className="mb-8 border-b border-border pb-6 flex items-center gap-6">
-        <img src="/logo.png" alt="Lumina Logo" className="h-12 w-auto" />
+      <header className="mb-8 border-b border-border pb-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard">
+            <Button variant="outline" size="icon" className="rounded-full border-border hover:bg-muted h-9 w-9">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <img src="/logo.png" alt="Lumina Logo" className="h-10 w-auto" />
+        </div>
         <div>
-            <h1 className="text-2xl font-bold text-foreground italic tracking-tight uppercase">CREAR <span className="text-amber-600 dark:text-[#D4AF37] NOT-italic">NUEVA CAMPAÑA</span></h1>
+            <h1 className="text-2xl font-bold text-foreground italic tracking-tight uppercase group flex items-center gap-2">
+                CONFIGURAR <span className="text-[#00d2ff] NOT-italic drop-shadow-[0_0_8px_rgba(0,210,255,0.4)]">EMISIÓN</span>
+            </h1>
             <div className="flex items-center gap-2 mt-1">
-                <span className="text-[10px] bg-amber-600/10 dark:bg-[#D4AF37]/10 text-amber-600 dark:text-[#D4AF37] font-bold px-3 py-1 rounded-full border border-amber-600/30 dark:border-[#D4AF37]/30 uppercase tracking-widest">
+                <span className="text-[10px] bg-[#00d2ff]/10 text-[#00d2ff] font-bold px-3 py-1 rounded-full border border-[#00d2ff]/30 uppercase tracking-widest">
                     Modo: {profile.planes.nombre}
                 </span>
             </div>

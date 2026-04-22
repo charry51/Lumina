@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { Resend } from 'resend'
 
@@ -58,9 +58,13 @@ export async function createSupportTicket(formData: FormData) {
     const adminEmail = process.env.ADMIN_EMAIL
     if (adminEmail) {
       try {
+        // Sandbox Mode Bypass
+        const isSandbox = !process.env.RESEND_DOMAIN || process.env.RESEND_DOMAIN === 'onboarding@resend.dev';
+        const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
+
         await resend.emails.send({
-          from: 'Lumina Support <onboarding@resend.dev>',
-          to: adminEmail,
+          from: `Lumina Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          to: toEmail,
           subject: `NEW TICKET: [${categoria}] ${asunto}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
@@ -135,9 +139,13 @@ export async function replyToSupportTicket(
         .single()
 
       if (ticket?.perfiles?.email) {
+        // Sandbox Mode Bypass
+        const isSandbox = !process.env.RESEND_DOMAIN || process.env.RESEND_DOMAIN === 'onboarding@resend.dev';
+        const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : ticket.perfiles.email;
+
         await resend.emails.send({
-          from: 'Lumina Support <onboarding@resend.dev>',
-          to: ticket.perfiles.email,
+          from: `Lumina Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          to: toEmail,
           replyTo: 'soporte@lumina.com',
           subject: `Re: [Soporte #${ticketId.slice(0, 5)}] ${ticket.asunto}`,
           html: `
@@ -164,9 +172,13 @@ export async function replyToSupportTicket(
         const adminEmail = process.env.ADMIN_EMAIL
         if (adminEmail) {
           try {
+            // Sandbox Mode Bypass
+            const isSandbox = !process.env.RESEND_DOMAIN || process.env.RESEND_DOMAIN === 'onboarding@resend.dev';
+            const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
+
             await resend.emails.send({
-              from: 'Lumina Support <onboarding@resend.dev>',
-              to: adminEmail,
+              from: `Lumina Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+              to: toEmail,
               subject: `REPLY: Support #${ticketId.slice(0, 5)}`,
               html: `
                 <div style="font-family: sans-serif; padding: 20px; color: #333;">
@@ -207,5 +219,76 @@ export async function updateTicketStatus(ticketId: string, status: TicketStatus)
     if (error) return { error: error.message }
     revalidatePath('/admin/soporte')
     revalidatePath(`/dashboard/soporte/${ticketId}`)
+    return { success: true }
+}
+
+/**
+ * AI Engine: Analyzes ticket description to suggest category and priority.
+ * Uses a heuristic approach (keyword and context analysis).
+ */
+export async function analyzeTicketMessage(text: string): Promise<{ categoria: TicketCategory, prioridad: TicketPriority }> {
+  const content = text.toLowerCase();
+  
+  let categoria: TicketCategory = 'Otros';
+  let prioridad: TicketPriority = 'MEDIA';
+
+  // 1. Categoria Logic
+  if (content.includes('tv') || content.includes('pantalla') || content.includes('monitor') || content.includes('cable') || content.includes('hdmi') || content.includes('conexion')) {
+    categoria = 'Hardware / Pantalla';
+  } else if (content.includes('pago') || content.includes('cobro') || content.includes('factura') || content.includes('dinero') || content.includes('tarjeta') || content.includes('precio') || content.includes('coste')) {
+    categoria = 'Facturación / Pagos';
+  } else if (content.includes('campaña') || content.includes('anuncio') || content.includes('creatividad') || content.includes('video') || content.includes('reproducir') || content.includes('reproduccion')) {
+    categoria = 'Contenido / Campañas';
+  } else if (content.includes('error') || content.includes('bug') || content.includes('fallo') || content.includes('no funciona') || content.includes('roto') || content.includes('crash')) {
+    categoria = 'Reportar Error';
+  }
+
+  // 2. Prioridad Logic
+  if (content.includes('urgente') || content.includes('critico') || content.includes('inmediato') || content.includes('roto') || content.includes('no emite') || content.includes('negro') || content.includes('dinero')) {
+    prioridad = 'URGENTE';
+  } else if (content.includes('grave') || content.includes('ayuda') || content.includes('mal') || content.includes('problema')) {
+    prioridad = 'ALTA';
+  } else if (content.includes('duda') || content.includes('pregunta') || content.includes('info') || content.includes('gracias')) {
+    prioridad = 'BAJA';
+  }
+
+  // Simulated AI Latency for premium feel
+  await new Promise(r => setTimeout(r, 600));
+
+  return { categoria, prioridad };
+}
+
+/**
+ * Deletes a support ticket and all its messages (Admin only)
+ */
+export async function deleteSupportTicket(ticketId: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return { error: 'No autenticado' }
+
+    // Verificar si es superadmin
+    const { data: profile } = await supabase
+        .from('perfiles')
+        .select('rol')
+        .eq('id', user.id)
+        .single()
+
+    if (profile?.rol !== 'superadmin') {
+        return { error: 'No tienes permisos para realizar esta acción' }
+    }
+
+    // El borrado en cascada debería encargarse de soporte_mensajes si está configurado en DB
+    // Pero por seguridad lo hacemos explícito o confiamos en cascada.
+    const adminSupabase = await createAdminClient()
+    const { error } = await adminSupabase
+        .from('soporte_tickets')
+        .delete()
+        .eq('id', ticketId)
+
+    if (error) return { error: error.message }
+
+    revalidatePath('/admin/soporte')
+    revalidatePath('/dashboard/soporte')
     return { success: true }
 }

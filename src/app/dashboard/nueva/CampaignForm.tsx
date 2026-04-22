@@ -203,8 +203,8 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm">
       
       {/* LUMINA v2.0 - Programmatic Dashboard Card */}
-      <div className="bg-muted/50 border border-border rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-amber-600/10 dark:shadow-[#D4AF37]/10">
-         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-600 dark:via-[#D4AF37] to-transparent opacity-50" />
+      <div className="bg-muted/50 border border-border rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-[#00d2ff]/10">
+         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00d2ff] to-transparent opacity-50" />
          
          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-6">
@@ -238,7 +238,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                 <div className="flex flex-col gap-2">
                   <Label className="text-muted-foreground font-medium tracking-widest text-[10px] uppercase">Prioridad de Subasta</Label>
                   <Select value={prioridad.toString()} onValueChange={(val: any) => setPrioridad(parseInt(val))}>
-                    <SelectTrigger className="bg-background border-border focus:border-amber-600 dark:focus:border-[#D4AF37] h-10 w-full">
+                    <SelectTrigger className="bg-background border-border focus:border-[#00d2ff] h-10 w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-popover border-border">
@@ -250,11 +250,11 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                 </div>
             </div>
             
-            <div className="bg-background/80 rounded-lg p-6 border border-amber-600/20 dark:border-[#D4AF37]/20 flex flex-col justify-center items-center text-center">
-                <span className="text-amber-600 dark:text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
+            <div className="bg-background/80 rounded-lg p-6 border border-[#00d2ff]/20 flex flex-col justify-center items-center text-center">
+                <span className="text-[#00d2ff] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
                 {impactosEstimados > 0 ? (
                     <>
-                        <span className="text-5xl font-heading text-foreground font-black tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        <span className="text-5xl font-heading text-foreground font-black tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(0,210,255,0.3)]">
                             {impactosEstimados.toLocaleString()}
                         </span>
                         <div className="flex flex-col mt-2">
@@ -271,7 +271,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="nombre_campana" className="text-muted-foreground font-medium">Nombre de la Creatividad</Label>
-        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Lanzamiento Perfume 2026" required disabled={isLoading} className="bg-background border-border focus:border-amber-600 dark:focus:border-[#D4AF37] text-foreground h-11" />
+        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Lanzamiento Perfume 2026" required disabled={isLoading} className="bg-background border-border focus:border-[#00d2ff] text-foreground h-11" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -299,15 +299,15 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
       <div className="flex flex-col gap-4 relative z-0">
         <Label className="text-muted-foreground font-medium">Selección de Pantallas</Label>
         
-        {isPremium ? (
+         {isPremium ? (
           <div className="space-y-4">
-             <div className="p-4 bg-amber-600/5 dark:bg-[#D4AF37]/5 border border-amber-600/20 dark:border-[#D4AF37]/20 rounded-xl text-amber-600 dark:text-[#D4AF37] mb-2 flex items-center justify-between">
+             <div className="p-4 bg-[#00d2ff]/5 border border-[#00d2ff]/20 rounded-xl text-[#00d2ff] mb-2 flex items-center justify-between">
                 <div>
-                   <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-amber-600 dark:bg-[#D4AF37] text-white dark:text-black px-1.5 py-0.5 rounded">PRO</span></p>
+                   <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-[#00d2ff] text-black px-1.5 py-0.5 rounded">PRO</span></p>
                    <p className="text-[11px] opacity-70">Selecciona las pantallas disponibles en el mapa.</p>
                 </div>
                 {selectedMapScreens.length > 0 && (
-                    <span className="bg-amber-600 dark:bg-[#D4AF37] text-white dark:text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
+                    <span className="bg-[#00d2ff] text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
                         {selectedMapScreens.length} Seleccionadas
                     </span>
                 )}
@@ -371,9 +371,9 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         </div>
       )}
 
-      <Button type="submit" className="mt-6 bg-amber-600 dark:bg-[#D4AF37] hover:bg-amber-700 dark:hover:bg-[#b08d24] text-white dark:text-black font-black h-12 uppercase tracking-widest text-xs" disabled={isLoading}>
+      <button type="submit" className="cyber-button-cyan mt-6 font-black h-12 uppercase tracking-widest text-[11px]" disabled={isLoading}>
         {isLoading ? (isUploading ? 'Subiendo Media...' : 'Procesando IA...') : 'Lanzar Campaña'}
-      </Button>
+      </button>
     </form>
   )
 }

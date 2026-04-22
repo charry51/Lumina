@@ -21,7 +21,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select'
-import { createSupportTicket, TicketCategory, TicketPriority } from '@/app/actions/support'
+import { createSupportTicket, analyzeTicketMessage, TicketCategory, TicketPriority } from '@/app/actions/support'
 import { toast } from 'sonner'
 import { LifeBuoy, Loader2, Upload, Paperclip } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -30,8 +30,21 @@ export function NewTicketDialog() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [archivoUrl, setArchivoUrl] = useState<string | null>(null)
+  const [ticketCategory, setTicketCategory] = useState<TicketCategory>('Otros')
+  const [ticketPriority, setTicketPriority] = useState<TicketPriority>('MEDIA')
   const supabase = createClient()
+
+  const handleManualAnalysis = async (text: string) => {
+    if (text.length < 10) return
+    setIsAnalyzing(true)
+    const result = await analyzeTicketMessage(text)
+    setTicketCategory(result.categoria)
+    setTicketPriority(result.prioridad)
+    setIsAnalyzing(false)
+    toast.info('IA: Categoría y prioridad ajustadas automáticamente')
+  }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -66,6 +79,20 @@ export function NewTicketDialog() {
     setLoading(true)
 
     const formData = new FormData(e.currentTarget)
+    const text = formData.get('mensaje') as string
+
+    // Guaranty AI classification is complete and accurate before submission
+    let finalCategoria = ticketCategory
+    let finalPrioridad = ticketPriority
+
+    if (text && text.length >= 10) {
+       const result = await analyzeTicketMessage(text)
+       finalCategoria = result.categoria
+       finalPrioridad = result.prioridad
+    }
+
+    formData.set('categoria', finalCategoria)
+    formData.set('prioridad', finalPrioridad)
     if (archivoUrl) formData.append('archivo_url', archivoUrl)
 
     const res = await createSupportTicket(formData)
@@ -73,6 +100,9 @@ export function NewTicketDialog() {
       toast.success('Ticket creado correctamente. El soporte te responderá pronto.')
       setOpen(false)
       setArchivoUrl(null)
+      // Reset defaults
+      setTicketCategory('Otros')
+      setTicketPriority('MEDIA')
     } else {
       toast.error(res.error || 'Error al crear ticket')
     }
@@ -95,35 +125,26 @@ export function NewTicketDialog() {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Categoría Principal</Label>
-              <Select name="categoria" required defaultValue="Otros">
-                <SelectTrigger className="bg-zinc-900 border-zinc-800 text-xs font-bold h-11">
-                  <SelectValue placeholder="Selecciona..." />
-                </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                  <SelectItem value="Hardware / Pantalla">📡 Hardware / Pantalla</SelectItem>
-                  <SelectItem value="Facturación / Pagos">💰 Facturación / Pagos</SelectItem>
-                  <SelectItem value="Contenido / Campañas">🎬 Contenido / Campañas</SelectItem>
-                  <SelectItem value="Reportar Error">⚠️ Reportar Error</SelectItem>
-                  <SelectItem value="Otros">❓ Otros</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Clasificación Lumina AI</span>
+              {isAnalyzing && <Loader2 className="w-3 h-3 text-[#00d2ff] animate-spin" />}
             </div>
-            <div className="space-y-2">
-              <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Prioridad</Label>
-              <Select name="prioridad" defaultValue="MEDIA">
-                <SelectTrigger className="bg-zinc-900 border-zinc-800 text-xs font-bold h-11">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                  <SelectItem value="BAJA">Baja</SelectItem>
-                  <SelectItem value="MEDIA">Media</SelectItem>
-                  <SelectItem value="ALTA">Alta</SelectItem>
-                  <SelectItem value="URGENTE">Urgente</SelectItem>
-                </SelectContent>
-              </Select>
+            
+            <div className="flex flex-wrap gap-3">
+              {ticketCategory !== 'Otros' || ticketPriority !== 'MEDIA' ? (
+                <>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#00d2ff]/10 border border-[#00d2ff]/30 rounded-full">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#00d2ff] animate-pulse" />
+                    <span className="text-[10px] text-[#00d2ff] font-black uppercase tracking-tighter">{ticketCategory}</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-full">
+                    <span className="text-[10px] text-zinc-400 font-black uppercase tracking-tighter">Prioridad: {ticketPriority}</span>
+                  </div>
+                </>
+              ) : (
+                <p className="text-[10px] text-zinc-600 italic uppercase">Escribe la descripción para que la IA clasifique tu ticket automáticamente...</p>
+              )}
             </div>
           </div>
 
@@ -138,10 +159,18 @@ export function NewTicketDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Descripción del Problema</Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Descripción del Problema</Label>
+              {isAnalyzing && (
+                <span className="text-[9px] text-[#00d2ff] font-bold animate-pulse flex items-center gap-1">
+                  <Loader2 className="w-2 h-2 animate-spin" /> ✨ IA ANALIZANDO...
+                </span>
+              )}
+            </div>
             <Textarea 
               name="mensaje" 
               required 
+              onBlur={(e) => handleManualAnalysis(e.target.value)}
               placeholder="Describe lo que sucede con el máximo detalle posible..." 
               className="bg-zinc-900 border-zinc-800 min-h-[120px] text-sm leading-relaxed focus-visible:ring-[#00d2ff]"
             />
