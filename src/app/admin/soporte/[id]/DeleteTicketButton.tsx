@@ -36,11 +36,11 @@ export function DeleteTicketButton({ ticketId }: { ticketId: string }) {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger render={
         <Button variant="ghost" className="text-red-500 hover:text-red-400 hover:bg-red-500/10 gap-2 h-9 text-[10px] uppercase font-black tracking-widest">
           <Trash2 className="w-3.5 h-3.5" /> Borrar Incidencia
         </Button>
-      </AlertDialogTrigger>
+      } />
       <AlertDialogContent className="bg-zinc-950 border-zinc-900 text-white">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-red-500 uppercase font-black italic tracking-tighter">¿Confirmar eliminación absoluta?</AlertDialogTitle>

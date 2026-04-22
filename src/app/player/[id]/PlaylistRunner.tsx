@@ -168,8 +168,9 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
         if (presences.length > 1) {
           // Logic: The most recent session (highest online_at) wins.
           // This handles reloads gracefully.
-          const sorted = [...presences].sort((a: any, b: any) => b.online_at - a.online_at)
-          const latestSession = sorted[0].sessionId
+          const sorted = [...presences] as any[]
+          sorted.sort((a, b) => (b.online_at || 0) - (a.online_at || 0))
+          const latestSession = sorted[0]?.sessionId
           
           if (sessionId.current !== latestSession) {
             console.warn('[Lumina Security] Duplicate session detected. This instance is now inactive.')

@@ -250,6 +250,7 @@ export async function sendDirectMessageToHost(formData: FormData) {
       
       // Sandbox Mode Bypass: En modo prueba de Resend solo se puede enviar al admin
       const adminEmail = process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com';
+      const isSandbox = !process.env.RESEND_DOMAIN || process.env.RESEND_DOMAIN === 'onboarding@resend.dev';
       const recipients = isSandbox ? [adminEmail] : [email, adminEmail];
 
       const resendRes = await resend.emails.send({
