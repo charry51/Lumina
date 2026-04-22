@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ChevronLeft, ShieldCheck, User, ExternalLink, Calendar, Mail, Tag, AlertTriangle } from 'lucide-react'
 import { SupportReplyForm } from '@/app/dashboard/soporte/SupportReplyForm'
 import { StatusChangeSelect } from './StatusChangeSelect'
+import { DeleteTicketButton } from './DeleteTicketButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,23 +43,32 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                 <h1 className="text-2xl font-heading text-white uppercase tracking-tighter italic font-black">
                    {ticket.asunto}
                 </h1>
-                <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
-                    ticket.prioridad === 'URGENTE' ? 'bg-red-500 text-white' : 'bg-zinc-800 text-zinc-400'
-                }`}>
-                    {ticket.prioridad}
-                </span>
              </div>
-             <div className="flex items-center gap-4 text-[10px] text-zinc-500 font-mono uppercase">
-                <span className="flex items-center gap-1"><Tag className="w-3 h-3" /> {ticket.categoria}</span>
-                <span>•</span>
-                <span>ID: {ticket.id}</span>
+             <div className="flex items-center gap-3 text-[10px] uppercase font-black tracking-widest mt-2">
+                <div className="px-3 py-1 bg-[#00d2ff]/10 border border-[#00d2ff]/30 text-[#00d2ff] rounded-full flex items-center gap-2">
+                   <Tag className="w-3 h-3" /> {ticket.categoria}
+                </div>
+                <div className={`px-3 py-1 border rounded-full flex items-center gap-2 ${
+                  ticket.prioridad === 'URGENTE' ? 'bg-red-500/10 border-red-500/30 text-red-500' :
+                  ticket.prioridad === 'ALTA' ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' :
+                  'bg-zinc-800 border-zinc-700 text-zinc-400'
+                }`}>
+                   <AlertTriangle className="w-3 h-3 shrink-0" /> {ticket.prioridad}
+                </div>
              </div>
            </div>
         </div>
 
-        <div className="flex flex-col items-end gap-2">
-           <p className="text-[9px] text-[#00d2ff] uppercase font-black tracking-widest mb-1">Estado de la Incidencia</p>
-           <StatusChangeSelect ticketId={ticket.id} currentStatus={ticket.estado} />
+        <div className="flex flex-col items-end gap-4">
+           <div className="flex items-center gap-3">
+             <div className="flex flex-col items-end">
+               <p className="text-[8px] text-zinc-600 uppercase font-black tracking-[0.2em] mb-1">Estado</p>
+               <StatusChangeSelect ticketId={ticket.id} currentStatus={ticket.estado} />
+             </div>
+             <div className="pt-4">
+               <DeleteTicketButton ticketId={ticket.id} />
+             </div>
+           </div>
         </div>
       </header>
 

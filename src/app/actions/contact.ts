@@ -247,22 +247,28 @@ export async function sendDirectMessageToHost(formData: FormData) {
 
     if (process.env.RESEND_API_KEY) {
       console.log(`[Resend] Enviando mensaje directo a host ${email}...`);
+      
+      // Sandbox Mode Bypass: En modo prueba de Resend solo se puede enviar al admin
+      const adminEmail = process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com';
+      const recipients = isSandbox ? [adminEmail] : [email, adminEmail];
+
       const resendRes = await resend.emails.send({
-        from: 'Lumina <onboarding@resend.dev>',
-        to: email,
+        from: `Lumina <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+        to: recipients,
         replyTo: 'soporte@lumina.com',
         subject: `Lumina: ${subject}`,
         html: `
           <div style="background-color: #f8f9fa; color: #212529; font-family: sans-serif; padding: 40px; max-width: 600px; margin: 20px auto; border-radius: 8px; border: 1px solid #dee2e6;">
             <header style="margin-bottom: 30px; text-align: left; border-bottom: 2px solid #00d2ff; padding-bottom: 20px;">
               <h1 style="color: #00d2ff; font-size: 20px; margin: 0; text-transform: uppercase;">Mensaje del Equipo Lumina</h1>
+               ${isSandbox ? '<p style="color: #e63946; font-size: 10px; font-weight: bold;">[MODO SANDBOX - COPIA PARA ADMIN]</p>' : ''}
             </header>
             <main style="background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
               <p style="font-size: 15px; line-height: 1.6;">${message.replace(/\n/g, '<br>')}</p>
             </main>
             <footer style="margin-top: 40px; text-align: center; font-size: 12px; color: #adb5bd;">
               <p>© ${new Date().getFullYear()} Lumina Digital Signage. Todos los derechos reservados.</p>
-              <p>Por favor, responde a este correo si tienes dudas adicionales.</p>
+              <p>Esta es una copia de seguridad para el administrador.</p>
             </footer>
           </div>
         `

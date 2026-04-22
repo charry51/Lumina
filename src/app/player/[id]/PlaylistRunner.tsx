@@ -34,7 +34,9 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   const [hasHydrated, setHasHydrated] = useState(false)
   const [cachedUrls, setCachedUrls] = useState<Record<string, string>>({})
   const [isOnline, setIsOnline] = useState(true)
+  const [isDuplicate, setIsDuplicate] = useState(false)
   const [cacheStatus, setCacheStatus] = useState<'idle' | 'caching' | 'ready'>('idle')
+  const sessionId = useRef(typeof window !== 'undefined' ? crypto.randomUUID() : '')
   const videoRef = useRef<HTMLVideoElement>(null)
   const supabase = createClient()
 
@@ -149,19 +151,44 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     preloadMedia()
   }, [playlist, getNextCampaign, currentCampaign])
 
-  // 4. Presence
+  // 4. Presence & Anti-Duplication
   useEffect(() => {
-    if (!screenId) return
-    const channel = supabase.channel('LuminaNetwork', {
+    if (!screenId || !hasHydrated) return
+    
+    // Channel name must be screen-specific for performance and isolation
+    const channel = supabase.channel(`player_session:${screenId}`, {
       config: { presence: { key: screenId } }
     })
-    channel.subscribe(async (status) => {
-      if (status === 'SUBSCRIBED') {
-        await channel.track({ online_at: new Date().toISOString(), status: isOnline ? 'playing' : 'offline' })
-      }
-    })
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState()
+        const presences = state[screenId] || []
+        
+        if (presences.length > 1) {
+          // Logic: The most recent session (highest online_at) wins.
+          // This handles reloads gracefully.
+          const sorted = [...presences].sort((a: any, b: any) => b.online_at - a.online_at)
+          const latestSession = sorted[0].sessionId
+          
+          if (sessionId.current !== latestSession) {
+            console.warn('[Lumina Security] Duplicate session detected. This instance is now inactive.')
+            setIsDuplicate(true)
+          }
+        }
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({ 
+            sessionId: sessionId.current, 
+            online_at: Date.now(), 
+            status: isOnline ? 'playing' : 'offline' 
+          })
+        }
+      })
+
     return () => { channel.unsubscribe() }
-  }, [screenId, supabase, isOnline])
+  }, [screenId, supabase, isOnline, hasHydrated])
 
   // 5. Playback Switcher
   const handleNext = useCallback(async () => {
@@ -244,6 +271,27 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
   }, [currentCampaign, isImage, hasHydrated, handleNext])
 
   if (!hasHydrated) return <div className="w-screen h-screen bg-[#0a0a0f]" />
+
+  if (isDuplicate) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0f] text-white p-12 text-center">
+        <div className="border border-red-500/30 bg-red-500/5 p-12 max-w-2xl rounded-xl backdrop-blur-md">
+          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+             <span className="text-red-500 text-2xl font-bold">!</span>
+          </div>
+          <h1 className="text-3xl font-heading mb-4 text-red-500 font-black uppercase tracking-tighter">Sesión Duplicada</h1>
+          <p className="text-zinc-400 text-sm leading-relaxed">
+            Esta pantalla ya se está reproduciendo en otro dispositivo o pestaña. 
+            <br/><br/>
+            Por seguridad y para garantizar la precisión de las métricas, solo permitimos una instancia activa por ID de pantalla.
+          </p>
+          <div className="mt-8 pt-8 border-t border-white/5">
+             <p className="text-[10px] text-zinc-600 uppercase font-mono">Screen ID: {screenId}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!currentCampaign) {
     return (

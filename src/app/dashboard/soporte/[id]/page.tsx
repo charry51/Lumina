@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ChevronLeft, User, ShieldCheck, Mail, Clock, ExternalLink } from 'lucide-react'
+import { ChevronLeft, User, ShieldCheck, Mail, Clock, ExternalLink, Tag, AlertTriangle } from 'lucide-react'
 import { SupportReplyForm } from '../SupportReplyForm'
 
 export const dynamic = 'force-dynamic'
@@ -65,9 +65,17 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
             </div>
           </div>
 
-          <div className="flex flex-col items-end text-right">
-             <p className="text-[9px] text-zinc-600 uppercase tracking-widest mb-1 font-bold">Categoría</p>
-             <p className="text-xs text-zinc-300 font-heading uppercase italic">{ticket.categoria}</p>
+          <div className="flex flex-col items-end gap-3 text-right">
+             <div className="flex items-center gap-2 px-3 py-1 bg-[#00d2ff]/10 border border-[#00d2ff]/30 text-[#00d2ff] rounded-full text-[9px] font-black uppercase tracking-widest">
+                <Tag className="w-3 h-3" /> {ticket.categoria}
+             </div>
+             <div className={`flex items-center gap-2 px-3 py-1 border rounded-full text-[9px] font-black uppercase tracking-widest ${
+               ticket.prioridad === 'URGENTE' ? 'bg-red-500/10 border-red-500/30 text-red-500' :
+               ticket.prioridad === 'ALTA' ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' :
+               'bg-zinc-800 border-zinc-700 text-zinc-400'
+             }`}>
+                <AlertTriangle className="w-3 h-3" /> {ticket.prioridad}
+             </div>
           </div>
         </header>
 
