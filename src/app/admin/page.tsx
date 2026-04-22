@@ -247,9 +247,9 @@ export default async function AdminDashboardPage() {
               <div className="text-xs text-zinc-500 uppercase tracking-wider">Campañas Históricas</div>
             </div>
             
-            <div className={`bg-zinc-900/40 p-4 rounded-xl border flex flex-col items-center justify-center text-center ${totalPendientes > 0 ? 'border-yellow-500/30' : 'border-zinc-800/50'}`}>
-              <AlertCircle className={`h-6 w-6 mb-2 ${totalPendientes > 0 ? 'text-yellow-500' : 'text-zinc-400'}`} />
-              <div className={`text-2xl font-bold ${totalPendientes > 0 ? 'text-yellow-500' : 'text-white'}`}>{totalPendientes || 0}</div>
+            <div className={`bg-zinc-900/40 p-4 rounded-xl border flex flex-col items-center justify-center text-center ${(totalPendientes || 0) > 0 ? 'border-yellow-500/30' : 'border-zinc-800/50'}`}>
+              <AlertCircle className={`h-6 w-6 mb-2 ${(totalPendientes || 0) > 0 ? 'text-yellow-500' : 'text-zinc-400'}`} />
+              <div className={`text-2xl font-bold ${(totalPendientes || 0) > 0 ? 'text-yellow-500' : 'text-white'}`}>{totalPendientes || 0}</div>
               <div className="text-xs text-zinc-500 uppercase tracking-wider">Por Aprobar</div>
             </div>
           </div>
