@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import AdminMobileNav from '@/components/AdminMobileNav'
+import { Users } from 'lucide-react'
 
 export default async function AdminLayout({
   children,
