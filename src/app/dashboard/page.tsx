@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
 import { DeleteCampaignButton } from './DeleteCampaignButton'
-import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, ShieldCheck, LifeBuoy } from 'lucide-react'
+import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, LifeBuoy } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -104,13 +104,6 @@ export default async function DashboardPage() {
           <Link href="/dashboard/perfil">
              <Button variant="outline" className="border-border hover:bg-muted flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
                 Mi Perfil
-             </Button>
-          </Link>
-
-          <Link href="/dashboard/planes">
-             <Button variant="outline" className="border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
-                <ShieldCheck className="w-3 h-3" />
-                Cambiar Plan
              </Button>
           </Link>
 

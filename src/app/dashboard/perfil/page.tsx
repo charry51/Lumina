@@ -10,6 +10,9 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AccessibilitySettings } from '@/components/AccessibilitySettings'
+import { ProfileForm } from './ProfileForm'
+import { PlanManager } from './PlanManager'
+
 
 export default async function PerfilPage() {
   const supabase = await createClient()
@@ -54,7 +57,7 @@ export default async function PerfilPage() {
                         <User className="w-8 h-8 text-primary" />
                     </div>
                 </div>
-                <h2 className="text-xl font-heading font-bold text-white mb-1 uppercase tracking-tight">{profile?.nombre || 'Usuario Lumina'}</h2>
+                <h2 className="text-xl font-heading font-bold text-white mb-1 uppercase tracking-tight">{profile?.nombre_empresa || profile?.nombre || 'Usuario Lumina'}</h2>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
                     <Mail className="w-3 h-3" />
                     {user.email}
@@ -85,8 +88,36 @@ export default async function PerfilPage() {
             </div>
           </div>
 
-          {/* Columna Derecha: Configuración Accesibilidad */}
+          {/* Columna Derecha: Configuración */}
           <div className="md:col-span-2 space-y-8">
+            
+            {/* Gestión del Plan */}
+            <div className="cyber-card p-8 border-white/5 relative overflow-hidden transition-all duration-500 shadow-sm">
+                <h3 className="text-xl font-heading font-black tracking-tight uppercase text-white mb-6 flex items-center gap-2">
+                    Gestión de Suscripción
+                </h3>
+                <PlanManager 
+                    planName={profile?.planes?.nombre} 
+                    isSubscribed={profile?.suscripcion_activa ?? false} 
+                />
+            </div>
+
+            {/* Información del Perfil */}
+            <div className="cyber-card p-8 border-white/5 relative overflow-hidden transition-all duration-500 shadow-sm">
+                <h3 className="text-xl font-heading font-black tracking-tight uppercase text-white mb-6 flex items-center gap-2">
+                    Información Personal y Corporativa
+                </h3>
+                <ProfileForm 
+                    initialData={{
+                        nombre: profile?.nombre || '',
+                        nombre_empresa: profile?.nombre_empresa || '',
+                        nif: profile?.nif || '',
+                        telefono: profile?.telefono || ''
+                    }}
+                />
+            </div>
+          
+            {/* Tema y Accesibilidad */}
             <div className="cyber-card p-8 border-white/5 dark:border-white/5 light:border-slate-100 light:bg-white relative overflow-hidden transition-all duration-500 shadow-sm light:shadow-slate-200/50">
                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                     <Settings className="w-40 h-40" />
