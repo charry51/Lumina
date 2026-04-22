@@ -27,6 +27,12 @@ export default async function AdminLayout({
     redirect('/dashboard')
   }
 
+  // Obtener conteo de tickets pendientes para el badge
+  const { count: pendingTickets } = await supabase
+    .from('soporte_tickets')
+    .select('*', { count: 'exact', head: true })
+    .eq('estado', 'PENDIENTE')
+
   return (
     <div className="dark min-h-screen bg-zinc-950 text-zinc-100 flex font-[family-name:var(--font-geist-sans)]">
       {/* Navegación Móvil (Solo visible en < md) */}
@@ -47,6 +53,16 @@ export default async function AdminLayout({
           </Link>
           <Link href="/admin/pantallas" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
             Red de Pantallas
+          </Link>
+          <Link href="/admin/soporte" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors flex items-center justify-between group">
+            <span>Soporte Técnico</span>
+            {pendingTickets && pendingTickets > 0 ? (
+               <span className="bg-[#00d2ff] text-black text-[9px] font-black px-1.5 py-0.5 rounded-full animate-pulse shadow-[0_0_10px_rgba(0,210,255,0.4)]">
+                 {pendingTickets}
+               </span>
+            ) : (
+               <div className="w-1.5 h-1.5 rounded-full bg-[#00d2ff] opacity-0 group-hover:opacity-100 transition-opacity" />
+            )}
           </Link>
           <Link href="/admin/mensajes" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
             Mensajes de Contacto

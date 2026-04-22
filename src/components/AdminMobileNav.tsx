@@ -47,6 +47,13 @@ export default function AdminMobileNav() {
               Red de Pantallas
             </Link>
             <Link 
+              href="/admin/soporte" 
+              onClick={() => setIsOpen(false)}
+              className="text-2xl font-bold py-4 border-b border-zinc-800 text-[#00d2ff] hover:text-[#00d2ff]/80"
+            >
+              Soporte Técnico
+            </Link>
+            <Link 
               href="/admin/mensajes" 
               onClick={() => setIsOpen(false)}
               className="text-2xl font-bold py-4 border-b border-zinc-800 text-zinc-300 hover:text-primary"

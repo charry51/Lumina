@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
 import { DeleteCampaignButton } from './DeleteCampaignButton'
-import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, ShieldCheck } from 'lucide-react'
+import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, ShieldCheck, LifeBuoy } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -126,6 +126,14 @@ export default async function DashboardPage() {
                + Nueva Emisión
             </button>
           </Link>
+          {profile?.rol !== 'superadmin' && (
+            <Link href="/dashboard/soporte">
+               <Button variant="outline" className="border-[#00d2ff]/30 text-[#00d2ff] hover:bg-[#00d2ff]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3 transition-shadow hover:shadow-[0_0_10px_rgba(0,210,255,0.1)]">
+                  <LifeBuoy className="w-3 h-3" />
+                  Soporte Técnico
+               </Button>
+            </Link>
+          )}
           <form action={logout}>
             <Button variant="outline" type="submit" className="border-border hover:bg-muted text-[11px] sm:text-xs px-3 sm:px-4">Salir</Button>
           </form>

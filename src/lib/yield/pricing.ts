@@ -48,23 +48,29 @@ export function getScreenTier(type: ScreenType, density: DensityLevel): YieldTie
 }
 
 /**
- * Calcula el porcentaje de comisión para el Host según el tipo y densidad.
+ * Calcula el porcentaje de comisión para el Host según el tipo, densidad y tamaño de pantalla.
  */
-export function calculateHostCommission(type: ScreenType, density: DensityLevel): number {
+export function calculateHostCommission(type: ScreenType, density: DensityLevel, tamanoPulgadas: number = 40): number {
   const tier = getScreenTier(type, density)
+  let baseCommission = 25
   
-  if (tier === 'Elite') return 35
-  if (tier === 'Estandar') return 25
-  if (tier === 'Bajo Valor') return 20
+  if (tier === 'Elite') baseCommission = 35
+  else if (tier === 'Premium') {
+    if (density === 'muy_alto') baseCommission = 32
+    else if (density === 'alto') baseCommission = 30
+    else baseCommission = 28
+  }
+  else if (tier === 'Estandar') baseCommission = 25
+  else if (tier === 'Bajo Valor') baseCommission = 20
   
-  // Premium: 28-32% basado en densidad
-  if (tier === 'Premium') {
-    if (density === 'muy_alto') return 32
-    if (density === 'alto') return 30
-    return 28 // bajo o medio
+  // Modificador por tamaño de pantalla real (Anti-Fraude / Bonificación)
+  if (tamanoPulgadas >= 55) {
+    baseCommission += 5 // +5% de bonus para pantallas gigantes
+  } else if (tamanoPulgadas < 40) {
+    baseCommission -= 5 // Penalización para pantallas pequeñas
   }
   
-  return 25 // fallback
+  return Math.max(10, baseCommission) // Suelo mínimo
 }
 
 /**
