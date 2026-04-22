@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import AdminMobileNav from '@/components/AdminMobileNav'
+import { Users } from 'lucide-react'
 
 export default async function AdminLayout({
   children,
@@ -66,6 +67,10 @@ export default async function AdminLayout({
           </Link>
           <Link href="/admin/mensajes" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
             Mensajes de Contacto
+          </Link>
+          <Link href="/admin/usuarios" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            <span>Gestión de Usuarios</span>
           </Link>
         </nav>
         <div className="p-4 border-t border-zinc-900">
