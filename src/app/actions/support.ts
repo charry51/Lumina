@@ -233,22 +233,22 @@ export async function analyzeTicketMessage(text: string): Promise<{ categoria: T
   let prioridad: TicketPriority = 'MEDIA';
 
   // 1. Categoria Logic
-  if (content.includes('tv') || content.includes('pantalla') || content.includes('monitor') || content.includes('cable') || content.includes('hdmi') || content.includes('conexion')) {
+  if (content.match(/(tv|pantalla|monitor|cable|hdmi|conexion|apagada|hardware|físico|roto|quemado|enciende)/i)) {
     categoria = 'Hardware / Pantalla';
-  } else if (content.includes('pago') || content.includes('cobro') || content.includes('factura') || content.includes('dinero') || content.includes('tarjeta') || content.includes('precio') || content.includes('coste')) {
+  } else if (content.match(/(pago|cobro|factura|dinero|tarjeta|precio|coste|suscripción|plan|reembolso|cobrado|cargo)/i)) {
     categoria = 'Facturación / Pagos';
-  } else if (content.includes('campaña') || content.includes('anuncio') || content.includes('creatividad') || content.includes('video') || content.includes('reproducir') || content.includes('reproduccion')) {
+  } else if (content.match(/(campaña|anuncio|creatividad|video|reproducir|reproduccion|contenido|imagen|media|cartel)/i)) {
     categoria = 'Contenido / Campañas';
-  } else if (content.includes('error') || content.includes('bug') || content.includes('fallo') || content.includes('no funciona') || content.includes('roto') || content.includes('crash')) {
+  } else if (content.match(/(error|bug|fallo|no funciona|crash|app|aplicacion|sistema|lento|caido|login|entrar)/i)) {
     categoria = 'Reportar Error';
   }
 
   // 2. Prioridad Logic
-  if (content.includes('urgente') || content.includes('critico') || content.includes('inmediato') || content.includes('roto') || content.includes('no emite') || content.includes('negro') || content.includes('dinero')) {
+  if (content.match(/(urgente|critico|inmediato|roto|no emite|negro|dinero|caído|perdida|estafa|legal|denuncia|grave|emergencia)/i)) {
     prioridad = 'URGENTE';
-  } else if (content.includes('grave') || content.includes('ayuda') || content.includes('mal') || content.includes('problema')) {
+  } else if (content.match(/(ayuda|mal|problema|error|falla|bloqueado|importante)/i)) {
     prioridad = 'ALTA';
-  } else if (content.includes('duda') || content.includes('pregunta') || content.includes('info') || content.includes('gracias')) {
+  } else if (content.match(/(duda|pregunta|info|gracias|consulta|saber|como)/i)) {
     prioridad = 'BAJA';
   }
 

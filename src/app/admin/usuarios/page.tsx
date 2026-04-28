@@ -1,16 +1,29 @@
 import { createClient } from '@/lib/supabase/server'
 import { UserRoleToggle } from './UserRoleToggle'
+import { UserPlanToggle } from './UserPlanToggle'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Users, Search, Filter } from 'lucide-react'
 
-export default async function UserManagementPage() {
+export default async function UserManagementPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>
+}) {
   const supabase = await createClient()
+  const resolvedSearchParams = await searchParams;
+  const searchQuery = resolvedSearchParams?.q || ''
 
-  // Obtener perfiles con suscripciones/planes
-  const { data: usuarios } = await supabase
+  // Construir query para buscar usuarios
+  let query = supabase
     .from('perfiles')
     .select('*, planes(nombre)')
     .order('created_at', { ascending: false })
+
+  if (searchQuery) {
+    query = query.or(`nombre.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,nombre_empresa.ilike.%${searchQuery}%`)
+  }
+
+  const { data: usuarios } = await query
 
   return (
     <div className="space-y-8">
@@ -29,14 +42,16 @@ export default async function UserManagementPage() {
       <Card className="bg-zinc-900/50 border-zinc-800/50">
         <CardHeader className="pb-0">
           <div className="flex flex-col sm:flex-row justify-between gap-4">
-             <div className="relative flex-1 max-w-sm">
+             <form className="relative flex-1 max-w-sm" method="GET">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                 <input 
                   type="text" 
-                  placeholder="Buscar usuario o empresa..." 
+                  name="q"
+                  defaultValue={searchQuery}
+                  placeholder="Buscar por nombre o correo..." 
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-zinc-100 outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all"
                 />
-             </div>
+             </form>
              <div className="flex gap-2">
                 <button className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 px-3 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-colors">
                    <Filter className="h-3.5 w-3.5" /> Filtrar por Rol
@@ -51,7 +66,7 @@ export default async function UserManagementPage() {
                 <tr>
                   <th className="px-6 py-4">Usuario / Empresa</th>
                   <th className="px-6 py-4">Rol Actual</th>
-                  <th className="px-6 py-4">Plan suscrito</th>
+                  <th className="px-6 py-4">Cambiar Plan</th>
                   <th className="px-6 py-4 text-right">Asignar Permisos</th>
                 </tr>
               </thead>
@@ -60,10 +75,10 @@ export default async function UserManagementPage() {
                   <tr key={user.id} className="hover:bg-zinc-800/20 transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-medium text-zinc-200">
-                        {user.nombre_empresa || 'Cliente Particular'}
+                        {user.nombre || user.nombre_empresa || 'Cliente Sin Nombre'}
                       </div>
                       <div className="text-[10px] text-zinc-500 font-mono">
-                        {user.id}
+                        {user.email || 'Sin email'}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -77,9 +92,7 @@ export default async function UserManagementPage() {
                        </span>
                     </td>
                     <td className="px-6 py-4">
-                       <span className="text-zinc-400">
-                         {user.planes?.nombre || 'Presencia (Default)'}
-                       </span>
+                       <UserPlanToggle userId={user.id} currentPlanId={user.plan_id || 'presencia'} />
                     </td>
                     <td className="px-6 py-4 text-right">
                        <UserRoleToggle userId={user.id} currentRole={user.rol} />

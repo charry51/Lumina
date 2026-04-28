@@ -34,6 +34,5 @@ export async function updatePlan(planId: string) {
 
   revalidatePath('/dashboard')
   revalidatePath('/dashboard/planes')
-  
   return { success: true }
 }

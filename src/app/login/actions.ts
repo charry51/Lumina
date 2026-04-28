@@ -31,15 +31,26 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = await createClient()
 
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
+  const nombre = formData.get('nombre') as string
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
 
-  const { error } = await supabase.auth.signUp(data)
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        nombre: nombre,
+      }
+    }
+  })
 
   if (error) {
-    redirect('/register?message=' + encodeURIComponent(error.message))
+    let errorMessage = error.message
+    if (error.message.includes('User already registered') || error.message.includes('already exists')) {
+      errorMessage = 'Este correo electrónico ya está registrado.'
+    }
+    redirect('/register?message=' + encodeURIComponent(errorMessage))
   }
 
   revalidatePath('/', 'layout')

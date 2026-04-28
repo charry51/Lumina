@@ -69,8 +69,8 @@ export default async function PlanesPage() {
                   Frecuencia {plan.frecuencia_relativa}x 
                   <span className="text-[8px] opacity-70 ml-1">
                     ({plan.id === 'presencia' ? '1 cada 2 bucles' : 
-                      plan.id === 'impacto' ? 'Máx 1 por bucle' :
-                      plan.id === 'expansion' ? 'Mín 2 por bucle' : '2-5 por bucle'})
+                      plan.id === 'presencia_pro' ? 'Máx 1 por bucle' :
+                      plan.id === 'impacto_senior' ? 'Mín 2 por bucle' : '2-5 por bucle'})
                   </span>
                 </li>
                 <li className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export default async function PlanesPage() {
                   <span className="w-1.5 h-1.5 bg-secondary rounded-full"></span>
                   Prioridad {plan.prioridad}
                 </li>
-                {(plan.id === 'expansion' || plan.id === 'dominio') && (
+                {(plan.id === 'impacto_senior' || plan.id === 'dominio') && (
                   <li className="flex items-center gap-2 text-green-400">
                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
                     Elección de Franjas Horarias
