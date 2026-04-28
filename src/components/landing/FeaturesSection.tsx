@@ -4,7 +4,7 @@ import { BarChart3, Layers, Monitor, Target, Wallet, Zap } from 'lucide-react'
 
 const features = [
   {
-    title: 'Bucle Elástico v2.0',
+    title: 'Bucle Elástico v3.0',
     description: 'Olvídate de listas de reproducción fijas. Nuestro motor de IA decide qué mostrar basándose en la puja y relevancia en tiempo real.',
     icon: Zap,
   },

@@ -28,7 +28,7 @@ export default async function AdminDashboardPage() {
     <div className="p-8 bg-zinc-950 min-h-screen text-zinc-100 font-sans">
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-zinc-100">Visión Global</h1>
-        <p className="text-zinc-500">Métricas principales de la red Lumina.</p>
+        <p className="text-zinc-500">Métricas principales de la red LUMINADD.</p>
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">

@@ -30,7 +30,7 @@ export default async function GestionCampanasPage() {
           <p className="text-muted-foreground text-xs uppercase tracking-[0.2em] mt-1">Monitor de Moderación IA Activo</p>
         </div>
         <div className="text-right">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">LUMINA CONTROL v2.0</span>
+          <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">LUMINADD CONTROL v3.0</span>
         </div>
       </header>
 

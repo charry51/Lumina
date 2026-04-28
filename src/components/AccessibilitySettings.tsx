@@ -24,13 +24,13 @@ export function AccessibilitySettings() {
 
   useEffect(() => {
     setMounted(true)
-    const savedSize = localStorage.getItem('lumina-ui-scale') || 'standard'
+    const savedSize = localStorage.getItem('luminadd-ui-scale') || 'standard'
     updateFontSize(savedSize)
   }, [])
 
   const updateFontSize = (sizeId: string) => {
     setFontSize(sizeId)
-    localStorage.setItem('lumina-ui-scale', sizeId)
+    localStorage.setItem('luminadd-ui-scale', sizeId)
     const val = FONT_SIZES.find(s => s.id === sizeId)?.value || '16px'
     document.documentElement.style.setProperty('--ui-scale', val)
   }

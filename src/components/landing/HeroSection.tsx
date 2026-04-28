@@ -23,7 +23,7 @@ export default function HeroSection() {
         </h1>
         
         <p className="text-zinc-400 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed mb-10">
-          Lumina transforma tus pantallas en activos inteligentes. 
+          LUMINADD transforma tus pantallas en activos inteligentes. 
           Publicidad programática basada en <span className="text-white font-medium">rendimiento real</span>, no en suposiciones.
         </p>
         

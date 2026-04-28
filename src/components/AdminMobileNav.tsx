@@ -13,7 +13,7 @@ export default function AdminMobileNav() {
       {/* Top Bar */}
       <div className="bg-black border-b border-zinc-900 p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center gap-2">
-           <img src="/logo.png" alt="Lumina Admin" className="h-8 w-auto" />
+           <img src="/logo.png" alt="LUMINADD Admin" className="h-8 w-auto" />
            <span className="text-[8px] text-[#D4AF37] font-black uppercase tracking-[0.2em]">Admin</span>
         </div>
         <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="text-zinc-400">

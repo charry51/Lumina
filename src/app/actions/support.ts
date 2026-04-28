@@ -63,7 +63,7 @@ export async function createSupportTicket(formData: FormData) {
         const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
 
         await resend.emails.send({
-          from: `Lumina Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          from: `LUMINADD Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
           to: toEmail,
           subject: `NEW TICKET: [${categoria}] ${asunto}`,
           html: `
@@ -144,13 +144,13 @@ export async function replyToSupportTicket(
         const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : ticket.perfiles.email;
 
         await resend.emails.send({
-          from: `Lumina Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          from: `LUMINADD Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
           to: toEmail,
-          replyTo: 'soporte@lumina.com',
+          replyTo: 'soporte@luminadd.com',
           subject: `Re: [Soporte #${ticketId.slice(0, 5)}] ${ticket.asunto}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #00d2ff;">Nueva respuesta de Lumina</h2>
+              <h2 style="color: #00d2ff;">Nueva respuesta de LUMINADD</h2>
               <p>Hola ${ticket.perfiles.nombre_empresa || 'Cliente'},</p>
               <p>Nuestro equipo técnico ha respondido a tu consulta:</p>
               <blockquote style="border-left: 4px solid #00d2ff; padding-left: 15px; margin: 20px 0; font-style: italic;">
@@ -177,7 +177,7 @@ export async function replyToSupportTicket(
             const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
 
             await resend.emails.send({
-              from: `Lumina Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+              from: `LUMINADD Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
               to: toEmail,
               subject: `REPLY: Support #${ticketId.slice(0, 5)}`,
               html: `

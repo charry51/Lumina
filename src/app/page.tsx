@@ -18,7 +18,7 @@ export default async function Home() {
              <div className="w-8 h-8 bg-gradient-to-tr from-[#D4AF37] to-[#f1c40f] rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.4)]">
                 <Monitor className="w-4 h-4 text-black" />
              </div>
-             <span className="text-xl font-heading font-medium tracking-tighter text-white">LUMINA</span>
+             <span className="text-xl font-heading font-medium tracking-tighter text-white">LUMINADD</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-500">
@@ -64,7 +64,7 @@ export default async function Home() {
       <footer className="py-12 border-t border-white/5 bg-black">
          <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-[10px] uppercase tracking-widest font-bold text-zinc-600">
             <div className="flex items-center gap-2">
-               <span className="text-zinc-300">© 2026 LUMINA</span>
+               <span className="text-zinc-300">© 2026 LUMINADD</span>
                <span>•</span>
                <span>Digital Signage Intelligence</span>
             </div>

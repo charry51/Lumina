@@ -47,7 +47,7 @@ export default async function SoportePage() {
               </h1>
             </div>
             <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-mono pl-1">
-              Gestión de incidencias y consultas directas con el equipo Lumina
+              Gestión de incidencias y consultas directas con el equipo LUMINADD
             </p>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default async function SoportePage() {
                     <span className={`text-[9px] font-mono text-zinc-500 uppercase tracking-tighter`}>
                       ID: {ticket.id.slice(0, 8)}
                     </span>
-                    <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest">• {ticket.categoria}</span>
+                    <span className="text-[9px] text-[#00d2ff] font-black uppercase tracking-widest">• {ticket.categoria}</span>
                   </div>
 
                   <h3 className="text-lg font-heading text-white uppercase group-hover:text-[#00d2ff] transition-colors">

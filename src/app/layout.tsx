@@ -18,8 +18,9 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LUMINA | Inteligencia Digital Signage",
-  description: "Plataforma SaaS avanzada para la gestión dinámica de pantallas publicitarias.",
+  title: "LUMINADD | Inteligencia Digital Signage",
+  description: "Plataforma avanzada de Digital Signage con inteligencia artificial para la gestión de contenidos y audiencias.",
+  keywords: ["Digital Signage", "LUMINADD", "AI", "Marketing Digital", "Pantallas Inteligentes"],
   icons: {
     icon: "/logo.png",
   },
