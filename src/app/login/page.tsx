@@ -14,13 +14,13 @@ export default async function LoginPage({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-background font-sans text-foreground">
       <div className="mb-12 text-center">
-        <h1 className="text-6xl font-heading text-foreground uppercase tracking-tighter mb-2">LUMINADDDD</h1>
+        <h1 className="text-6xl font-heading text-foreground uppercase tracking-tighter mb-2">LuminAdd</h1>
         <p className="text-[10px] text-primary font-mono uppercase tracking-[6px] opacity-70">Sistemas de Inteligencia Visual</p>
       </div>
 
       <div className="cyber-card w-full max-w-md p-8 relative bg-card border border-border shadow-xl">
         <header className="mb-8">
-          <h2 className="text-2xl font-heading text-foreground uppercase tracking-tight">Bienvenido a LUMINADDDD</h2>
+          <h2 className="text-2xl font-heading text-foreground uppercase tracking-tight">Bienvenido a LuminAdd</h2>
           <p className="text-xs text-muted-foreground font-sans tracking-wide">Inicia sesión para gestionar tu red de pantallas.</p>
         </header>
 
@@ -70,3 +70,5 @@ export default async function LoginPage({
     </div>
   )
 }
+
+
