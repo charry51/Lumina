@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { UserRoleToggle } from './UserRoleToggle'
 import { UserPlanToggle } from './UserPlanToggle'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -10,11 +10,12 @@ export default async function UserManagementPage({
   searchParams: Promise<{ q?: string }>
 }) {
   const supabase = await createClient()
+  const adminClient = await createAdminClient()
   const resolvedSearchParams = await searchParams;
   const searchQuery = resolvedSearchParams?.q || ''
 
-  // Construir query para buscar usuarios
-  let query = supabase
+  // Construir query para buscar usuarios usando el cliente admin para saltar RLS
+  let query = adminClient
     .from('perfiles')
     .select('*, planes(nombre)')
     .order('created_at', { ascending: false })

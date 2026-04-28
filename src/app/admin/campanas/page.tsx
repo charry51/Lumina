@@ -1,11 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { ActionButtons } from './ActionButtons'
 import { CampaignPreview } from './CampaignPreview'
 
 export default async function GestionCampanasPage() {
   const supabase = await createClient()
+  const adminClient = await createAdminClient()
 
-  const { data: campanas, error } = await supabase
+  // Use adminClient to bypass RLS and see all campaigns for moderation
+  const { data: campanas, error } = await adminClient
     .from('campanas')
     .select(`
       id, 

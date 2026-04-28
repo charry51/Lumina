@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { ActiveScreensMonitor } from './ActiveScreensMonitor'
 import { ActionButtons } from './campanas/ActionButtons'
@@ -10,8 +10,9 @@ import {
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
+  const adminClient = await createAdminClient()
 
-  // 1. Obtener conteos básicos
+  // 1. Obtener conteos básicos (usando adminClient para saltar RLS y ver todo el sistema)
   const [
     { count: totalCampanas }, 
     { count: totalPantallas },
@@ -19,11 +20,11 @@ export default async function AdminDashboardPage() {
     { count: totalUsuarios },
     { data: planBreakdown }
   ] = await Promise.all([
-    supabase.from('campanas').select('*', { count: 'exact', head: true }),
-    supabase.from('pantallas').select('*', { count: 'exact', head: true }),
-    supabase.from('campanas').select('*', { count: 'exact', head: true }).in('estado', ['pendiente_aprobacion', 'pre_aprobada', 'revision_manual_ia']),
-    supabase.from('perfiles').select('*', { count: 'exact', head: true }),
-    supabase.from('perfiles').select('plan_id')
+    adminClient.from('campanas').select('*', { count: 'exact', head: true }),
+    adminClient.from('pantallas').select('*', { count: 'exact', head: true }),
+    adminClient.from('campanas').select('*', { count: 'exact', head: true }).in('estado', ['pendiente_aprobacion', 'pre_aprobada', 'revision_manual_ia']),
+    adminClient.from('perfiles').select('*', { count: 'exact', head: true }),
+    adminClient.from('perfiles').select('plan_id')
   ])
 
   // Procesar desglose de planes
@@ -35,7 +36,7 @@ export default async function AdminDashboardPage() {
 
   // 2. Obtener todas las campañas para cálculos financieros (idealmente en un entorno grande esto se haría en SQL con SUM, 
   // pero para Lumina en fase inicial es perfecto para procesarlo aquí)
-  const { data: allCampanas } = await supabase
+  const { data: allCampanas } = await adminClient
     .from('campanas')
     .select('id, nombre_campana, estado, fecha_inicio, presupuesto_total, precio_pactado')
     .order('fecha_inicio', { ascending: false })
