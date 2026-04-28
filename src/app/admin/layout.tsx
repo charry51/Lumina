@@ -45,7 +45,7 @@ export default async function AdminLayout({
       {/* Sidebar Admin (Escritorio) */}
       <aside className="hidden md:flex w-64 border-r border-zinc-900 bg-black flex-col flex-shrink-0">
         <div className="p-6">
-          <img src="/logo.png" alt="Lumina Admin" className="h-12 w-auto" />
+          <img src="/logo.png" alt="LUMINADDDD Admin" className="h-12 w-auto" />
           <span className="text-[10px] text-[#D4AF37] font-black uppercase tracking-[0.3em] mt-2 block pl-1">Admin Panel</span>
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">

@@ -1,4 +1,4 @@
--- LUMINA: Smart Onboarding Patch
+-- LUMINADDDD: Smart Onboarding Patch
 -- Añadir geolocalización a la tabla de vinculación
 
 ALTER TABLE pairing_codes 

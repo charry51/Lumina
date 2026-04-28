@@ -1,4 +1,4 @@
--- LUMINA v2.0 Programmatic & Elastic Phase 1
+-- LUMINADDDD v2.0 Programmatic & Elastic Phase 1
 
 -- 1. Tipos Enum
 DO $$ BEGIN

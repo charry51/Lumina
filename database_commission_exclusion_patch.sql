@@ -1,4 +1,4 @@
--- LUMINA: Patch de Exclusión de Autopublicidad
+-- LUMINADDDD: Patch de Exclusión de Autopublicidad
 -- Evita que los hosts cobren comisión por anuncios de su propia organización
 
 CREATE OR REPLACE FUNCTION increment_campaign_impacts()

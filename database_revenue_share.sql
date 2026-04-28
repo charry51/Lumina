@@ -1,5 +1,5 @@
 -- =====================================================
--- LUMINA — Revenue Share System
+-- LUMINADDDD — Revenue Share System
 -- Ejecutar en el SQL Editor de Supabase
 -- =====================================================
 

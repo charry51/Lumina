@@ -1,5 +1,5 @@
 -- =====================================================
--- LUMINA — Campaign Budget & Org Patch
+-- LUMINADDDD — Campaign Budget & Org Patch
 -- Ejecutar en el SQL Editor de Supabase
 -- =====================================================
 
