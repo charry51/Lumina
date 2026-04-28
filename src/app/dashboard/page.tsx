@@ -92,7 +92,7 @@ export default async function DashboardPage() {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end w-full sm:w-auto">
-          {profile?.rol === 'superadmin' && (
+          {['superadmin', 'comercial', 'gestor_local'].includes(profile?.rol || '') && (
             <Link href="/admin">
                <Button variant="outline" className="border-red-500/30 text-red-500 hover:bg-red-500/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
                   <ShieldAlert className="w-3 h-3" />
@@ -119,7 +119,7 @@ export default async function DashboardPage() {
                + Nueva Emisión
             </button>
           </Link>
-          {profile?.rol !== 'superadmin' && (
+          {profile?.rol === 'cliente' && (
             <Link href="/dashboard/soporte">
                <Button variant="outline" className="border-[#00d2ff]/30 text-[#00d2ff] hover:bg-[#00d2ff]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3 transition-shadow hover:shadow-[0_0_10px_rgba(0,210,255,0.1)]">
                   <LifeBuoy className="w-3 h-3" />
