@@ -24,13 +24,13 @@ export function AccessibilitySettings() {
 
   useEffect(() => {
     setMounted(true)
-    const savedSize = localStorage.getItem('LUMINADDDD-ui-scale') || 'standard'
+    const savedSize = localStorage.getItem('LuminAdd-ui-scale') || 'standard'
     updateFontSize(savedSize)
   }, [])
 
   const updateFontSize = (sizeId: string) => {
     setFontSize(sizeId)
-    localStorage.setItem('LUMINADDDD-ui-scale', sizeId)
+    localStorage.setItem('LuminAdd-ui-scale', sizeId)
     const val = FONT_SIZES.find(s => s.id === sizeId)?.value || '16px'
     document.documentElement.style.setProperty('--ui-scale', val)
   }
@@ -84,7 +84,7 @@ export function AccessibilitySettings() {
             </div>
             <div>
                 <p className={`text-xs font-bold uppercase tracking-tight ${theme === 'light' ? 'text-blue-500' : 'text-zinc-300 dark:text-zinc-300 light:text-slate-600'}`}>Modo Claro</p>
-                <p className="text-[10px] text-muted-foreground mt-1">Alta visibilidad para oficinas muy iLUMINADDdas o exterior.</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Alta visibilidad para oficinas muy iLuminAddas o exterior.</p>
             </div>
             {theme === 'light' && <Check className="ml-auto w-4 h-4 text-blue-500" />}
           </button>
@@ -129,3 +129,5 @@ export function AccessibilitySettings() {
     </div>
   )
 }
+
+

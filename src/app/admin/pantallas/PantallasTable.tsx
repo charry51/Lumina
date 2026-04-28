@@ -57,7 +57,7 @@ function ContactHostDialog({ email, screenName }: { email: string, screenName: s
           </div>
           <div className="flex flex-col gap-2">
             <Label className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">Cuerpo del Mensaje</Label>
-            <Textarea name="message" required className="bg-zinc-900 border-zinc-700 min-h-[140px] focus-visible:ring-[#00d2ff] text-sm leading-relaxed" placeholder="Escribe aquí el mensaje oficial que recibirá el anfitrión. Este correo se enviará en formato HTML con el branding de LUMINADDDD." />
+            <Textarea name="message" required className="bg-zinc-900 border-zinc-700 min-h-[140px] focus-visible:ring-[#00d2ff] text-sm leading-relaxed" placeholder="Escribe aquí el mensaje oficial que recibirá el anfitrión. Este correo se enviará en formato HTML con el branding de LuminAdd." />
           </div>
           <DialogFooter className="mt-4">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)} disabled={loading} className="text-xs uppercase hover:bg-zinc-800 text-zinc-400">Cancelar</Button>
@@ -169,3 +169,5 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
     </div>
   )
 }
+
+

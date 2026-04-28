@@ -142,7 +142,7 @@ export default function MessageDetail({ message }: { message: any }) {
             <div className="space-y-4 pt-4 border-t border-zinc-900">
               <Label className="text-[9px] uppercase text-primary font-black tracking-[0.2em]">Escribir respuesta oficial</Label>
               <Textarea 
-                placeholder={`Hola ${message.name.split(' ')[0]}, gracias por contactar con LUMINADDDD...`} 
+                placeholder={`Hola ${message.name.split(' ')[0]}, gracias por contactar con LuminAdd...`} 
                 className="bg-black border-zinc-800 min-h-[140px] focus:ring-1 focus:ring-primary focus:border-primary rounded-2xl text-zinc-100 placeholder:text-zinc-700 p-6 transition-all duration-300"
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
@@ -170,3 +170,5 @@ export default function MessageDetail({ message }: { message: any }) {
     </Dialog>
   );
 }
+
+

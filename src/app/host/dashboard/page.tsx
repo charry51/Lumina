@@ -47,7 +47,7 @@ export default async function HostDashboardPage({
             </div>
 
             <p className="mt-8 text-center text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
-                ¿Necesitas ayuda técnica? LUMINADDDD.app/soporte
+                ¿Necesitas ayuda técnica? LuminAdd.app/soporte
             </p>
         </div>
       </div>
@@ -91,11 +91,11 @@ export default async function HostDashboardPage({
       {/* Header Premium - Balanced Cyan Logo */}
       <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-border pb-8">
         <div className="flex items-center gap-4">
-           <img src="/logo.png" alt="LUMINADDDD Logo" className="h-10 w-auto" />
+           <img src="/logo.png" alt="LuminAdd Logo" className="h-10 w-auto" />
            <div>
               <Link href="/dashboard" className="inline-block mb-1 text-[10px] text-muted-foreground hover:text-primary transition-colors uppercase tracking-[3px] font-bold">← Dashboard Principal</Link>
               <div className="flex items-center gap-3">
-                <h1 className="text-4xl font-heading font-black text-gradient-cyan tracking-tighter">LUMINADDDD</h1>
+                <h1 className="text-4xl font-heading font-black text-gradient-cyan tracking-tighter">LuminAdd</h1>
                 <span className="bg-primary/10 text-primary text-[9px] font-black px-2 py-0.5 rounded border border-primary/20 uppercase tracking-widest">HOST PORTAL</span>
               </div>
               <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[4px]">Verified Infrastructure Node</p>
@@ -350,4 +350,6 @@ export default async function HostDashboardPage({
     </div>
   )
 }
+
+
 

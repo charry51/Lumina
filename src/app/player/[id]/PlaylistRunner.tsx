@@ -12,7 +12,7 @@ type CampaignItem = {
   prioridad: number;
 }
 
-const OFFLINE_LOG_KEY = 'LUMINADD_offline_logs'
+const OFFLINE_LOG_KEY = 'LuminAdd_offline_logs'
 
 function getOfflineLogs(): string[] {
   if (typeof window === 'undefined') return []
@@ -74,8 +74,8 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js', { scope: '/' })
-        .then((reg) => console.log('[LUMINADD] SW Registered:', reg.scope))
-        .catch((err) => console.error('[LUMINADD] SW Error:', err))
+        .then((reg) => console.log('[LuminAdd] SW Registered:', reg.scope))
+        .catch((err) => console.error('[LuminAdd] SW Error:', err))
     }
   }, [])
 
@@ -90,7 +90,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
             const { campaignId, screenId: sId } = JSON.parse(logStr)
             await logPlayback(campaignId, sId)
           } catch (e) {
-            console.error('[LUMINADD] Sync Error:', e)
+            console.error('[LuminAdd] Sync Error:', e)
           }
         }
         clearOfflineLogs()
@@ -115,7 +115,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     const preloadMedia = async () => {
       setCacheStatus('caching')
       const newCachedUrls: Record<string, string> = {}
-      const cache = await caches.open('LUMINADD-media-v3')
+      const cache = await caches.open('LuminAdd-media-v3')
 
       for (const item of playlist) {
         if (!item.url_video) continue
@@ -173,7 +173,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
           const latestSession = sorted[0]?.sessionId
           
           if (sessionId.current !== latestSession) {
-            console.warn('[LUMINADD Security] Duplicate session detected. This instance is now inactive.')
+            console.warn('[LuminAdd Security] Duplicate session detected. This instance is now inactive.')
             setIsDuplicate(true)
           }
         }
@@ -208,7 +208,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     if (next && currentCampaign && next.id === currentCampaign.id) {
       if (videoRef.current) {
         videoRef.current.currentTime = 0
-        videoRef.current.play().catch(e => console.warn('[LUMINADD] Loop play blocked:', e))
+        videoRef.current.play().catch(e => console.warn('[LuminAdd] Loop play blocked:', e))
       }
     } else {
       setCurrentCampaign(next)
@@ -231,7 +231,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     const handleVisibilityChange = () => {
       if (!videoRef.current) return
       if (document.hidden) {
-        console.log('[LUMINADD Anti-Fraud] Pantalla oculta, pausando reproducción.')
+        console.log('[LuminAdd Anti-Fraud] Pantalla oculta, pausando reproducción.')
         videoRef.current.pause()
       } else {
         videoRef.current.play().catch(e => console.warn(e))
@@ -298,7 +298,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-[#0a0a0f] text-white p-12 text-center">
         <div className="landing-glass-gold p-12 max-w-2xl border-dashed border-2 animate-pulse-gold">
-          <h1 className="text-6xl font-heading mb-6 text-gradient-gold font-black">LUMINADD</h1>
+          <h1 className="text-6xl font-heading mb-6 text-gradient-gold font-black">LuminAdd</h1>
           <h2 className="text-2xl font-sans text-white/40 uppercase tracking-widest">Available Space</h2>
           <p className="mt-8 text-zinc-500 font-mono text-xs uppercase tracking-tighter">Waiting for programmatic auctions...</p>
         </div>
@@ -332,7 +332,7 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
                 className="w-full h-full object-contain"
                 onEnded={handleNext}
                 onError={() => {
-                console.error('[LUMINADD] Error:', activeUrl)
+                console.error('[LuminAdd] Error:', activeUrl)
                 handleNext()
                 }}
             />
@@ -342,8 +342,10 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
 
       {/* Cyber Overlay Details (Lux branding) */}
       <div className="absolute bottom-6 right-6 opacity-30 hover:opacity-100 transition-opacity">
-         <span className="text-gradient-gold font-black text-xl tracking-tighter">LUMINADD v2</span>
+         <span className="text-gradient-gold font-black text-xl tracking-tighter">LuminAdd v2</span>
       </div>
     </div>
   )
 }
+
+

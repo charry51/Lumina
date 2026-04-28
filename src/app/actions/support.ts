@@ -63,12 +63,12 @@ export async function createSupportTicket(formData: FormData) {
         const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
 
         await resend.emails.send({
-          from: `LUMINADDDD Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          from: `LuminAdd Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
           to: toEmail,
           subject: `NEW TICKET: [${categoria}] ${asunto}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #00d2ff;">Nuevo Ticket de Soporte (LUMINADDDD)</h2>
+              <h2 style="color: #00d2ff;">Nuevo Ticket de Soporte (LuminAdd)</h2>
               <p><strong>Usuario ID:</strong> ${user.id}</p>
               <p><strong>Categoría:</strong> ${categoria}</p>
               <p><strong>Prioridad:</strong> ${prioridad}</p>
@@ -144,13 +144,13 @@ export async function replyToSupportTicket(
         const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : ticket.perfiles.email;
 
         await resend.emails.send({
-          from: `LUMINADDDD Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          from: `LuminAdd Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
           to: toEmail,
-          replyTo: 'soporte@LUMINADDDD.com',
+          replyTo: 'soporte@LuminAdd.com',
           subject: `Re: [Soporte #${ticketId.slice(0, 5)}] ${ticket.asunto}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #00d2ff;">Nueva respuesta de LUMINADDDD</h2>
+              <h2 style="color: #00d2ff;">Nueva respuesta de LuminAdd</h2>
               <p>Hola ${ticket.perfiles.nombre_empresa || 'Cliente'},</p>
               <p>Nuestro equipo técnico ha respondido a tu consulta:</p>
               <blockquote style="border-left: 4px solid #00d2ff; padding-left: 15px; margin: 20px 0; font-style: italic;">
@@ -177,12 +177,12 @@ export async function replyToSupportTicket(
             const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
 
             await resend.emails.send({
-              from: `LUMINADDDD Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+              from: `LuminAdd Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
               to: toEmail,
               subject: `REPLY: Support #${ticketId.slice(0, 5)}`,
               html: `
                 <div style="font-family: sans-serif; padding: 20px; color: #333;">
-                   <h2 style="color: #00d2ff;">El usuario ha respondido en LUMINADDDD</h2>
+                   <h2 style="color: #00d2ff;">El usuario ha respondido en LuminAdd</h2>
                    <p><strong>Ticket ID:</strong> ${ticketId}</p>
                    <p><strong>Mensaje:</strong></p>
                    <p style="white-space: pre-wrap;">${mensaje}</p>
@@ -292,3 +292,5 @@ export async function deleteSupportTicket(ticketId: string) {
     revalidatePath('/dashboard/soporte')
     return { success: true }
 }
+
+

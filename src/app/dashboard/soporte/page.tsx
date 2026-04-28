@@ -47,7 +47,7 @@ export default async function SoportePage() {
               </h1>
             </div>
             <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-mono pl-1">
-              Gestión de incidencias y consultas directas con el equipo LUMINADDDD
+              Gestión de incidencias y consultas directas con el equipo LuminAdd
             </p>
           </div>
         </div>
@@ -144,3 +144,5 @@ export default async function SoportePage() {
     </div>
   )
 }
+
+
