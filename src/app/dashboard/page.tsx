@@ -83,9 +83,9 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 font-sans">
       <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
         <div className="flex items-center gap-4">
-          <img src="/logo.png" alt="LUMINADDDD Logo" className="h-10 w-auto" />
+          <img src="/logo.png" alt="LuminAddDDDD Logo" className="h-10 w-auto" />
           <div className="pt-2">
-            <h1 className="text-3xl font-heading uppercase tracking-tighter text-gradient-cyan font-black">LUMINADDDD</h1>
+            <h1 className="text-3xl font-heading uppercase tracking-tighter text-gradient-cyan font-black">LuminAddDDDD</h1>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-[#D4AF37] font-mono uppercase tracking-[2px] font-bold">Protocolo V2 • {profile?.planes?.nombre || 'Básico'}</span>
             </div>
