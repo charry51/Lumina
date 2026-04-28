@@ -53,17 +53,20 @@ export default async function AdminLayout({
             Resumen Global
           </Link>
 
+          {/* Comercial: Gestión de Campañas y Pantallas */}
           {(perfil.rol === 'superadmin' || perfil.rol === 'comercial') && (
-            <Link href="/admin/campanas" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
-              Gestión de Campañas
-            </Link>
+            <>
+              <Link href="/admin/campanas" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
+                Gestión de Campañas
+              </Link>
+              <Link href="/admin/pantallas" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
+                Red de Pantallas
+              </Link>
+            </>
           )}
 
-          <Link href="/admin/pantallas" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors">
-            Red de Pantallas
-          </Link>
-
-          {(perfil.rol === 'superadmin' || perfil.rol === 'comercial') && (
+          {/* Gestor Local: Soporte Técnico y Mensajes */}
+          {(perfil.rol === 'superadmin' || perfil.rol === 'gestor_local') && (
             <>
               <Link href="/admin/soporte" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors flex items-center justify-between group">
                 <span>Soporte Técnico</span>
@@ -81,6 +84,7 @@ export default async function AdminLayout({
             </>
           )}
 
+          {/* Superadmin: Gestión de Usuarios */}
           {perfil.rol === 'superadmin' && (
             <Link href="/admin/usuarios" className="block px-4 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-900 rounded-md transition-colors flex items-center gap-2">
               <Users className="h-4 w-4" />
