@@ -1,5 +1,5 @@
 /**
- * LUMINA — AI Content Validator (Mock Service)
+ * LUMINADDDD — AI Content Validator (Mock Service)
  * Simula la integración con Google Cloud Video Intelligence API
  */
 
@@ -11,7 +11,7 @@ export type IAResult = {
 }
 
 export async function analyzeVideo(videoUrl: string, duration?: number): Promise<IAResult> {
-  console.log(`[Lumina IA] Iniciando escaneo de seguridad: ${videoUrl} (${duration}s)`);
+  console.log(`[LUMINADDDD IA] Iniciando escaneo de seguridad: ${videoUrl} (${duration}s)`);
   
   // Simulamos un retraso de procesamiento de red de 2 segundos
   await new Promise(resolve => setTimeout(resolve, 2000));
@@ -22,7 +22,7 @@ export async function analyzeVideo(videoUrl: string, duration?: number): Promise
       status: 'rejected',
       score: 1.0,
       labels: ['policy_violation', 'invalid_duration'],
-      reason: `La duración del video (${Math.round(duration)}s) no cumple con el protocolo Lumina (5-30s).`
+      reason: `La duración del video (${Math.round(duration)}s) no cumple con el protocolo LUMINADDDD (5-30s).`
     };
   }
   // --------------------------------------------------

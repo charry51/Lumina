@@ -1,5 +1,5 @@
 -- =====================================================
--- LUMINA — Smart TV Pairing System
+-- LUMINADDDD — Smart TV Pairing System
 -- Ejecutar en el SQL Editor de Supabase
 -- =====================================================
 

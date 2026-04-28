@@ -69,7 +69,7 @@ export async function createCampaign(data: CampaignData) {
     }
     // -----------------------------------------------
 
-    // LUMINA v2: Límite de campañas basado en presupuesto, no en suscripciones fijas.
+    // LUMINADDDD v2: Límite de campañas basado en presupuesto, no en suscripciones fijas.
     // (Hemos eliminado las restricciones temporales de planes limitantes para asentar Programmatic)
     const totalNew = pantallaIds.length
 
@@ -109,7 +109,7 @@ export async function createCampaign(data: CampaignData) {
         estado: finalEstado,
         ia_metadata: iaResult,
         precio_pactado: screen?.precio_emision || 50.00, // Legacy fallback
-        // LUMINA v2: Programmatic fields
+        // LUMINADDDD v2: Programmatic fields
         presupuesto_total: data.presupuesto_total || 0,
         prioridad: data.prioridad || 1,
         impactos_estimados: data.impactos_estimados || 0

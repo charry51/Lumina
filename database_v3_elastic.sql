@@ -1,4 +1,4 @@
--- LUMINA v2.0 - Phase 3: Elastic Player & Budget Tracking
+-- LUMINADDDD v2.0 - Phase 3: Elastic Player & Budget Tracking
 
 -- 1. Añadir contador de impactos reales a las campañas
 ALTER TABLE campanas 

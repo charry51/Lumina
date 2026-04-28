@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import PlaylistRunner from './PlaylistRunner'
 
 export const metadata = {
-  title: 'Lumina Player v2.0',
+  title: 'LUMINADD Player v2.0',
   robots: 'noindex, nofollow',
 }
 

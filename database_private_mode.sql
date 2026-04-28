@@ -1,5 +1,5 @@
 -- =====================================================
--- LUMINA — Private Mode (Corporate)
+-- LUMINADDDD — Private Mode (Corporate)
 -- Ejecutar en el SQL Editor de Supabase
 -- =====================================================
 

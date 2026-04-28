@@ -1,5 +1,5 @@
 -- =====================================================
--- LUMINA — Screen & Plan Expansion Patch
+-- LUMINADDDD — Screen & Plan Expansion Patch
 -- =====================================================
 
 -- 1. Añadir columna de ubicación física (si no existe)

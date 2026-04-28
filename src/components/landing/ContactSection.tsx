@@ -59,7 +59,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-0.5" style={{ color: '#71717a' }}>Escríbenos</p>
-                  <p className="text-white font-mono text-sm" style={{ color: '#ffffff' }}>hola@lumina.app</p>
+                  <p className="text-white font-mono text-sm" style={{ color: '#ffffff' }}>hola@LUMINADDDD.app</p>
                 </div>
               </div>
               
