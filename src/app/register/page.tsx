@@ -26,6 +26,17 @@ export default async function RegisterPage({
 
         <form className="flex flex-col gap-6" action={signup}>
           <div className="flex flex-col gap-2">
+            <Label htmlFor="nombre" className="text-[10px] uppercase font-mono tracking-widest text-zinc-500">Nombre Completo</Label>
+            <Input 
+              id="nombre" 
+              name="nombre" 
+              type="text" 
+              placeholder="Juan Pérez" 
+              className="bg-background border-border focus:border-primary transition-all rounded-none font-mono text-xs py-5"
+              required 
+            />
+          </div>
+          <div className="flex flex-col gap-2">
             <Label htmlFor="email" className="text-[10px] uppercase font-mono tracking-widest text-zinc-500">Tu Correo Electrónico</Label>
             <Input 
               id="email" 

@@ -19,18 +19,46 @@ export default function CheckoutPage() {
 
   const handlePayment = async () => {
     setLoading(true)
-    // Simulamos un retraso de pasarela de pago (Stripe)
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    const result = await updatePlan(planId)
-    
-    if (result.success) {
+    try {
+      // Simulamos un retraso de pasarela de pago
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+      
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        toast.error('Sesión expirada. Por favor, inicia sesión de nuevo.')
+        router.push('/login')
+        return
+      }
+
+      const updateData: any = {
+        plan_id: planId,
+        suscripcion_activa: true
+      }
+
+      if (planId === 'presencia') {
+        const trialDate = new Date()
+        trialDate.setDate(trialDate.getDate() + 30)
+        updateData.prueba_fin = trialDate.toISOString()
+      }
+
+      const { error } = await supabase
+        .from('perfiles')
+        .update(updateData)
+        .eq('id', user.id)
+
+      if (error) {
+        throw error
+      }
+      
       toast.success('¡Suscripción actualizada con éxito!')
-      router.push('/dashboard')
-    } else {
-      toast.error('Error al procesar el pago: ' + result.error)
+      window.location.href = '/dashboard'
+    } catch (err: any) {
+      toast.error('Error al procesar el pago: ' + (err.message || 'Error desconocido'))
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
