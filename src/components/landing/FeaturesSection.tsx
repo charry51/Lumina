@@ -38,17 +38,17 @@ const features = [
 export default function FeaturesSection() {
   return (
     <section className="py-24 bg-black relative">
-       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00d2ff]/10 to-transparent" />
+       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#7C3CFF]/10 to-transparent" />
        
        <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-20 text-center md:text-left">
              <div className="flex items-center gap-3 mb-4 justify-center md:justify-start">
-                <span className="w-10 h-[1px] bg-[#00d2ff]" />
-                <h2 className="text-[#00d2ff] text-[10px] uppercase tracking-[0.3em] font-black">El Motor del Futuro</h2>
+                <span className="w-10 h-[1px] bg-[#7C3CFF]" />
+                <h2 className="text-[#7C3CFF] text-[10px] uppercase tracking-[0.3em] font-black">El Motor del Futuro</h2>
              </div>
              <h3 className="text-3xl md:text-5xl font-heading text-white font-light tracking-tighter">
-                Publicidad <span className="text-gradient-cyan italic">Programática</span> <br />
-                <span className="text-gradient-gold">Bajo Demanda.</span>
+                Publicidad <span className="text-gradient-ui italic">Programática</span> <br />
+                <span className="text-gradient-ui">Bajo Demanda.</span>
              </h3>
           </div>
           
@@ -56,8 +56,8 @@ export default function FeaturesSection() {
              {features.map((feature, idx) => {
                 const isEven = idx % 2 === 0
                 return (
-                    <div key={idx} className={`${isEven ? 'landing-glass-cyan hover:border-[#00d2ff]/50' : 'landing-glass-gold hover:border-[#D4AF37]/50'} p-8 group transition-all duration-500`}>
-                        <div className={`w-12 h-12 rounded-lg ${isEven ? 'bg-[#00d2ff]/10 text-[#00d2ff] shadow-[0_4px_10px_rgba(0,210,255,0.1)]' : 'bg-[#D4AF37]/10 text-[#D4AF37] shadow-[0_4px_10px_rgba(212,175,55,0.1)]'} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
+                    <div key={idx} className={`${isEven ? 'landing-glass-ui hover:border-[#7C3CFF]/50' : 'landing-glass-ui hover:border-[#2BC8FF]/50'} p-8 group transition-all duration-500`}>
+                        <div className={`w-12 h-12 rounded-lg ${isEven ? 'bg-[#7C3CFF]/10 text-[#7C3CFF] shadow-[0_4px_10px_rgba(124,60,255,0.1)]' : 'bg-[#2BC8FF]/10 text-[#2BC8FF] shadow-[0_4px_10px_rgba(43,200,255,0.1)]'} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
                             <feature.icon className="w-6 h-6" />
                         </div>
                         <h4 className="text-xl font-heading text-white mb-4 tracking-tight">{feature.title}</h4>

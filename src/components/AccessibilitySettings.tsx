@@ -24,13 +24,13 @@ export function AccessibilitySettings() {
 
   useEffect(() => {
     setMounted(true)
-    const savedSize = localStorage.getItem('LuminAdd-ui-scale') || 'standard'
+    const savedSize = localStorage.getItem('LumiAds-ui-scale') || 'standard'
     updateFontSize(savedSize)
   }, [])
 
   const updateFontSize = (sizeId: string) => {
     setFontSize(sizeId)
-    localStorage.setItem('LuminAdd-ui-scale', sizeId)
+    localStorage.setItem('LumiAds-ui-scale', sizeId)
     const val = FONT_SIZES.find(s => s.id === sizeId)?.value || '16px'
     document.documentElement.style.setProperty('--ui-scale', val)
   }
@@ -57,7 +57,7 @@ export function AccessibilitySettings() {
             onClick={() => setTheme('dark')}
             className={`flex items-start gap-4 p-4 rounded-xl border text-left transition-all group ${
               theme === 'dark' 
-                ? 'bg-zinc-900 border-primary shadow-[0_0_20px_rgba(0,210,255,0.15)] ring-1 ring-primary/50' 
+                ? 'bg-zinc-900 border-primary shadow-[0_0_20px_rgba(124,60,255,0.15)] ring-1 ring-primary/50' 
                 : 'bg-zinc-900/40 dark:bg-zinc-900/40 light:bg-slate-50 border-border hover:border-zinc-700'
             }`}
           >
@@ -84,7 +84,7 @@ export function AccessibilitySettings() {
             </div>
             <div>
                 <p className={`text-xs font-bold uppercase tracking-tight ${theme === 'light' ? 'text-blue-500' : 'text-zinc-300 dark:text-zinc-300 light:text-slate-600'}`}>Modo Claro</p>
-                <p className="text-[10px] text-muted-foreground mt-1">Alta visibilidad para oficinas muy iLuminAddas o exterior.</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Alta visibilidad para oficinas muy iLumiAdsas o exterior.</p>
             </div>
             {theme === 'light' && <Check className="ml-auto w-4 h-4 text-blue-500" />}
           </button>

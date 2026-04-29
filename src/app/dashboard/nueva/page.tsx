@@ -45,14 +45,14 @@ export default async function NuevaCampanaPage() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <img src="/logo.png" alt="LuminAdd Logo" className="h-10 w-auto" />
+          <img src="/LogoPequeño.png" alt="LumiAds Logo" className="h-10 w-auto" />
         </div>
         <div>
             <h1 className="text-2xl font-bold text-foreground italic tracking-tight uppercase group flex items-center gap-2">
-                CONFIGURAR <span className="text-[#00d2ff] NOT-italic drop-shadow-[0_0_8px_rgba(0,210,255,0.4)]">EMISIÓN</span>
+                CONFIGURAR <span className="text-[#7C3CFF] NOT-italic drop-shadow-[0_0_8px_rgba(124,60,255,0.4)]">EMISIÓN</span>
             </h1>
             <div className="flex items-center gap-2 mt-1">
-                <span className="text-[10px] bg-[#00d2ff]/10 text-[#00d2ff] font-bold px-3 py-1 rounded-full border border-[#00d2ff]/30 uppercase tracking-widest">
+                <span className="text-[10px] bg-[#7C3CFF]/10 text-[#7C3CFF] font-bold px-3 py-1 rounded-full border border-[#7C3CFF]/30 uppercase tracking-widest">
                     Modo: {profile.planes.nombre}
                 </span>
             </div>

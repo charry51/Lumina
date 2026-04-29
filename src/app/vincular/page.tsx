@@ -7,7 +7,7 @@ import { generatePairingCode, checkPairingStatus } from './actions'
 // Generar un ID de dispositivo persistente (se guarda en localStorage)
 function getDeviceId(): string {
   if (typeof window === 'undefined') return ''
-  const key = 'LuminAdd_device_id'
+  const key = 'LumiAds_device_id'
   let id = localStorage.getItem(key)
   if (!id) {
     id = crypto.randomUUID()
@@ -135,16 +135,16 @@ export default function VincularPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center relative overflow-hidden">
       {/* Fondo decorativo */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,210,255,0.05)_0%,transparent_70%)]" />
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00d2ff] to-transparent opacity-60" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(124,60,255,0.05)_0%,transparent_70%)]" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#7C3CFF] to-transparent opacity-60" />
 
       <div className="relative z-10 flex flex-col items-center gap-8 text-center px-8">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-4">
-          <img src="/logo.png" alt="LuminAdd" className="h-14 w-auto" />
+          <img src="/LogoPequeño.png" alt="LumiAds" className="h-14 w-auto" />
           <span className="text-4xl font-black text-white tracking-[0.2em] uppercase"
             style={{ fontFamily: 'var(--font-heading)' }}>
-            LuminAdd
+            LumiAds
           </span>
         </div>
 
@@ -156,10 +156,10 @@ export default function VincularPage() {
         {status === 'localizando' && (
           <div className="flex flex-col items-center gap-6">
             <div className="relative w-32 h-32">
-              <div className="absolute inset-0 border-4 border-[#00d2ff]/20 rounded-full" />
-              <div className="absolute inset-0 border-4 border-[#00d2ff] rounded-full border-t-transparent animate-spin" />
-              <div className="absolute inset-4 bg-[#00d2ff]/5 rounded-full flex items-center justify-center">
-                <div className="w-8 h-8 bg-[#00d2ff] rounded-full animate-pulse shadow-[0_0_20px_#00d2ff]" />
+              <div className="absolute inset-0 border-4 border-[#7C3CFF]/20 rounded-full" />
+              <div className="absolute inset-0 border-4 border-[#7C3CFF] rounded-full border-t-transparent animate-spin" />
+              <div className="absolute inset-4 bg-[#7C3CFF]/5 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#7C3CFF] rounded-full animate-pulse shadow-[0_0_20px_#7C3CFF]" />
               </div>
             </div>
             <div className="space-y-2">
@@ -201,8 +201,8 @@ export default function VincularPage() {
 
             {/* Código grande para ver desde lejos */}
             <div className="relative">
-              <div className="absolute inset-0 blur-3xl bg-[#00d2ff]/20 rounded-full" />
-              <div className="relative bg-zinc-900/80 border-2 border-[#00d2ff]/40 rounded-2xl px-16 py-8 backdrop-blur-sm shadow-[0_0_60px_rgba(0,210,255,0.1)]">
+              <div className="absolute inset-0 blur-3xl bg-[#7C3CFF]/20 rounded-full" />
+              <div className="relative bg-zinc-900/80 border-2 border-[#7C3CFF]/40 rounded-2xl px-16 py-8 backdrop-blur-sm shadow-[0_0_60px_rgba(124,60,255,0.1)]">
                 <span className="text-8xl font-black text-white tracking-[0.3em]"
                   style={{ fontFamily: 'var(--font-mono)' }}>
                   {code || '···'}
@@ -212,13 +212,13 @@ export default function VincularPage() {
 
             {/* Cuenta atrás */}
             <div className="flex items-center gap-2 text-zinc-600 text-sm font-mono mt-4">
-              <div className="w-2 h-2 bg-[#00d2ff] rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-[#7C3CFF] rounded-full animate-pulse" />
               Este código caduca en{' '}
-              <span className="text-[#00d2ff] font-bold">{mins}:{secs}</span>
+              <span className="text-[#7C3CFF] font-bold">{mins}:{secs}</span>
             </div>
 
             <p className="text-zinc-700 text-[10px] uppercase tracking-[0.4em] mt-4 font-black">
-              LuminAdd v3.0 · SMART GEOLOCATION LOCKED
+              LumiAds v3.0 · SMART GEOLOCATION LOCKED
             </p>
           </>
         )}
@@ -231,10 +231,10 @@ export default function VincularPage() {
               ¡Vinculada!
             </h2>
             <p className="text-zinc-400 text-xl">
-              Esta pantalla ya es parte de tu red LuminAdd.
+              Esta pantalla ya es parte de tu red LumiAds.
             </p>
-            <div className="flex items-center gap-2 text-[#00d2ff] font-mono animate-pulse">
-              <div className="w-2 h-2 bg-[#00d2ff] rounded-full animate-pulse" />
+            <div className="flex items-center gap-2 text-[#7C3CFF] font-mono animate-pulse">
+              <div className="w-2 h-2 bg-[#7C3CFF] rounded-full animate-pulse" />
               Iniciando reproductor...
             </div>
           </>
@@ -252,7 +252,7 @@ export default function VincularPage() {
             </p>
             <button
               onClick={() => initPairing()}
-              className="bg-[#00d2ff] hover:bg-[#00bbdd] text-black font-black px-12 py-4 rounded-xl text-xl uppercase tracking-widest transition-all"
+              className="bg-[#7C3CFF] hover:bg-[#00bbdd] text-black font-black px-12 py-4 rounded-xl text-xl uppercase tracking-widest transition-all"
             >
               Generar nuevo código
             </button>
@@ -263,7 +263,7 @@ export default function VincularPage() {
       {/* Instrucciones inferiores */}
       {status === 'esperando' && (
         <div className="absolute bottom-8 flex items-center gap-8 text-zinc-700 text-[10px] uppercase tracking-widest font-mono">
-          <span>1. Abre LuminAdd.app en tu ordenador</span>
+          <span>1. Abre LumiAds.app en tu ordenador</span>
           <span className="text-zinc-800">|</span>
           <span>2. Ve a Pantallas → Vincular TV</span>
           <span className="text-zinc-800">|</span>

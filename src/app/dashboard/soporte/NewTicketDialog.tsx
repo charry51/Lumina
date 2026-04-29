@@ -112,14 +112,14 @@ export function NewTicketDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={
-        <Button className="bg-[#00d2ff] text-black hover:bg-[#00d2ff]/90 font-black uppercase tracking-widest text-[10px] gap-2 px-6 h-12 shadow-[0_0_20px_rgba(0,210,255,0.2)] transition-all active:scale-95">
+        <Button className="bg-[#7C3CFF] text-black hover:bg-[#7C3CFF]/90 font-black uppercase tracking-widest text-[10px] gap-2 px-6 h-12 shadow-[0_0_20px_rgba(124,60,255,0.2)] transition-all active:scale-95">
           <LifeBuoy className="w-4 h-4" /> Nuevo Ticket de Soporte
         </Button>
       } />
       <DialogContent className="bg-zinc-950 border-zinc-900 text-white sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-[#00d2ff] font-heading font-black uppercase tracking-[0.2em] text-sm flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#00d2ff] animate-pulse" />
+          <DialogTitle className="text-[#7C3CFF] font-heading font-black uppercase tracking-[0.2em] text-sm flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#7C3CFF] animate-pulse" />
             Abrir Incidencia Técnica
           </DialogTitle>
         </DialogHeader>
@@ -127,16 +127,16 @@ export function NewTicketDialog() {
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Clasificación LuminAdd AI</span>
-              {isAnalyzing && <Loader2 className="w-3 h-3 text-[#00d2ff] animate-spin" />}
+              <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Clasificación LumiAds AI</span>
+              {isAnalyzing && <Loader2 className="w-3 h-3 text-[#7C3CFF] animate-spin" />}
             </div>
             
             <div className="flex flex-wrap gap-3">
               {ticketCategory !== 'Otros' || ticketPriority !== 'MEDIA' ? (
                 <>
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#00d2ff]/10 border border-[#00d2ff]/30 rounded-full">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#00d2ff] animate-pulse" />
-                    <span className="text-[10px] text-[#00d2ff] font-black uppercase tracking-tighter">{ticketCategory}</span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#7C3CFF]/10 border border-[#7C3CFF]/30 rounded-full">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#7C3CFF] animate-pulse" />
+                    <span className="text-[10px] text-[#7C3CFF] font-black uppercase tracking-tighter">{ticketCategory}</span>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-full">
                     <span className="text-[10px] text-zinc-400 font-black uppercase tracking-tighter">Prioridad: {ticketPriority}</span>
@@ -154,7 +154,7 @@ export function NewTicketDialog() {
               name="asunto" 
               required 
               placeholder="Ej: Problema con la carga de videos en TV 1" 
-              className="bg-zinc-900 border-zinc-800 h-11 text-sm focus-visible:ring-[#00d2ff]"
+              className="bg-zinc-900 border-zinc-800 h-11 text-sm focus-visible:ring-[#7C3CFF]"
             />
           </div>
 
@@ -162,7 +162,7 @@ export function NewTicketDialog() {
             <div className="flex items-center justify-between">
               <Label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Descripción del Problema</Label>
               {isAnalyzing && (
-                <span className="text-[9px] text-[#00d2ff] font-bold animate-pulse flex items-center gap-1">
+                <span className="text-[9px] text-[#7C3CFF] font-bold animate-pulse flex items-center gap-1">
                   <Loader2 className="w-2 h-2 animate-spin" /> ✨ IA ANALIZANDO...
                 </span>
               )}
@@ -172,7 +172,7 @@ export function NewTicketDialog() {
               required 
               onBlur={(e) => handleManualAnalysis(e.target.value)}
               placeholder="Describe lo que sucede con el máximo detalle posible..." 
-              className="bg-zinc-900 border-zinc-800 min-h-[120px] text-sm leading-relaxed focus-visible:ring-[#00d2ff]"
+              className="bg-zinc-900 border-zinc-800 min-h-[120px] text-sm leading-relaxed focus-visible:ring-[#7C3CFF]"
             />
           </div>
 
@@ -219,7 +219,7 @@ export function NewTicketDialog() {
             <Button 
               type="submit" 
               disabled={loading || uploading} 
-              className="bg-[#00d2ff] text-black hover:bg-[#00d2ff]/80 font-black uppercase tracking-widest text-[10px] px-8 h-11"
+              className="bg-[#7C3CFF] text-black hover:bg-[#7C3CFF]/80 font-black uppercase tracking-widest text-[10px] px-8 h-11"
             >
               {loading ? (
                 <><Loader2 className="w-3 h-3 mr-2 animate-spin" /> Creando...</>

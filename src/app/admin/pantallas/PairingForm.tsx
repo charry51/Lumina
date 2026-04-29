@@ -215,7 +215,7 @@ export function PairingForm() {
       <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
         <p className="text-[10px] text-primary font-mono uppercase tracking-widest flex items-center gap-2">
           <Tv className="w-3 h-3" />
-          Enciende la TV y abre <strong>LuminAdd.app/vincular</strong> en el navegador.
+          Enciende la TV y abre <strong>LumiAds.app/vincular</strong> en el navegador.
           Verás un código de 6 caracteres. Introdúcelo aquí.
         </p>
       </div>
@@ -257,7 +257,7 @@ export function PairingForm() {
         </div>
       </div>
 
-      {/* LuminAdd v3.0: Categorización Categoría y Densidad */}
+      {/* LumiAds v3.0: Categorización Categoría y Densidad */}
       <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <Label className="text-muted-foreground text-xs uppercase tracking-widest">Tipo de Establecimiento</Label>
@@ -294,11 +294,11 @@ export function PairingForm() {
       <div className="flex flex-col gap-2">
         <Label className="text-muted-foreground text-xs uppercase tracking-widest flex justify-between">
            <span>Tamaño de la Pantalla (Detección Automática)</span>
-           <span className="text-[10px] text-[#00d2ff] font-mono tracking-tighter uppercase font-black">LuminAdd Telemetry Active</span>
+           <span className="text-[10px] text-[#7C3CFF] font-mono tracking-tighter uppercase font-black">LumiAds Telemetry Active</span>
         </Label>
-        <div className="bg-[#00d2ff]/5 border border-[#00d2ff]/30 rounded-lg h-12 flex items-center px-4 justify-between">
+        <div className="bg-[#7C3CFF]/5 border border-[#7C3CFF]/30 rounded-lg h-12 flex items-center px-4 justify-between">
           <span className="text-xl font-black text-white font-mono">{tamanoPulgadas}"</span>
-          <span className="text-[9px] text-[#00d2ff] uppercase font-bold tracking-widest">Hardware Verificado</span>
+          <span className="text-[9px] text-[#7C3CFF] uppercase font-bold tracking-widest">Hardware Verificado</span>
         </div>
         <p className="text-[9px] text-zinc-500 italic">El tamaño físico se detecta automáticamente analizando la densidad de píxeles y el hardware del equipo.</p>
       </div>
@@ -320,22 +320,22 @@ export function PairingForm() {
 
       {/* NEW: Yield Tier Feedback */}
       <div className={`p-4 rounded-xl border flex items-center justify-between transition-all duration-500 ${
-        currentTier === 'Elite' ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]' :
-        currentTier === 'Premium' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 shadow-[0_0_15px_rgba(0,210,255,0.1)]' :
+        currentTier === 'Elite' ? 'bg-[#7C3CFF]/10 border-[#7C3CFF]/30 shadow-[0_0_15px_rgba(124,60,255,0.1)]' :
+        currentTier === 'Premium' ? 'bg-[#7C3CFF]/10 border-[#7C3CFF]/30 shadow-[0_0_15px_rgba(124,60,255,0.1)]' :
         'bg-muted/50 border-border'
       }`}>
         <div className="flex flex-col">
           <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-mono">Potencial de Ingresos</span>
           <span className={`text-sm font-black uppercase tracking-widest ${
-            currentTier === 'Elite' ? 'text-[#D4AF37]' :
-            currentTier === 'Premium' ? 'text-[#00d2ff]' :
+            currentTier === 'Elite' ? 'text-[#7C3CFF]' :
+            currentTier === 'Premium' ? 'text-[#7C3CFF]' :
             'text-foreground'
           }`}>{currentTier} TIER</span>
         </div>
         <div className="text-right">
           <span className="text-[9px] text-muted-foreground uppercase block font-bold">Multiplicador Yield</span>
           <span className={`text-xl font-mono font-black ${
-            currentTier === 'Elite' ? 'text-amber-600 dark:text-[#D4AF37]' : 'text-muted-foreground'
+            currentTier === 'Elite' ? 'text-lumi-violet dark:text-[#7C3CFF]' : 'text-muted-foreground'
           }`}>x{multiplier.toFixed(1)}</span>
         </div>
       </div>
@@ -371,9 +371,9 @@ export function PairingForm() {
                 externalPosition={coords}
             />
             {originalGPS && (
-              <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-md border border-[#00d2ff]/30 px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
-                <div className="w-2 h-2 bg-[#00d2ff] rounded-full animate-pulse" />
-                <span className="text-[9px] text-[#00d2ff] font-black uppercase tracking-widest">GPS Verificado (±100m)</span>
+              <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-md border border-[#7C3CFF]/30 px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+                <div className="w-2 h-2 bg-[#7C3CFF] rounded-full animate-pulse" />
+                <span className="text-[9px] text-[#7C3CFF] font-black uppercase tracking-widest">GPS Verificado (±100m)</span>
               </div>
             )}
         </div>
@@ -387,7 +387,7 @@ export function PairingForm() {
                 onClick={() => setEsPublica(true)}
                 className={`flex flex-col items-center gap-1 py-3 rounded-lg border transition-all ${
                     esPublica 
-                        ? 'bg-primary/20 border-primary/50 text-foreground shadow-[0_0_15px_rgba(0,210,255,0.1)]' 
+                        ? 'bg-primary/20 border-primary/50 text-foreground shadow-[0_0_15px_rgba(124,60,255,0.1)]' 
                         : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -412,7 +412,7 @@ export function PairingForm() {
       <Button
         onClick={handleActivate}
         disabled={loading}
-        className="bg-primary hover:bg-primary/90 text-black font-black h-12 uppercase tracking-widest text-xs mt-2 shadow-[0_0_20px_rgba(0,210,255,0.2)]"
+        className="bg-primary hover:bg-primary/90 text-black font-black h-12 uppercase tracking-widest text-xs mt-2 shadow-[0_0_20px_rgba(124,60,255,0.2)]"
       >
         {loading ? (
           <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Vinculando...</>

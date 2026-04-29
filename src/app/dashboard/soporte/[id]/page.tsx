@@ -43,7 +43,7 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
         {/* Breadcrumbs / Back */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-zinc-900 pb-8">
           <div className="flex flex-col gap-4">
-            <Link href="/dashboard/soporte" className="flex items-center gap-2 text-zinc-500 hover:text-[#00d2ff] transition-colors text-[10px] uppercase font-black tracking-widest group">
+            <Link href="/dashboard/soporte" className="flex items-center gap-2 text-zinc-500 hover:text-[#7C3CFF] transition-colors text-[10px] uppercase font-black tracking-widest group">
                  <ChevronLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> 
                  Volver al Listado
             </Link>
@@ -54,7 +54,7 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
               <div className="flex items-center gap-3 mt-2">
                  <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter ${
                     ticket.estado === 'PENDIENTE' ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' :
-                    ticket.estado === 'EN_PROCESO' ? 'bg-[#00d2ff]/20 text-[#00d2ff] border border-[#00d2ff]/30' :
+                    ticket.estado === 'EN_PROCESO' ? 'bg-[#7C3CFF]/20 text-[#7C3CFF] border border-[#7C3CFF]/30' :
                     ticket.estado === 'RESUELTO' ? 'bg-green-500/20 text-green-500 border border-green-500/30' :
                     'bg-zinc-800 text-zinc-500'
                   }`}>
@@ -66,7 +66,7 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
           </div>
 
           <div className="flex flex-col items-end gap-3 text-right">
-             <div className="flex items-center gap-2 px-3 py-1 bg-[#00d2ff]/10 border border-[#00d2ff]/30 text-[#00d2ff] rounded-full text-[9px] font-black uppercase tracking-widest">
+             <div className="flex items-center gap-2 px-3 py-1 bg-[#7C3CFF]/10 border border-[#7C3CFF]/30 text-[#7C3CFF] rounded-full text-[9px] font-black uppercase tracking-widest">
                 <Tag className="w-3 h-3" /> {ticket.categoria}
              </div>
              <div className={`flex items-center gap-2 px-3 py-1 border rounded-full text-[9px] font-black uppercase tracking-widest ${
@@ -89,8 +89,8 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
               <div className="flex items-center gap-2 mb-1 px-1">
                  {msg.es_admin ? (
                    <>
-                    <ShieldCheck className="w-3 h-3 text-[#00d2ff]" />
-                    <span className="text-[9px] text-[#00d2ff] font-black uppercase tracking-widest">Soporte LuminAdd</span>
+                    <ShieldCheck className="w-3 h-3 text-[#7C3CFF]" />
+                    <span className="text-[9px] text-[#7C3CFF] font-black uppercase tracking-widest">Soporte LumiAds</span>
                    </>
                  ) : (
                    <>
@@ -102,7 +102,7 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
 
               <div className={`cyber-card max-w-[85%] md:max-w-[70%] p-4 ${
                 msg.es_admin 
-                  ? 'bg-zinc-900 border-zinc-800 shadow-[0_0_15px_rgba(0,210,255,0.05)]' 
+                  ? 'bg-zinc-900 border-zinc-800 shadow-[0_0_15px_rgba(124,60,255,0.05)]' 
                   : 'bg-zinc-800/20 border-zinc-700'
               }`}>
                 <p className="text-sm leading-relaxed text-zinc-200 whitespace-pre-wrap">
@@ -137,8 +137,8 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
           <div className="mt-12 pt-12 border-t border-zinc-900">
              <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                   <Mail className="w-4 h-4 text-[#00d2ff] opacity-50" />
-                   <h2 className="text-xs font-black uppercase tracking-widest text-[#00d2ff]">Escribir Respuesta</h2>
+                   <Mail className="w-4 h-4 text-[#7C3CFF] opacity-50" />
+                   <h2 className="text-xs font-black uppercase tracking-widest text-[#7C3CFF]">Escribir Respuesta</h2>
                 </div>
                 <span className="text-[9px] text-zinc-600 uppercase font-mono italic flex items-center gap-2">
                    <Clock className="w-3 h-3" /> Tiempo est. respuesta: {ticket.prioridad === 'URGENTE' ? '2h' : '12h'}
@@ -151,7 +151,7 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
              <p className="text-zinc-500 uppercase tracking-widest text-xs font-bold font-heading italic">
                 Esta incidencia ha sido marcada como cerrada. No puedes enviar más mensajes.
              </p>
-             <Link href="/dashboard/soporte" className="inline-block mt-4 text-[10px] text-[#00d2ff] uppercase font-black hover:underline tracking-widest transition-all">
+             <Link href="/dashboard/soporte" className="inline-block mt-4 text-[10px] text-[#7C3CFF] uppercase font-black hover:underline tracking-widest transition-all">
                 Abrir un nuevo ticket si el problema persiste
              </Link>
           </div>

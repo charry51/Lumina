@@ -36,13 +36,13 @@ function ContactHostDialog({ email, screenName }: { email: string, screenName: s
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={
-        <button className="flex items-center gap-1 text-[10px] text-[#00d2ff] hover:text-white transition-colors bg-[#00d2ff]/10 px-2 py-1 rounded w-fit">
+        <button className="flex items-center gap-1 text-[10px] text-[#7C3CFF] hover:text-white transition-colors bg-[#7C3CFF]/10 px-2 py-1 rounded w-fit">
           <span>✉️</span> Contactar Dueño
         </button>
       } />
       <DialogContent className="bg-zinc-950 border-zinc-800 text-white sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-[#00d2ff] uppercase tracking-widest text-sm font-black">
+          <DialogTitle className="text-[#7C3CFF] uppercase tracking-widest text-sm font-black">
             Mensaje al Propietario
           </DialogTitle>
         </DialogHeader>
@@ -53,15 +53,15 @@ function ContactHostDialog({ email, screenName }: { email: string, screenName: s
           </div>
           <div className="flex flex-col gap-2">
             <Label className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">Asunto del Correo</Label>
-            <Input name="subject" required className="bg-zinc-900 border-zinc-700 focus-visible:ring-[#00d2ff] text-sm h-10 font-bold" defaultValue={`Luminia: Aviso sobre tu pantalla - ${screenName}`} />
+            <Input name="subject" required className="bg-zinc-900 border-zinc-700 focus-visible:ring-[#7C3CFF] text-sm h-10 font-bold" defaultValue={`Luminia: Aviso sobre tu pantalla - ${screenName}`} />
           </div>
           <div className="flex flex-col gap-2">
             <Label className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">Cuerpo del Mensaje</Label>
-            <Textarea name="message" required className="bg-zinc-900 border-zinc-700 min-h-[140px] focus-visible:ring-[#00d2ff] text-sm leading-relaxed" placeholder="Escribe aquí el mensaje oficial que recibirá el anfitrión. Este correo se enviará en formato HTML con el branding de LuminAdd." />
+            <Textarea name="message" required className="bg-zinc-900 border-zinc-700 min-h-[140px] focus-visible:ring-[#7C3CFF] text-sm leading-relaxed" placeholder="Escribe aquí el mensaje oficial que recibirá el anfitrión. Este correo se enviará en formato HTML con el branding de LumiAds." />
           </div>
           <DialogFooter className="mt-4">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)} disabled={loading} className="text-xs uppercase hover:bg-zinc-800 text-zinc-400">Cancelar</Button>
-            <Button type="submit" disabled={loading} className="bg-[#00d2ff] text-black hover:bg-[#00d2ff]/80 text-xs uppercase font-black tracking-widest shadow-[0_0_15px_rgba(0,210,255,0.2)]">
+            <Button type="submit" disabled={loading} className="bg-[#7C3CFF] text-black hover:bg-[#7C3CFF]/80 text-xs uppercase font-black tracking-widest shadow-[0_0_15px_rgba(124,60,255,0.2)]">
               {loading ? 'Enviando...' : 'Enviar Correo'}
             </Button>
           </DialogFooter>
@@ -134,7 +134,7 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
                   </p>
                 </td>
                 <td className="px-6 py-4">
-                  <p className="text-xs text-[#D4AF37] font-bold uppercase tracking-tight">{hostInfo}</p>
+                  <p className="text-xs text-[#7C3CFF] font-bold uppercase tracking-tight">{hostInfo}</p>
                   <p className="text-[9px] text-zinc-500 uppercase tracking-tighter mb-1">
                     {p.es_publica ? 'RED PÚBLICA' : 'RED PRIVADA'}
                   </p>
@@ -147,7 +147,7 @@ export function PantallasTable({ initialData }: { initialData: any[] }) {
                   <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800"
+                      className="text-zinc-400 hover:text-[#7C3CFF] hover:bg-zinc-800"
                   >
                     <ExternalLink className="w-4 h-4" />
                   </Button>

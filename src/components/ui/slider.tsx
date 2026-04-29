@@ -27,8 +27,8 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
           value={value}
           onChange={handleChange}
           className={cn(
-            "w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-amber-600 dark:accent-[#D4AF37] hover:accent-amber-700 dark:hover:accent-[#b08d24] transition-all",
-            "focus:outline-none focus:ring-2 focus:ring-amber-600/50 dark:focus:ring-[#D4AF37]/50",
+            "w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-lumi-violet dark:accent-[#7C3CFF] hover:accent-lumi-magenta dark:hover:accent-[#C94BFF] transition-all",
+            "focus:outline-none focus:ring-2 focus:ring-lumi-violet/50 dark:focus:ring-[#7C3CFF]/50",
             className
           )}
           {...props}
@@ -44,12 +44,12 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
             border: 2px solid var(--background, #fff);
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 10px rgba(124,60,255, 0.4);
             transition: all 0.2s ease;
           }
           input[type='range']::-webkit-slider-thumb:hover {
             transform: scale(1.2);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            box-shadow: 0 0 20px rgba(124,60,255, 0.6);
           }
           input[type='range']::-moz-range-thumb {
             width: 18px;
@@ -58,7 +58,7 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
             border: 2px solid var(--background, #fff);
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 10px rgba(124,60,255, 0.4);
           }
           /* This class helps currentColor inherit the accent color definition if needed, though accent-color utility usually applies to the control natively */
         `}</style>

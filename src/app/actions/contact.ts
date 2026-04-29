@@ -37,21 +37,21 @@ export async function sendContactMessage(formData: FormData) {
       try {
         console.log('[Resend] Enviando notificación de nuevo mensaje...');
         const resendRes = await resend.emails.send({
-          from: 'LuminAdd <onboarding@resend.dev>',
+          from: 'LumiAds <onboarding@resend.dev>',
           to: ['francharrielromero@gmail.com'],
           subject: `🚀 NUEVO MENSAJE: ${subject}`,
           html: `
             <div style="background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; padding: 40px; border: 1px solid #333; border-radius: 16px; max-width: 600px; margin: 20px auto;">
-              <header style="border-bottom: 2px solid #00d2ff; padding-bottom: 20px; margin-bottom: 30px;">
-                <h1 style="color: #00d2ff; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; margin: 0;">LuminAdd Admin</h1>
+              <header style="border-bottom: 2px solid #7C3CFF; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="color: #7C3CFF; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; margin: 0;">LumiAds Admin</h1>
                 <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">NOTIFICACIÓN DE SISTEMA</p>
               </header>
               
               <main>
                 <div style="background: #111; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-                  <p style="margin: 0 0 10px 0;"><strong style="color: #00d2ff;">Remitente:</strong> ${name}</p>
-                  <p style="margin: 0 0 10px 0;"><strong style="color: #00d2ff;">Email:</strong> ${email}</p>
-                  <p style="margin: 0;"><strong style="color: #00d2ff;">Asunto:</strong> ${subject}</p>
+                  <p style="margin: 0 0 10px 0;"><strong style="color: #7C3CFF;">Remitente:</strong> ${name}</p>
+                  <p style="margin: 0 0 10px 0;"><strong style="color: #7C3CFF;">Email:</strong> ${email}</p>
+                  <p style="margin: 0;"><strong style="color: #7C3CFF;">Asunto:</strong> ${subject}</p>
                 </div>
                 
                 <div style="border-left: 2px solid #333; padding-left: 20px; color: #ccc; font-style: italic;">
@@ -60,8 +60,8 @@ export async function sendContactMessage(formData: FormData) {
               </main>
               
               <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #222; text-align: center;">
-                <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://LuminAdd-eta-fawn.vercel.app'}/admin/mensajes" 
-                   style="background: #00d2ff; color: #000; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; font-size: 12px;">
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://LumiAds-eta-fawn.vercel.app'}/admin/mensajes" 
+                   style="background: #7C3CFF; color: #000; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; font-size: 12px;">
                   Responder en el Panel
                 </a>
               </footer>
@@ -114,13 +114,13 @@ export async function replyToMessage(formData: FormData) {
     try {
       console.log(`[Resend] Enviando respuesta a ${email}...`);
       const resendRes = await resend.emails.send({
-        from: 'LuminAdd <onboarding@resend.dev>',
+        from: 'LumiAds <onboarding@resend.dev>',
         to: email,
-        subject: 'Re: Tu consulta en LuminAdd',
+        subject: 'Re: Tu consulta en LumiAds',
         html: `
           <div style="background-color: #f8f9fa; color: #212529; font-family: sans-serif; padding: 40px; max-width: 600px; margin: 20px auto; border-radius: 8px; border: 1px solid #dee2e6;">
             <header style="margin-bottom: 30px; text-align: center;">
-              <h1 style="color: #0a0a0f; font-size: 24px; margin: 0;">LuminAdd Support</h1>
+              <h1 style="color: #0a0a0f; font-size: 24px; margin: 0;">LumiAds Support</h1>
             </header>
             
             <main style="background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
@@ -135,7 +135,7 @@ export async function replyToMessage(formData: FormData) {
             </div>
             
             <footer style="margin-top: 40px; text-align: center; font-size: 12px; color: #adb5bd;">
-              <p>© ${new Date().getFullYear()} LuminAdd Digital Signage. Todos los derechos reservados.</p>
+              <p>© ${new Date().getFullYear()} LumiAds Digital Signage. Todos los derechos reservados.</p>
             </footer>
           </div>
         `
@@ -254,21 +254,21 @@ export async function sendDirectMessageToHost(formData: FormData) {
       const recipients = isSandbox ? [adminEmail] : [email, adminEmail];
 
       const resendRes = await resend.emails.send({
-        from: `LuminAdd <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+        from: `LumiAds <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
         to: recipients,
-        replyTo: 'soporte@LuminAdd.com',
-        subject: `LuminAdd: ${subject}`,
+        replyTo: 'soporte@LumiAds.com',
+        subject: `LumiAds: ${subject}`,
         html: `
           <div style="background-color: #f8f9fa; color: #212529; font-family: sans-serif; padding: 40px; max-width: 600px; margin: 20px auto; border-radius: 8px; border: 1px solid #dee2e6;">
-            <header style="margin-bottom: 30px; text-align: left; border-bottom: 2px solid #00d2ff; padding-bottom: 20px;">
-              <h1 style="color: #00d2ff; font-size: 20px; margin: 0; text-transform: uppercase;">Mensaje del Equipo LuminAdd</h1>
+            <header style="margin-bottom: 30px; text-align: left; border-bottom: 2px solid #7C3CFF; padding-bottom: 20px;">
+              <h1 style="color: #7C3CFF; font-size: 20px; margin: 0; text-transform: uppercase;">Mensaje del Equipo LumiAds</h1>
                ${isSandbox ? '<p style="color: #e63946; font-size: 10px; font-weight: bold;">[MODO SANDBOX - COPIA PARA ADMIN]</p>' : ''}
             </header>
             <main style="background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
               <p style="font-size: 15px; line-height: 1.6;">${message.replace(/\n/g, '<br>')}</p>
             </main>
             <footer style="margin-top: 40px; text-align: center; font-size: 12px; color: #adb5bd;">
-              <p>© ${new Date().getFullYear()} LuminAdd Digital Signage. Todos los derechos reservados.</p>
+              <p>© ${new Date().getFullYear()} LumiAds Digital Signage. Todos los derechos reservados.</p>
               <p>Esta es una copia de seguridad para el administrador.</p>
             </footer>
           </div>

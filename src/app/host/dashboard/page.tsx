@@ -38,7 +38,7 @@ export default async function HostDashboardPage({
         <div className="max-w-md w-full">
             <header className="mb-10 text-center">
                 <Link href="/dashboard" className="inline-block mb-4 text-[10px] text-muted-foreground hover:text-primary transition-colors uppercase tracking-[3px]">← Volver al Dashboard Principal</Link>
-                <h1 className="text-4xl font-heading font-black text-gradient-cyan mb-2">VINCULAR TV</h1>
+                <h1 className="text-4xl font-heading font-black text-gradient-ui mb-2">VINCULAR TV</h1>
                 <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[3px]">Añade un nuevo nodo de emisión a tu cuenta</p>
             </header>
 
@@ -47,7 +47,7 @@ export default async function HostDashboardPage({
             </div>
 
             <p className="mt-8 text-center text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
-                ¿Necesitas ayuda técnica? LuminAdd.app/soporte
+                ¿Necesitas ayuda técnica? LumiAds.app/soporte
             </p>
         </div>
       </div>
@@ -91,11 +91,11 @@ export default async function HostDashboardPage({
       {/* Header Premium - Balanced Cyan Logo */}
       <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-border pb-8">
         <div className="flex items-center gap-4">
-           <img src="/logo.png" alt="LuminAdd Logo" className="h-10 w-auto" />
+           <img src="/LogoPequeño.png" alt="LumiAds Logo" className="h-10 w-auto" />
            <div>
               <Link href="/dashboard" className="inline-block mb-1 text-[10px] text-muted-foreground hover:text-primary transition-colors uppercase tracking-[3px] font-bold">← Dashboard Principal</Link>
               <div className="flex items-center gap-3">
-                <h1 className="text-4xl font-heading font-black text-gradient-cyan tracking-tighter">LuminAdd</h1>
+                <img src="/LogoTexto.png" alt="LumiAds" className="h-12 w-auto inline-block text-4xl font-heading font-black text-gradient-ui tracking-tighter" />
                 <span className="bg-primary/10 text-primary text-[9px] font-black px-2 py-0.5 rounded border border-primary/20 uppercase tracking-widest">HOST PORTAL</span>
               </div>
               <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[4px]">Verified Infrastructure Node</p>
@@ -105,7 +105,7 @@ export default async function HostDashboardPage({
         <div className="flex items-center gap-4 w-full sm:w-auto">
           <Link 
             href="/host/dashboard?action=vincular"
-            className="cyber-button-cyan w-full sm:w-auto text-center"
+            className="cyber-button-ui w-full sm:w-auto text-center"
           >
             <Plus className="w-4 h-4 mr-2" /> Vincular Nueva TV
           </Link>
@@ -117,13 +117,13 @@ export default async function HostDashboardPage({
             </Link>
             <div className="text-right hidden lg:block">
               <p className="text-[10px] text-muted-foreground font-mono uppercase mb-1 tracking-tighter">Identidad Verificada</p>
-              <p className="text-xs text-amber-600 dark:text-[#D4AF37] font-bold tracking-tight">{user.email}</p>
+              <p className="text-xs text-lumi-violet dark:text-[#7C3CFF] font-bold tracking-tight">{user.email}</p>
             </div>
           </div>
         </div>
       </header>
 
-      <section className="mb-10 cyber-glass-cyan border-[#00d2ff]/10 overflow-hidden relative transition-all duration-500">
+      <section className="mb-10 cyber-glass-ui border-[#7C3CFF]/10 overflow-hidden relative transition-all duration-500">
           <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-30" />
           <div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-6">
@@ -170,20 +170,20 @@ export default async function HostDashboardPage({
           {/* Active Node Intelligence Card */}
           <section className="relative">
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xs font-heading uppercase tracking-widest text-gradient-cyan flex items-center gap-2 font-black">
+                <h2 className="text-xs font-heading uppercase tracking-widest text-gradient-ui flex items-center gap-2 font-black">
                   <Zap className="w-4 h-4" /> Telemetría del Nodo
                 </h2>
                 <div className="flex items-center gap-2">
                     {/* YIELD TIER BADGE */}
                     <div className={`px-2.5 py-1 rounded border text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${
-                      yieldTier === 'Elite' ? 'bg-[#D4AF37]/10 border-[#D4AF37]/30 text-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.2)]' :
-                      yieldTier === 'Premium' ? 'bg-[#00d2ff]/10 border-[#00d2ff]/30 text-[#00d2ff]' :
+                      yieldTier === 'Elite' ? 'bg-[#7C3CFF]/10 border-[#7C3CFF]/30 text-[#7C3CFF] shadow-[0_0_10px_rgba(124,60,255,0.2)]' :
+                      yieldTier === 'Premium' ? 'bg-[#7C3CFF]/10 border-[#7C3CFF]/30 text-[#7C3CFF]' :
                       yieldTier === 'Estandar' ? 'bg-primary/5 border-primary/20 text-primary' :
                       'bg-zinc-900 border-zinc-800 text-zinc-500'
                     }`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${
-                        yieldTier === 'Elite' ? 'bg-[#D4AF37] shadow-[0_0_5px_#D4AF37]' :
-                        yieldTier === 'Premium' ? 'bg-[#00d2ff] shadow-[0_0_5px_#00d2ff]' :
+                        yieldTier === 'Elite' ? 'bg-[#7C3CFF] shadow-[0_0_5px_#7C3CFF]' :
+                        yieldTier === 'Premium' ? 'bg-[#7C3CFF] shadow-[0_0_5px_#7C3CFF]' :
                         yieldTier === 'Estandar' ? 'bg-primary' :
                         'bg-zinc-700'
                       }`} />
@@ -191,7 +191,7 @@ export default async function HostDashboardPage({
                     </div>
 
                     {hostData.hardware_certified && (
-                       <span className="text-[8px] font-black uppercase bg-[#D4AF37] text-black px-1.5 py-0.5 rounded shadow-[0_0_10px_rgba(212,175,55,0.3)]">Certificado</span>
+                       <span className="text-[8px] font-black uppercase bg-[#7C3CFF] text-black px-1.5 py-0.5 rounded shadow-[0_0_10px_rgba(124,60,255,0.3)]">Certificado</span>
                     )}
                     <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full border ${
                     pantalla?.estado === 'activa'
@@ -202,7 +202,7 @@ export default async function HostDashboardPage({
                     </span>
                     {pantalla?.id && (
                       <Link href={`/player/${pantalla.id}`} target="_blank">
-                        <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-[#00d2ff]/20 text-[#00d2ff] hover:bg-[#00d2ff] hover:text-black transition-all">
+                        <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-[#7C3CFF]/20 text-[#7C3CFF] hover:bg-[#7C3CFF] hover:text-black transition-all">
                           <Monitor className="w-3 h-3 mr-1" /> Ver en Vivo
                         </Button>
                       </Link>
@@ -210,7 +210,7 @@ export default async function HostDashboardPage({
                 </div>
             </div>
             
-            <div className="cyber-glass-cyan p-8 grid grid-cols-2 md:grid-cols-4 gap-8 relative overflow-hidden">
+            <div className="cyber-glass-ui p-8 grid grid-cols-2 md:grid-cols-4 gap-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-5">
                    <Monitor className="w-24 h-24 text-primary" />
                 </div>
@@ -223,7 +223,7 @@ export default async function HostDashboardPage({
 
                 <div className="col-span-1 border-l border-border pl-8">
                   <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[2px] mb-3">Yield Rate (% Share)</p>
-                  <p className="text-gradient-gold font-black text-3xl leading-tight">{hostData.porcentaje}%</p>
+                  <p className="text-gradient-ui font-black text-3xl leading-tight">{hostData.porcentaje}%</p>
                   <p className="text-[8px] text-muted-foreground mt-1 uppercase leading-tight font-bold">Comisión Garantizada</p>
                 </div>
 
@@ -239,7 +239,7 @@ export default async function HostDashboardPage({
                   <p className="text-[9px] text-muted-foreground font-mono uppercase tracking-[2px] mb-3">Hardware Status</p>
                   <div className="flex flex-col gap-1">
                      <span className="text-[10px] text-foreground dark:text-zinc-200 font-bold uppercase tracking-tighter flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_5px_rgba(0,210,255,0.5)]" /> GPU Ready
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_5px_rgba(124,60,255,0.5)]" /> GPU Ready
                      </span>
                      <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30" /> AI Modulo
@@ -251,16 +251,16 @@ export default async function HostDashboardPage({
 
           {/* Ledger / History Section */}
           <section>
-            <h2 className="text-xs font-heading uppercase tracking-widest mb-4 text-gradient-gold flex items-center gap-2 font-black">
+            <h2 className="text-xs font-heading uppercase tracking-widest mb-4 text-gradient-ui flex items-center gap-2 font-black">
               <History className="w-4 h-4" /> Ledger de Emisiones Verificadas
             </h2>
-            <div className="cyber-glass-gold border-border overflow-hidden">
+            <div className="cyber-glass-ui border-border overflow-hidden">
               {comisiones && comisiones.length > 0 ? (
                 <div className="responsive-table-container">
                   <table className="w-full text-sm text-left">
                     <thead className="bg-muted/50 border-b border-border">
                       <tr>
-                        <th className="cyber-table-header text-amber-600 dark:text-[#D4AF37]">Campaña de Terceros</th>
+                        <th className="cyber-table-header text-lumi-violet dark:text-[#7C3CFF]">Campaña de Terceros</th>
                         <th className="cyber-table-header">Fee Bruto</th>
                         <th className="cyber-table-header">Tu Dividendo</th>
                         <th className="cyber-table-header text-right">Validación UTC</th>
@@ -278,7 +278,7 @@ export default async function HostDashboardPage({
                           <td className="px-6 py-5 text-muted-foreground font-mono text-xs">{com.importe_total?.toFixed(3)}€</td>
                           <td className="px-6 py-5">
                              <div className="flex items-center gap-2">
-                                <span className="font-mono text-amber-600 dark:text-[#D4AF37] font-black text-xs">+{com.comision?.toFixed(4)}€</span>
+                                <span className="font-mono text-lumi-violet dark:text-[#7C3CFF] font-black text-xs">+{com.comision?.toFixed(4)}€</span>
                                 <span className="text-[8px] text-muted-foreground font-mono">({com.porcentaje}%)</span>
                              </div>
                           </td>
@@ -306,35 +306,35 @@ export default async function HostDashboardPage({
 
         {/* Global Wallet Section - Balanced Gold */}
         <div className="space-y-6">
-            <h2 className="text-xs font-heading uppercase tracking-widest text-gradient-gold flex items-center gap-2 font-black">
+            <h2 className="text-xs font-heading uppercase tracking-widest text-gradient-ui flex items-center gap-2 font-black">
                 <Wallet className="w-4 h-4" /> Billetera de Infraestructura
             </h2>
             
             <div className="grid grid-cols-1 gap-6">
                 {[
-                    { label: 'Ingresos Acumulados', value: `${totalGenerado.toFixed(2)}€`, icon: TrendingUp, color: 'text-foreground dark:text-white', bg: 'cyber-glass-gold', sub: 'Histórico Total' },
-                    { label: 'Saldo Disponible', value: `${(hostData.saldo_pendiente || 0).toFixed(2)}€`, icon: Wallet, color: 'text-amber-600 dark:text-[#D4AF37]', bg: 'bg-amber-600/5 dark:bg-[#D4AF37]/5', sub: 'Pendiente de cobro' },
+                    { label: 'Ingresos Acumulados', value: `${totalGenerado.toFixed(2)}€`, icon: TrendingUp, color: 'text-foreground dark:text-white', bg: 'cyber-glass-ui', sub: 'Histórico Total' },
+                    { label: 'Saldo Disponible', value: `${(hostData.saldo_pendiente || 0).toFixed(2)}€`, icon: Wallet, color: 'text-lumi-violet dark:text-[#7C3CFF]', bg: 'bg-lumi-violet/5 dark:bg-[#7C3CFF]/5', sub: 'Pendiente de cobro' },
                     { label: 'Retiros Liquidados', value: `${(hostData.saldo_pagado || 0).toFixed(2)}€`, icon: ChevronRight, color: 'text-green-600 dark:text-green-400', bg: 'bg-green-600/5 dark:bg-green-400/5', sub: 'Transferidos a cuenta' },
                 ].map((item) => (
                     <div key={item.label} className={`p-8 border border-border rounded-2xl relative overflow-hidden group ${item.bg}`}>
-                        <div className="absolute top-0 left-0 w-1 h-full bg-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute top-0 left-0 w-1 h-full bg-[#7C3CFF] opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="flex justify-between items-start mb-6">
                              <div>
                                 <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[3px] mb-1">{item.label}</p>
-                                <p className="text-[9px] text-amber-600 dark:text-amber-700 uppercase font-black">{item.sub}</p>
+                                <p className="text-[9px] text-lumi-violet dark:text-lumi-magenta uppercase font-black">{item.sub}</p>
                              </div>
                             <item.icon className={`w-5 h-5 ${item.color} opacity-40`} />
                         </div>
                         <p className={`text-4xl font-mono font-black tracking-tighter ${item.color}`}>{item.value}</p>
                         
                         {item.label === 'Saldo Disponible' && (hostData.saldo_pendiente || 0) >= 50 && (
-                            <Button className="w-full mt-6 bg-[#D4AF37] hover:bg-white text-black font-black uppercase text-[10px] tracking-widest rounded-none h-10 shadow-lg shadow-[#D4AF37]/20 transition-all">Solicitar Cobro Now</Button>
+                            <Button className="w-full mt-6 bg-[#7C3CFF] hover:bg-white text-black font-black uppercase text-[10px] tracking-widest rounded-none h-10 shadow-lg shadow-[#7C3CFF]/20 transition-all">Solicitar Cobro Now</Button>
                         )}
                     </div>
                 ))}
             </div>
 
-            <div className="p-8 cyber-glass-cyan border-primary/10 text-center relative overflow-hidden">
+            <div className="p-8 cyber-glass-ui border-primary/10 text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16" />
                 <p className="text-[10px] text-muted-foreground font-mono uppercase leading-relaxed tracking-widest relative z-10">
                    Liquidación automática al alcanzar <span className="text-primary font-black">50.00€</span>. 

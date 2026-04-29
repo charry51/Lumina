@@ -34,7 +34,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
       {/* Header Admin */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-zinc-900 pb-8">
         <div className="space-y-4">
-           <Link href="/admin/soporte" className="flex items-center gap-2 text-zinc-500 hover:text-[#00d2ff] transition-colors text-[10px] uppercase font-black tracking-widest group">
+           <Link href="/admin/soporte" className="flex items-center gap-2 text-zinc-500 hover:text-[#7C3CFF] transition-colors text-[10px] uppercase font-black tracking-widest group">
                 <ChevronLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> 
                 Volver a la Cola
            </Link>
@@ -45,7 +45,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                 </h1>
              </div>
              <div className="flex items-center gap-3 text-[10px] uppercase font-black tracking-widest mt-2">
-                <div className="px-3 py-1 bg-[#00d2ff]/10 border border-[#00d2ff]/30 text-[#00d2ff] rounded-full flex items-center gap-2">
+                <div className="px-3 py-1 bg-[#7C3CFF]/10 border border-[#7C3CFF]/30 text-[#7C3CFF] rounded-full flex items-center gap-2">
                    <Tag className="w-3 h-3" /> {ticket.categoria}
                 </div>
                 <div className={`px-3 py-1 border rounded-full flex items-center gap-2 ${
@@ -85,8 +85,8 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                   <div className="flex items-center gap-2 mb-1 px-1">
                      {msg.es_admin ? (
                        <>
-                        <span className="text-[9px] text-[#00d2ff] font-black uppercase tracking-widest text-right">Administración</span>
-                        <ShieldCheck className="w-3 h-3 text-[#00d2ff]" />
+                        <span className="text-[9px] text-[#7C3CFF] font-black uppercase tracking-widest text-right">Administración</span>
+                        <ShieldCheck className="w-3 h-3 text-[#7C3CFF]" />
                        </>
                      ) : (
                        <>
@@ -98,7 +98,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
 
                   <div className={`cyber-card max-w-[90%] md:max-w-[80%] p-5 ${
                     msg.es_admin 
-                      ? 'bg-[#00d2ff]/5 border-[#00d2ff]/20' 
+                      ? 'bg-[#7C3CFF]/5 border-[#7C3CFF]/20' 
                       : 'bg-zinc-900 border-zinc-800'
                   }`}>
                     <p className="text-sm leading-relaxed text-zinc-200 whitespace-pre-wrap">
@@ -113,7 +113,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                           target="_blank" 
                           className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2"
                         >
-                           <ExternalLink className="w-5 h-5 text-[#00d2ff]" />
+                           <ExternalLink className="w-5 h-5 text-[#7C3CFF]" />
                            <span className="text-[10px] text-white font-black uppercase tracking-widest text-shadow">Descargar Adjunto</span>
                         </a>
                       </div>
@@ -130,8 +130,8 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
            {/* Reply Box Admin */}
            <div className="pt-8 border-t border-zinc-900">
               <div className="mb-4 flex items-center gap-2">
-                 <ShieldCheck className="w-4 h-4 text-[#00d2ff] opacity-80" />
-                 <h2 className="text-xs font-black uppercase tracking-[0.2em] text-[#00d2ff]">Enviar Respuesta Oficial</h2>
+                 <ShieldCheck className="w-4 h-4 text-[#7C3CFF] opacity-80" />
+                 <h2 className="text-xs font-black uppercase tracking-[0.2em] text-[#7C3CFF]">Enviar Respuesta Oficial</h2>
               </div>
               <SupportReplyForm ticketId={ticket.id} esAdmin={true} />
               <p className="mt-3 text-[9px] text-zinc-600 uppercase italic font-mono">
@@ -154,7 +154,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                  <div>
                     <p className="text-[9px] text-zinc-600 uppercase font-bold mb-1">Email Principal</p>
                     <div className="flex items-center gap-2">
-                       <Mail className="w-3 h-3 text-[#00d2ff]" />
+                       <Mail className="w-3 h-3 text-[#7C3CFF]" />
                        <p className="text-xs text-zinc-400 font-mono truncate">{ticket.perfiles?.email}</p>
                     </div>
                  </div>

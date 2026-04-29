@@ -39,11 +39,11 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   const [isUploading, setIsUploading] = useState(false)
   const [selectedMapScreens, setSelectedMapScreens] = useState<string[]>([])
   
-  // LuminAdd v3 targets for estimation
+  // LumiAds v3 targets for estimation
   const [targetType, setTargetType] = useState<ScreenType>('gimnasio')
   const [targetDensity, setTargetDensity] = useState<DensityLevel>('medio')
   
-  // LuminAdd v2: Programmatic States
+  // LumiAds v2: Programmatic States
   const [presupuestoTotal, setPresupuestoTotal] = useState<number>(100)
   const [prioridad, setPrioridad] = useState<number>(1)
   const [duracion, setDuracion] = useState<number>(10)
@@ -164,7 +164,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         .from('creatividades')
         .getPublicUrl(uploadData.path)
 
-      // LuminAdd v2: Crear el payload JSON limpio con los nuevos campos programáticos
+      // LumiAds v2: Crear el payload JSON limpio con los nuevos campos programáticos
       const payloadData = {
         nombre_campana: formData.get('nombre_campana') as string,
         fecha_inicio: formData.get('fecha_inicio') as string,
@@ -202,9 +202,9 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm">
       
-      {/* LuminAdd v2.0 - Programmatic Dashboard Card */}
-      <div className="bg-muted/50 border border-border rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-[#00d2ff]/10">
-         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00d2ff] to-transparent opacity-50" />
+      {/* LumiAds v2.0 - Programmatic Dashboard Card */}
+      <div className="bg-muted/50 border border-border rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-[#7C3CFF]/10">
+         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#7C3CFF] to-transparent opacity-50" />
          
          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-6">
@@ -238,7 +238,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                 <div className="flex flex-col gap-2">
                   <Label className="text-muted-foreground font-medium tracking-widest text-[10px] uppercase">Prioridad de Subasta</Label>
                   <Select value={prioridad.toString()} onValueChange={(val: any) => setPrioridad(parseInt(val))}>
-                    <SelectTrigger className="bg-background border-border focus:border-[#00d2ff] h-10 w-full">
+                    <SelectTrigger className="bg-background border-border focus:border-[#7C3CFF] h-10 w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-popover border-border">
@@ -250,11 +250,11 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
                 </div>
             </div>
             
-            <div className="bg-background/80 rounded-lg p-6 border border-[#00d2ff]/20 flex flex-col justify-center items-center text-center">
-                <span className="text-[#00d2ff] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
+            <div className="bg-background/80 rounded-lg p-6 border border-[#2BC8FF]/20 flex flex-col justify-center items-center text-center">
+                <span className="text-[#2BC8FF] text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Retorno Estimado</span>
                 {impactosEstimados > 0 ? (
                     <>
-                        <span className="text-5xl font-heading text-foreground font-black tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(0,210,255,0.3)]">
+                        <span className="text-5xl font-heading text-foreground font-black tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(124,60,255,0.3)]">
                             {impactosEstimados.toLocaleString()}
                         </span>
                         <div className="flex flex-col mt-2">
@@ -271,7 +271,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="nombre_campana" className="text-muted-foreground font-medium">Nombre de la Creatividad</Label>
-        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Lanzamiento Perfume 2026" required disabled={isLoading} className="bg-background border-border focus:border-[#00d2ff] text-foreground h-11" />
+        <Input id="nombre_campana" name="nombre_campana" placeholder="Ej. Lanzamiento Perfume 2026" required disabled={isLoading} className="bg-background border-border focus:border-[#7C3CFF] text-foreground h-11" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -301,13 +301,13 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         
          {isPremium ? (
           <div className="space-y-4">
-             <div className="p-4 bg-[#00d2ff]/5 border border-[#00d2ff]/20 rounded-xl text-[#00d2ff] mb-2 flex items-center justify-between">
+             <div className="p-4 bg-[#2BC8FF]/5 border border-[#2BC8FF]/20 rounded-xl text-[#2BC8FF] mb-2 flex items-center justify-between">
                 <div>
-                   <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-[#00d2ff] text-black px-1.5 py-0.5 rounded">PRO</span></p>
+                   <p className="font-bold flex items-center gap-2">✨ Multi-Selección Premium <span className="text-[8px] bg-[#2BC8FF] text-black px-1.5 py-0.5 rounded">PRO</span></p>
                    <p className="text-[11px] opacity-70">Selecciona las pantallas disponibles en el mapa.</p>
                 </div>
                 {selectedMapScreens.length > 0 && (
-                    <span className="bg-[#00d2ff] text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
+                    <span className="bg-[#2BC8FF] text-black px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
                         {selectedMapScreens.length} Seleccionadas
                     </span>
                 )}
@@ -361,7 +361,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         <div className="space-y-2">
           <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
             <div 
-              className="bg-primary h-full transition-all duration-300 shadow-[0_0_10px_rgba(0,210,255,0.5)]" 
+              className="bg-primary h-full transition-all duration-300 shadow-[0_0_10px_rgba(124,60,255,0.5)]" 
               style={{ width: `${uploadProgress}%` }}
             />
           </div>
@@ -371,7 +371,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         </div>
       )}
 
-      <button type="submit" className="cyber-button-cyan mt-6 font-black h-12 uppercase tracking-widest text-[11px]" disabled={isLoading}>
+      <button type="submit" className="cyber-button-ui mt-6 font-black h-12 uppercase tracking-widest text-[11px]" disabled={isLoading}>
         {isLoading ? (isUploading ? 'Subiendo Media...' : 'Procesando IA...') : 'Lanzar Campaña'}
       </button>
     </form>

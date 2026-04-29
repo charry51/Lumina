@@ -12,9 +12,10 @@ export default function AdminMobileNav() {
     <div className="md:hidden">
       {/* Top Bar */}
       <div className="bg-black border-b border-zinc-900 p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center gap-2">
-           <img src="/logo.png" alt="LuminAdd Admin" className="h-8 w-auto" />
-           <span className="text-[8px] text-[#D4AF37] font-black uppercase tracking-[0.2em]">Admin</span>
+        <div className="flex items-center gap-3">
+           <img src="/LogoPequeño.png" alt="LumiAds" className="h-10 w-auto" />
+           <img src="/LogoTexto.png" alt="LumiAds" className="h-[40px] w-auto" />
+           <span className="text-[8px] text-[#7C3CFF] font-black uppercase tracking-[0.2em] border-l border-zinc-800 pl-2 ml-1">Admin</span>
         </div>
         <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="text-zinc-400">
           {isOpen ? <X /> : <Menu />}
@@ -49,7 +50,7 @@ export default function AdminMobileNav() {
             <Link 
               href="/admin/soporte" 
               onClick={() => setIsOpen(false)}
-              className="text-2xl font-bold py-4 border-b border-zinc-800 text-[#00d2ff] hover:text-[#00d2ff]/80"
+              className="text-2xl font-bold py-4 border-b border-zinc-800 text-[#7C3CFF] hover:text-[#7C3CFF]/80"
             >
               Soporte Técnico
             </Link>

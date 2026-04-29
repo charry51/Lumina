@@ -1,5 +1,5 @@
 /**
- * LuminAdd — AI Content Validator (Mock Service)
+ * LumiAds — AI Content Validator (Mock Service)
  * Simula la integración con Google Cloud Video Intelligence API
  */
 
@@ -11,7 +11,7 @@ export type IAResult = {
 }
 
 export async function analyzeVideo(videoUrl: string, duration?: number): Promise<IAResult> {
-  console.log(`[LuminAdd IA] Iniciando escaneo de seguridad: ${videoUrl} (${duration}s)`);
+  console.log(`[LumiAds IA] Iniciando escaneo de seguridad: ${videoUrl} (${duration}s)`);
   
   // Simulamos un retraso de procesamiento de red de 2 segundos
   await new Promise(resolve => setTimeout(resolve, 2000));
@@ -22,7 +22,7 @@ export async function analyzeVideo(videoUrl: string, duration?: number): Promise
       status: 'rejected',
       score: 1.0,
       labels: ['policy_violation', 'invalid_duration'],
-      reason: `La duración del video (${Math.round(duration)}s) no cumple con el protocolo LuminAdd (5-30s).`
+      reason: `La duración del video (${Math.round(duration)}s) no cumple con el protocolo LumiAds (5-30s).`
     };
   }
   // --------------------------------------------------
