@@ -10,6 +10,7 @@ type CampaignItem = {
   hora_inicio: string;
   hora_fin: string;
   prioridad: number;
+  dias_semana?: number[];
 }
 
 const OFFLINE_LOG_KEY = 'LumiAds_offline_logs'
@@ -45,10 +46,17 @@ export default function PlaylistRunner({ screenId, playlist }: { screenId: strin
     if (pool.length === 0) return null
     if (pool.length === 1) return pool[0]
 
-    // 1. Filter by valid time range
+    // 1. Filter by valid time range and days of week
     const now = new Date()
+    const currentDay = now.getDay() // 0 = Sunday, 1 = Monday, ...
     const currentMins = now.getHours() * 60 + now.getMinutes()
+    
     const validPool = pool.filter(c => {
+        // Check days of week
+        if (c.dias_semana && Array.isArray(c.dias_semana) && c.dias_semana.length > 0) {
+            if (!c.dias_semana.includes(currentDay)) return false
+        }
+
         if (!c.hora_inicio || !c.hora_fin) return true
         const [hI, mI] = c.hora_inicio.split(':').map(Number)
         const [hF, mF] = c.hora_fin.split(':').map(Number)

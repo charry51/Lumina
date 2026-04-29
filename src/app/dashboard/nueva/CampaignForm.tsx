@@ -43,7 +43,10 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   const [targetType, setTargetType] = useState<ScreenType>('gimnasio')
   const [targetDensity, setTargetDensity] = useState<DensityLevel>('medio')
   
-  // LumiAds v2: Programmatic States
+  // Días de la semana (0=Dom, 1=Lun, ..., 6=Sab)
+  const [selectedDays, setSelectedDays] = useState<number[]>([1, 2, 3, 4, 5]) // Por defecto Lun-Vie
+  
+  // LuminAdd v2: Programmatic States
   const [presupuestoTotal, setPresupuestoTotal] = useState<number>(100)
   const [prioridad, setPrioridad] = useState<number>(1)
   const [duracion, setDuracion] = useState<number>(10)
@@ -69,6 +72,12 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   })
 
   const isPremium = userPlan.toLowerCase().includes('expansión') || userPlan.toLowerCase().includes('dominio')
+
+  const toggleDay = (day: number) => {
+    setSelectedDays(prev => 
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    )
+  }
 
   const toggleScreen = (id: string) => {
     setSelectedMapScreens(prev => 
@@ -174,6 +183,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         hora_fin: (formData.get('hora_fin') as string) || '',
         pantalla_id: (formData.get('pantalla_id') as string) || '',
         pantalla_idsRaw: (formData.get('pantalla_ids') as string) || '',
+        dias_semana: selectedDays,
         presupuesto_total: presupuestoTotal,
         prioridad: prioridad,
         impactos_estimados: impactosEstimados,
@@ -283,6 +293,40 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
           <Label htmlFor="fecha_fin" className="text-muted-foreground font-medium">Fecha de Fin</Label>
           <Input id="fecha_fin" name="fecha_fin" type="date" required disabled={isLoading} className="bg-background border-border text-foreground h-11" />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <Label className="text-muted-foreground font-medium">Días de Emisión</Label>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { id: 1, label: 'Lun', full: 'Lunes' },
+            { id: 2, label: 'Mar', full: 'Martes' },
+            { id: 3, label: 'Mie', full: 'Miércoles' },
+            { id: 4, label: 'Jue', full: 'Jueves' },
+            { id: 5, label: 'Vie', full: 'Viernes' },
+            { id: 6, label: 'Sab', full: 'Sábado' },
+            { id: 0, label: 'Dom', full: 'Domingo' },
+          ].map((day) => {
+            const isSelected = selectedDays.includes(day.id)
+            return (
+              <button
+                key={day.id}
+                type="button"
+                onClick={() => toggleDay(day.id)}
+                className={`
+                  flex-1 min-w-[60px] py-2 rounded-lg border text-[10px] font-bold uppercase tracking-widest transition-all duration-300
+                  ${isSelected 
+                    ? 'bg-[#00d2ff]/20 border-[#00d2ff] text-[#00d2ff] shadow-[0_0_10px_rgba(0,210,255,0.3)]' 
+                    : 'bg-background border-border text-muted-foreground hover:border-[#00d2ff]/50'
+                  }
+                `}
+              >
+                {day.label}
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-[9px] text-muted-foreground font-mono uppercase">Selecciona los días específicos en los que quieres que se emita tu anuncio.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
