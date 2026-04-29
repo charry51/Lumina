@@ -13,9 +13,9 @@ export function ActiveScreensMonitor() {
     // pero presence suele ser abierto o manejado por supabase configs. 
     // Para simplificar, nos conectaremos un canal global 'system_status' donde los screens reportan, 
     // o iteramos canales, pero 'presence' es un único canal compartido a veces.
-    // Vamos a usar un canal compartido 'LuminAddNetwork' para presence en lugar de canales únicos.
+    // Vamos a usar un canal compartido 'LumiAdsNetwork' para presence en lugar de canales únicos.
     
-    const channel = supabase.channel('LuminAddNetwork')
+    const channel = supabase.channel('LumiAdsNetwork')
 
     channel.on('presence', { event: 'sync' }, () => {
       const state = channel.presenceState()

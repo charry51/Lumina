@@ -1,27 +1,27 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Sora, Manrope, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-custom-heading",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-custom-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
 const jetbrains = JetBrains_Mono({
-  variable: "--font-custom-mono",
+  variable: "--font-jetbrains",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "LuminAdd | Inteligencia Digital Signage",
-  description: "Plataforma SaaS avanzada para la gestión dinámica de pantallas publicitarias con LuminAdd.",
+  title: "LumiAds | Inteligencia Digital Signage",
+  description: "Plataforma SaaS avanzada para la gestión dinámica de pantallas publicitarias con LumiAds.",
   icons: {
-    icon: "/logo.png",
+    icon: "/LogoPequeño.png",
   },
   manifest: "/manifest.json",
 };
@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${dmSans.variable} ${spaceGrotesk.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${manrope.variable} ${sora.variable} ${jetbrains.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
@@ -49,4 +49,3 @@ export default function RootLayout({
     </html>
   );
 }
-

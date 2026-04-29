@@ -32,7 +32,7 @@ export function StatusChangeSelect({ ticketId, currentStatus }: { ticketId: stri
 
   return (
     <div className="flex items-center gap-2">
-      {loading && <Loader2 className="w-4 h-4 animate-spin text-[#00d2ff]" />}
+      {loading && <Loader2 className="w-4 h-4 animate-spin text-[#7C3CFF]" />}
       <Select 
         defaultValue={status} 
         onValueChange={(val) => handleStatusChange(val as TicketStatus)}
@@ -40,7 +40,7 @@ export function StatusChangeSelect({ ticketId, currentStatus }: { ticketId: stri
       >
         <SelectTrigger className={`w-[180px] h-10 border-zinc-800 font-bold text-[10px] uppercase tracking-widest transition-all ${
            status === 'PENDIENTE' ? 'bg-amber-500 text-black' :
-           status === 'EN_PROCESO' ? 'bg-[#00d2ff] text-black shadow-[0_0_15px_rgba(0,210,255,0.2)]' :
+           status === 'EN_PROCESO' ? 'bg-[#7C3CFF] text-black shadow-[0_0_15px_rgba(124,60,255,0.2)]' :
            status === 'RESUELTO' ? 'bg-green-500 text-black' :
            'bg-zinc-800 text-zinc-400'
         }`}>

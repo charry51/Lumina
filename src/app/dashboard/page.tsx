@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { logout } from '@/app/login/actions'
 import { DeleteCampaignButton } from './DeleteCampaignButton'
-import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, LifeBuoy } from 'lucide-react'
+import { BarChart3, PieChart, Target, TrendingUp, Zap, ZapOff, Monitor, DollarSign, ShieldAlert, LifeBuoy, Plus } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -81,17 +81,13 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 font-sans">
-      <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-6">
-        <div className="flex items-center gap-4">
-          <img src="/logo.png" alt="LuminAdd Logo" className="h-10 w-auto" />
-          <div className="pt-2">
-            <h1 className="text-3xl font-heading uppercase tracking-tighter text-gradient-cyan font-black">LuminAdd</h1>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-[#D4AF37] font-mono uppercase tracking-[2px] font-bold">Protocolo V2 • {profile?.planes?.nombre || 'Básico'}</span>
-            </div>
-          </div>
+      <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-border pb-6">
+        <div className="flex items-center gap-2">
+          <img src="/LogoPequeño.png" alt="LumiAds Logo" className="h-[80px] w-auto" />
+          <img src="/LogoTexto.png" alt="LumiAds" className="h-[100px] w-auto" />
         </div>
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end w-full sm:w-auto">
+
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end w-full md:w-auto">
           {['superadmin', 'comercial', 'gestor_local'].includes(profile?.rol || '') && (
             <Link href="/admin">
                <Button variant="outline" className="border-red-500/30 text-red-500 hover:bg-red-500/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
@@ -108,20 +104,21 @@ export default async function DashboardPage() {
           </Link>
 
           <Link href="/host/dashboard">
-             <Button variant="outline" className="border-[#00d2ff]/30 text-[#00d2ff] hover:bg-[#00d2ff]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
-                <Monitor className="w-3 h-3" />
+             <Button variant="outline" className="border-border hover:bg-muted flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-4">
+                <Monitor className="w-4 h-4" />
                 Panel de Host
              </Button>
           </Link>
           
           <Link href="/dashboard/nueva">
-            <button className="cyber-button-cyan transition-all text-[10px] uppercase font-black tracking-widest px-5 py-2">
-               + Nueva Emisión
-            </button>
+             <Button className="cyber-button-ui flex gap-2 items-center text-[10px] uppercase font-black tracking-widest px-6">
+                <Plus className="w-4 h-4" />
+                Nueva Emisión
+             </Button>
           </Link>
           {profile?.rol === 'cliente' && (
             <Link href="/dashboard/soporte">
-               <Button variant="outline" className="border-[#00d2ff]/30 text-[#00d2ff] hover:bg-[#00d2ff]/5 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3 transition-shadow hover:shadow-[0_0_10px_rgba(0,210,255,0.1)]">
+               <Button variant="outline" className="border-border hover:bg-muted flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
                   <LifeBuoy className="w-3 h-3" />
                   Soporte Técnico
                </Button>
@@ -134,84 +131,98 @@ export default async function DashboardPage() {
       </header>
 
       {/* STATS BANNER */}
-      <div className="cyber-glass-cyan p-8 grid grid-cols-2 md:grid-cols-4 gap-8 relative overflow-hidden bg-card/50 backdrop-blur-md border-border shadow-sm">
-        <div className="cyber-glass-cyan p-4 flex items-center justify-between transition-all duration-500">
+      <div className="cyber-glass-ui p-8 grid grid-cols-2 md:grid-cols-4 gap-8 relative overflow-hidden bg-card/50 backdrop-blur-md border-border shadow-sm">
+        <div className="cyber-glass-ui p-4 flex items-center justify-between transition-all duration-500">
           <div>
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">Impactos Totales</p>
             <p className="text-2xl font-heading text-foreground">{totalImpactos.toLocaleString()}</p>
           </div>
-          <Zap className="text-primary w-8 h-8 opacity-50" />
+          <Zap className="text-lumi-blue dark:text-[#2BC8FF] w-8 h-8" />
         </div>
-        <div className="cyber-glass-gold p-4 flex items-center justify-between transition-all duration-500">
+        <div className="cyber-glass-ui p-4 flex items-center justify-between transition-all duration-500">
           <div>
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">Presupuesto Activo</p>
             <p className="text-2xl font-heading text-foreground">{totalPresupuesto.toFixed(2)}€</p>
           </div>
-          <DollarSign className="text-amber-600 dark:text-[#D4AF37] w-8 h-8 opacity-50" />
+          <DollarSign className="text-lumi-violet dark:text-[#7C3CFF] w-8 h-8" />
         </div>
-        <div className="cyber-glass-cyan p-4 flex items-center justify-between transition-all duration-500">
+        <div className="cyber-glass-ui p-4 flex items-center justify-between transition-all duration-500">
           <div>
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">Campaña Activas</p>
             <p className="text-2xl font-heading text-foreground dark:text-white">{campañasActivas}</p>
           </div>
-          <Target className="text-primary w-8 h-8 opacity-50" />
+          <Target className="text-lumi-blue dark:text-[#2BC8FF] w-8 h-8" />
         </div>
-        <div className="cyber-glass-gold p-4 flex items-center justify-between transition-all duration-500">
+        <div className="cyber-glass-ui p-4 flex items-center justify-between transition-all duration-500">
           <div>
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1 font-mono">eCPM Promedio</p>
             <p className="text-2xl font-heading text-foreground dark:text-white">50.00€</p>
           </div>
-          <TrendingUp className="text-amber-600 dark:text-[#D4AF37] w-8 h-8 opacity-50" />
+          <TrendingUp className="text-lumi-violet dark:text-[#7C3CFF] w-8 h-8" />
         </div>
       </div>
       
       <div className="mb-12">
-        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient-cyan">
-           <Monitor className="w-5 h-5" />
+        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient-ui">
+           <Monitor className="w-5 h-5 text-lumi-blue dark:text-[#2BC8FF]" />
            Red de Pantallas
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {pantallas && pantallas.length > 0 ? (
-            pantallas.map((pantalla: any) => (
-              <div key={pantalla.id} className="cyber-card p-6 flex flex-col justify-between group h-full">
-                <div className="mb-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {/* Placeholder for host navigation logic */}
-                    </div>
-                    <h3 className="text-lg font-heading text-foreground dark:text-zinc-100 group-hover:text-primary transition-colors uppercase">{pantalla.nombre}</h3>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded-full tracking-tighter ${
-                        pantalla.estado === 'activa' 
-                          ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border border-zinc-200 dark:border-zinc-700'
-                      }`}>
-                        {pantalla.estado}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground font-sans line-clamp-1">{pantalla.ubicacion}</p>
-                </div>
-                
-                <div className="flex justify-between items-center mt-4">
-                  <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
-                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span>{pantalla.ciudad}</span>
-                  </div>
-
-                  <Link href={`/player/${pantalla.id}`} target="_blank">
-                    <Button variant="outline" size="sm" className="h-7 text-[9px] uppercase font-bold border-primary/20 text-primary hover:bg-primary hover:text-white transition-all">
-                      Ver en Vivo
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))
+            pantallas.map((pantalla: any, idx: number) => {
+               const isEven = idx % 2 === 0;
+               const accentColor = isEven ? '#7C3CFF' : '#2BC8FF';
+               const accentClass = isEven ? 'text-lumi-violet' : 'text-lumi-blue';
+               
+               return (
+                 <div key={pantalla.id} className="cyber-card p-6 flex flex-col justify-between group h-full transition-all hover:border-zinc-700">
+                   <div className="mb-4">
+                     <div className="flex justify-between items-start mb-2">
+                       <div className="flex flex-wrap gap-2 justify-center">
+                         {/* Placeholder for host navigation logic */}
+                       </div>
+                       <h3 className={`text-lg font-heading text-foreground dark:text-zinc-100 transition-colors uppercase ${isEven ? 'group-hover:text-lumi-violet' : 'group-hover:text-lumi-blue'}`}>{pantalla.nombre}</h3>
+                       <div className="flex flex-col items-end gap-1">
+                         <span className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded-full tracking-tighter ${
+                           pantalla.estado === 'activa' 
+                             ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
+                             : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border border-zinc-200 dark:border-zinc-700'
+                         }`}>
+                           {pantalla.estado}
+                         </span>
+                       </div>
+                     </div>
+                     <p className="text-xs text-muted-foreground font-sans line-clamp-1">{pantalla.ubicacion}</p>
+                   </div>
+                   
+                   <div className="flex justify-between items-center mt-4">
+                     <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
+                       <span className={`w-2 h-2 rounded-full animate-pulse ${isEven ? 'bg-lumi-violet' : 'bg-lumi-blue'}`} style={{ backgroundColor: accentColor }} />
+                       <span>{pantalla.ciudad}</span>
+                     </div>
+   
+                     <Link href={`/player/${pantalla.id}`} target="_blank">
+                       <Button 
+                         variant="outline" 
+                         size="sm" 
+                         className="h-7 text-[9px] uppercase font-bold transition-all"
+                         style={{ 
+                            borderColor: `${accentColor}33`, 
+                            color: accentColor 
+                         }}
+                       >
+                         Ver en Vivo
+                       </Button>
+                     </Link>
+                   </div>
+                 </div>
+               )
+            })
           ) : (
-            <div className="col-span-full py-16 text-center cyber-card border-dashed bg-primary/5 border-primary/20">
-              <p className="text-primary font-heading uppercase text-sm mb-2">Sin pantallas activas</p>
-              <Link href="/host/dashboard">
-                <Button size="sm" className="cyber-button-cyan mt-4 shadow-lg shadow-primary/10">Vincular mi TV ahora</Button>
+            <div className="col-span-full py-16 text-center cyber-card border-dashed bg-lumi-blue/5 border-lumi-blue/20">
+              <p className="text-lumi-blue dark:text-[#2BC8FF] font-heading uppercase text-sm mb-2">Sin pantallas activas</p>
+              <Link href="/vincular">
+                <Button size="sm" className="bg-[#2BC8FF] hover:bg-[#2BC8FF]/80 text-black mt-4 shadow-lg shadow-[#2BC8FF]/10 text-xs font-bold uppercase tracking-widest px-6 py-2">Vincular mi TV ahora</Button>
               </Link>
             </div>
           )}
@@ -219,8 +230,8 @@ export default async function DashboardPage() {
       </div>
 
       <div>
-        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient-gold">
-           <BarChart3 className="w-5 h-5" />
+        <h2 className="text-xl font-heading mb-6 flex items-center gap-2 uppercase tracking-widest text-sm text-gradient-ui">
+           <BarChart3 className="w-5 h-5 text-lumi-violet dark:text-[#7C3CFF]" />
            Rendimiento de Campañas
         </h2>
         <div className="responsive-table-container cyber-card shadow-2xl overflow-hidden bg-card border-border transition-all duration-500">
@@ -249,7 +260,7 @@ export default async function DashboardPage() {
                       </td>
                       <td className="px-6 py-4 text-zinc-400 text-xs">
                         <div className="flex items-center gap-2">
-                          <Monitor className="w-3 h-3 text-[#00d2ff]" />
+                          <Monitor className="w-3 h-3 text-[#2BC8FF]" />
                           {camp.pantallas?.nombre || 'Red Global'}
                         </div>
                       </td>
@@ -257,14 +268,14 @@ export default async function DashboardPage() {
                         <div className="flex items-center gap-4">
                           <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden border border-white/5">
                             <div 
-                              className="h-full bg-gradient-to-r from-[#00d2ff] to-[#D4AF37] transition-all duration-1000" 
+                              className="h-full bg-gradient-to-r from-[#2BC8FF] to-[#7C3CFF] transition-all duration-1000" 
                               style={{ width: `${deliveryPercent}%` }}
                             />
                           </div>
                            <span className="text-[10px] font-mono text-foreground w-12 text-right">{deliveryPercent}%</span>
                         </div>
                         <div className="flex justify-between mt-2">
-                           <span className="text-[9px] text-[#00d2ff] uppercase font-bold">{camp.impactos_reales || 0}</span>
+                           <span className="text-[9px] text-[#2BC8FF] uppercase font-bold">{camp.impactos_reales || 0}</span>
                            <span className="text-[9px] text-zinc-600 uppercase">Meta: {camp.impactos_estimados || 0} Visualizaciones</span>
                         </div>
                       </td>
@@ -293,7 +304,7 @@ export default async function DashboardPage() {
             <div className="p-12 text-center">
               <p className="text-muted-foreground italic mb-6 text-sm">No tienes ninguna campaña activa.</p>
               <Link href="/dashboard/nueva">
-                <button className="cyber-button-cyan shadow-[0_0_20px_rgba(0,210,255,0.2)]">Crear Primera Campaña</button>
+                <button className="cyber-button-ui shadow-[0_0_20px_rgba(124,60,255,0.2)]">Crear Primera Campaña</button>
               </Link>
             </div>
           )}

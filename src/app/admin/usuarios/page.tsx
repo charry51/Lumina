@@ -50,7 +50,7 @@ export default async function UserManagementPage({
                   name="q"
                   defaultValue={searchQuery}
                   placeholder="Buscar por nombre o correo..." 
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-zinc-100 outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-zinc-100 outline-none focus:ring-1 focus:ring-[#7C3CFF] transition-all"
                 />
              </form>
              <div className="flex gap-2">
@@ -84,7 +84,7 @@ export default async function UserManagementPage({
                     </td>
                     <td className="px-6 py-4">
                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                         user.rol === 'superadmin' ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 
+                         user.rol === 'superadmin' ? 'bg-[#7C3CFF]/10 text-[#7C3CFF]' : 
                          user.rol === 'comercial' ? 'bg-blue-500/10 text-blue-400' :
                          user.rol === 'gestor_local' ? 'bg-purple-500/10 text-purple-400' :
                          'bg-zinc-500/10 text-zinc-400'

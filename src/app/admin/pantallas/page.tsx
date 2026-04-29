@@ -17,7 +17,7 @@ export default async function AdminPantallasPage() {
     <div className="p-8 font-sans">
       <header className="mb-8 flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-100 uppercase tracking-tighter italic">RED DE <span className="text-[#D4AF37] NOT-italic">PANTALLAS</span></h1>
+          <h1 className="text-3xl font-bold text-zinc-100 uppercase tracking-tighter italic">RED DE <span className="text-[#7C3CFF] NOT-italic">PANTALLAS</span></h1>
           <p className="text-zinc-500 text-xs uppercase tracking-widest mt-1">Gestión centralizada del inventario físico global.</p>
         </div>
         <NuevaPantallaForm />

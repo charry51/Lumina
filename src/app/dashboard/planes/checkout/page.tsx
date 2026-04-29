@@ -63,14 +63,14 @@ export default function CheckoutPage() {
 
   return (
     <div className="flex items-center justify-center min-h-[90vh] p-4 bg-background font-sans text-foreground">
-      <div className="cyber-card w-full max-w-md overflow-hidden relative border-primary/30 shadow-[0_0_50px_rgba(0,210,255,0.1)]">
+      <div className="cyber-card w-full max-w-md overflow-hidden relative border-primary/30 shadow-[0_0_50px_rgba(124,60,255,0.1)]">
         <div className="bg-[#1a1a2e]/80 p-8 border-b border-border flex items-center justify-between">
           <div>
             <p className="text-primary text-[10px] uppercase font-mono tracking-[4px] mb-1">Terminal de Pago</p>
             <h2 className="text-3xl font-heading text-zinc-100 uppercase tracking-tight">{planId.replace('_', ' ')}</h2>
           </div>
           <div className="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center bg-primary/5">
-            <CreditCard className="w-6 h-6 text-primary shadow-[0_0_10px_rgba(0,210,255,0.5)]" />
+            <CreditCard className="w-6 h-6 text-primary shadow-[0_0_10px_rgba(124,60,255,0.5)]" />
           </div>
         </div>
         
@@ -115,7 +115,7 @@ export default function CheckoutPage() {
 
         <div className="p-8 pt-0 flex flex-col gap-6">
           <button 
-            className={`cyber-button-cyan w-full py-4 text-xs font-black uppercase tracking-[3px] shadow-lg shadow-primary/10 flex items-center justify-center gap-3 ${loading ? 'opacity-70 cursor-wait' : ''}`}
+            className={`cyber-button-ui w-full py-4 text-xs font-black uppercase tracking-[3px] shadow-lg shadow-primary/10 flex items-center justify-center gap-3 ${loading ? 'opacity-70 cursor-wait' : ''}`}
             onClick={handlePayment}
             disabled={loading}
           >

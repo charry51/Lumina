@@ -67,7 +67,7 @@ export function SupportReplyForm({ ticketId, esAdmin = false }: { ticketId: stri
           placeholder="Escribe tu respuesta aquí..."
           value={mensaje}
           onChange={(e) => setMensaje(e.target.value)}
-          className="bg-zinc-900/50 border-zinc-800 min-h-[100px] text-sm focus-visible:ring-[#00d2ff] transition-all resize-none"
+          className="bg-zinc-900/50 border-zinc-800 min-h-[100px] text-sm focus-visible:ring-[#7C3CFF] transition-all resize-none"
         />
         
         <div className="absolute bottom-3 right-3 flex items-center gap-2">
@@ -80,7 +80,7 @@ export function SupportReplyForm({ ticketId, esAdmin = false }: { ticketId: stri
            />
            <label 
               htmlFor="reply-photo"
-              className={`p-2 rounded-lg cursor-pointer hover:bg-zinc-800 transition-all ${archivoUrl ? 'text-[#00d2ff] bg-[#00d2ff]/10' : 'text-zinc-500'}`}
+              className={`p-2 rounded-lg cursor-pointer hover:bg-zinc-800 transition-all ${archivoUrl ? 'text-[#7C3CFF] bg-[#7C3CFF]/10' : 'text-zinc-500'}`}
            >
               {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
            </label>
@@ -88,7 +88,7 @@ export function SupportReplyForm({ ticketId, esAdmin = false }: { ticketId: stri
            <Button 
                 onClick={handleSend}
                 disabled={loading || !mensaje.trim()} 
-                className="bg-[#00d2ff] text-black hover:bg-[#00d2ff]/90 h-9 px-4 font-black uppercase tracking-widest text-[9px]"
+                className="bg-[#7C3CFF] text-black hover:bg-[#7C3CFF]/90 h-9 px-4 font-black uppercase tracking-widest text-[9px]"
             >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-3 h-3 mr-2" /> Enviar</>}
             </Button>
@@ -96,9 +96,9 @@ export function SupportReplyForm({ ticketId, esAdmin = false }: { ticketId: stri
       </div>
 
       {archivoUrl && (
-        <div className="flex items-center justify-between p-2 bg-[#00d2ff]/5 border border-[#00d2ff]/20 rounded-lg">
+        <div className="flex items-center justify-between p-2 bg-[#7C3CFF]/5 border border-[#7C3CFF]/20 rounded-lg">
            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded overflow-hidden border border-[#00d2ff]/30">
+              <div className="w-8 h-8 rounded overflow-hidden border border-[#7C3CFF]/30">
                  <img src={archivoUrl} className="w-full h-full object-cover" />
               </div>
               <span className="text-[10px] text-zinc-400 font-mono italic">Imagen adjunta lista para enviar</span>

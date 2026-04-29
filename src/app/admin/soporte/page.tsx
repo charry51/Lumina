@@ -49,7 +49,7 @@ export default async function AdminSupportPage() {
             <div className="w-px h-8 bg-zinc-800" />
             <div className="text-center">
                <p className="text-[8px] text-zinc-500 uppercase font-mono mb-1">En Proceso</p>
-               <p className="text-xl font-heading text-[#00d2ff]">{inProgressCount}</p>
+               <p className="text-xl font-heading text-[#7C3CFF]">{inProgressCount}</p>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default async function AdminSupportPage() {
                   <div className="flex items-center gap-3 mb-3">
                     <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter ${
                       ticket.estado === 'PENDIENTE' ? 'bg-amber-500 text-black' :
-                      ticket.estado === 'EN_PROCESO' ? 'bg-[#00d2ff] text-black' :
+                      ticket.estado === 'EN_PROCESO' ? 'bg-[#7C3CFF] text-black' :
                       ticket.estado === 'RESUELTO' ? 'bg-green-500 text-black' :
                       'bg-zinc-800 text-zinc-400'
                     }`}>
@@ -78,7 +78,7 @@ export default async function AdminSupportPage() {
                     </span>
                     <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter ${
                       ticket.prioridad === 'URGENTE' ? 'bg-red-600 text-white animate-pulse' :
-                      ticket.prioridad === 'ALTA' ? 'bg-amber-700/50 text-amber-200' :
+                      ticket.prioridad === 'ALTA' ? 'bg-lumi-magenta/50 text-amber-200' :
                       'bg-zinc-800/50 text-zinc-500'
                     }`}>
                       {ticket.prioridad}
@@ -86,7 +86,7 @@ export default async function AdminSupportPage() {
                     <span className="text-[10px] text-zinc-500 font-mono">#{ticket.id.slice(0, 5)}</span>
                   </div>
                   
-                  <h3 className="text-xl font-heading text-white uppercase truncate mb-2 group-hover:text-[#00d2ff] transition-colors">{ticket.asunto}</h3>
+                  <h3 className="text-xl font-heading text-white uppercase truncate mb-2 group-hover:text-[#7C3CFF] transition-colors">{ticket.asunto}</h3>
                   
                   <div className="flex flex-wrap items-center gap-4 text-xs">
                     <div className="flex items-center gap-1.5 text-zinc-300 bg-zinc-900/80 px-2 py-1 rounded">
@@ -106,8 +106,8 @@ export default async function AdminSupportPage() {
                      <p className="text-[9px] text-zinc-600 uppercase font-bold tracking-widest mb-1">Categoría</p>
                      <p className="text-xs text-zinc-400 font-heading italic uppercase">{ticket.categoria}</p>
                   </div>
-                  <div className="w-12 h-12 rounded-full border border-zinc-800 flex items-center justify-center group-hover:bg-[#00d2ff]/10 group-hover:border-[#00d2ff]/50 transition-all">
-                     <ArrowUpRight className="w-5 h-5 text-zinc-500 group-hover:text-[#00d2ff]" />
+                  <div className="w-12 h-12 rounded-full border border-zinc-800 flex items-center justify-center group-hover:bg-[#7C3CFF]/10 group-hover:border-[#7C3CFF]/50 transition-all">
+                     <ArrowUpRight className="w-5 h-5 text-zinc-500 group-hover:text-[#7C3CFF]" />
                   </div>
                 </div>
               </div>

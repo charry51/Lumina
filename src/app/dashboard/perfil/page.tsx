@@ -45,19 +45,19 @@ export default async function PerfilPage() {
             </div>
         </div>
 
-        <h1 className="text-4xl font-heading font-black uppercase tracking-tighter mb-12 text-gradient-cyan">Mi Perfil</h1>
+        <h1 className="text-4xl font-heading font-black uppercase tracking-tighter mb-12 text-gradient-ui">Mi Perfil</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           
           {/* Columna Izquierda: Info Usuario */}
           <div className="md:col-span-1 space-y-6">
             <div className="cyber-card p-6 bg-zinc-900/50 dark:bg-zinc-900/50 light:bg-white light:border-slate-100 transition-all duration-500 shadow-sm light:shadow-slate-200/50">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary p-0.5 mb-4 shadow-[0_0_20px_rgba(0,210,255,0.2)]">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary p-0.5 mb-4 shadow-[0_0_20px_rgba(124,60,255,0.2)]">
                     <div className="w-full h-full bg-zinc-950 rounded-[inherit] flex items-center justify-center">
                         <User className="w-8 h-8 text-primary" />
                     </div>
                 </div>
-                <h2 className="text-xl font-heading font-bold text-white mb-1 uppercase tracking-tight">{profile?.nombre_empresa || profile?.nombre || 'Usuario LuminAdd'}</h2>
+                <h2 className="text-xl font-heading font-bold text-white mb-1 uppercase tracking-tight">{profile?.nombre_empresa || profile?.nombre || 'Usuario LumiAds'}</h2>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
                     <Mail className="w-3 h-3" />
                     {user.email}

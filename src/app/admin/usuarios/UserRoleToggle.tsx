@@ -37,7 +37,7 @@ export function UserRoleToggle({ userId, currentRole }: { userId: string, curren
         value={role}
         onChange={(e) => handleChange(e.target.value)}
         disabled={loading}
-        className="bg-zinc-800 border border-zinc-700 text-xs text-zinc-100 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-[#D4AF37] disabled:opacity-50 appearance-none pr-8 min-w-[120px]"
+        className="bg-zinc-800 border border-zinc-700 text-xs text-zinc-100 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-[#7C3CFF] disabled:opacity-50 appearance-none pr-8 min-w-[120px]"
       >
         {roles.map((r) => (
           <option key={r.value} value={r.value}>

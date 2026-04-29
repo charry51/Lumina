@@ -76,7 +76,7 @@ export function NuevaPantallaForm() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger 
         render={
-          <Button className="bg-[#D4AF37] text-black hover:bg-[#b08d24] font-bold">
+          <Button className="bg-[#7C3CFF] text-black hover:bg-[#C94BFF] font-bold">
             + Añadir Pantalla
           </Button>
         } 
@@ -201,7 +201,7 @@ export function NuevaPantallaForm() {
                   </button>
               </div>
             </div>
-            <Button type="submit" className="w-full bg-[#D4AF37] text-black hover:bg-[#b08d24] font-black uppercase tracking-widest" disabled={loading}>
+            <Button type="submit" className="w-full bg-[#7C3CFF] text-black hover:bg-[#C94BFF] font-black uppercase tracking-widest" disabled={loading}>
               {loading ? 'Guardando...' : 'Añadir a Inventario'}
             </Button>
           </form>

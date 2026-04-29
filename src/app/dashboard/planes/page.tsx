@@ -36,7 +36,7 @@ export default async function PlanesPage() {
           }`}>
             {profile?.plan_id === plan.id && (
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-full flex justify-center">
-                <span className="bg-primary text-black text-[9px] uppercase font-black px-4 py-1.5 rounded-full tracking-[2px] shadow-[0_0_20px_rgba(0,210,255,0.3)]">
+                <span className="bg-primary text-black text-[9px] uppercase font-black px-4 py-1.5 rounded-full tracking-[2px] shadow-[0_0_20px_rgba(124,60,255,0.3)]">
                   Tu Plan Actual
                 </span>
               </div>
@@ -61,11 +61,11 @@ export default async function PlanesPage() {
             <div className="flex-1 mb-8">
               <ul className="space-y-3 text-[11px] font-mono uppercase tracking-tight text-zinc-400">
                 <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(0,210,255,0.8)]"></span>
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(124,60,255,0.8)]"></span>
                   {plan.id === 'dominio' ? 'Pantallas Ilimitadas' : `${plan.max_pantallas} Nodos de pantalla`}
                 </li>
-                <li className="flex items-center gap-2 text-[#00d2ff] font-bold">
-                  <span className="w-1.5 h-1.5 bg-[#00d2ff] rounded-full"></span>
+                <li className="flex items-center gap-2 text-[#7C3CFF] font-bold">
+                  <span className="w-1.5 h-1.5 bg-[#7C3CFF] rounded-full"></span>
                   Frecuencia {plan.frecuencia_relativa}x 
                   <span className="text-[8px] opacity-70 ml-1">
                     ({plan.id === 'presencia' ? '1 cada 2 bucles' : 
@@ -97,7 +97,7 @@ export default async function PlanesPage() {
                 </button>
               ) : (
                 <Link href={`/dashboard/planes/checkout?plan=${plan.id}`} className="w-full">
-                  <button className="cyber-button-cyan w-full text-[11px] font-black uppercase tracking-[2px]">
+                  <button className="cyber-button-ui w-full text-[11px] font-black uppercase tracking-[2px]">
                     Contratar Plan
                   </button>
                 </Link>

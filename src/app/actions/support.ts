@@ -63,12 +63,12 @@ export async function createSupportTicket(formData: FormData) {
         const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
 
         await resend.emails.send({
-          from: `LuminAdd Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          from: `LumiAds Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
           to: toEmail,
           subject: `NEW TICKET: [${categoria}] ${asunto}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #00d2ff;">Nuevo Ticket de Soporte (LuminAdd)</h2>
+              <h2 style="color: #7C3CFF;">Nuevo Ticket de Soporte (LumiAds)</h2>
               <p><strong>Usuario ID:</strong> ${user.id}</p>
               <p><strong>Categoría:</strong> ${categoria}</p>
               <p><strong>Prioridad:</strong> ${prioridad}</p>
@@ -77,7 +77,7 @@ export async function createSupportTicket(formData: FormData) {
               <p><strong>Mensaje:</strong></p>
               <p style="white-space: pre-wrap;">${mensajeInitial}</p>
               <br />
-              <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/soporte/${ticket.id}" style="background: #00d2ff; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Responder en Panel Admin</a>
+              <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/soporte/${ticket.id}" style="background: #7C3CFF; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Responder en Panel Admin</a>
             </div>
           `
         })
@@ -144,20 +144,20 @@ export async function replyToSupportTicket(
         const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : ticket.perfiles.email;
 
         await resend.emails.send({
-          from: `LuminAdd Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+          from: `LumiAds Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
           to: toEmail,
-          replyTo: 'soporte@LuminAdd.com',
+          replyTo: 'soporte@LumiAds.com',
           subject: `Re: [Soporte #${ticketId.slice(0, 5)}] ${ticket.asunto}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #00d2ff;">Nueva respuesta de LuminAdd</h2>
+              <h2 style="color: #7C3CFF;">Nueva respuesta de LumiAds</h2>
               <p>Hola ${ticket.perfiles.nombre_empresa || 'Cliente'},</p>
               <p>Nuestro equipo técnico ha respondido a tu consulta:</p>
-              <blockquote style="border-left: 4px solid #00d2ff; padding-left: 15px; margin: 20px 0; font-style: italic;">
+              <blockquote style="border-left: 4px solid #7C3CFF; padding-left: 15px; margin: 20px 0; font-style: italic;">
                 ${mensaje}
               </blockquote>
               <p>Puedes ver toda la conversación y responder desde tu panel:</p>
-              <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/dashboard/soporte/${ticketId}" style="background: #00d2ff; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Ir al Ticket</a>
+              <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/dashboard/soporte/${ticketId}" style="background: #7C3CFF; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Ir al Ticket</a>
             </div>
           `
         })
@@ -177,17 +177,17 @@ export async function replyToSupportTicket(
             const toEmail = isSandbox ? (process.env.ADMIN_EMAIL || 'francharrielromero@gmail.com') : adminEmail;
 
             await resend.emails.send({
-              from: `LuminAdd Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
+              from: `LumiAds Support <${process.env.RESEND_DOMAIN || 'onboarding@resend.dev'}>`,
               to: toEmail,
               subject: `REPLY: Support #${ticketId.slice(0, 5)}`,
               html: `
                 <div style="font-family: sans-serif; padding: 20px; color: #333;">
-                   <h2 style="color: #00d2ff;">El usuario ha respondido en LuminAdd</h2>
+                   <h2 style="color: #7C3CFF;">El usuario ha respondido en LumiAds</h2>
                    <p><strong>Ticket ID:</strong> ${ticketId}</p>
                    <p><strong>Mensaje:</strong></p>
                    <p style="white-space: pre-wrap;">${mensaje}</p>
                    <br />
-                   <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/soporte/${ticketId}" style="background: #00d2ff; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Ir a Consultas</a>
+                   <a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/admin/soporte/${ticketId}" style="background: #7C3CFF; color: black; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">Ir a Consultas</a>
                 </div>
               `
             })

@@ -10,21 +10,19 @@ export default async function Home() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="dark min-h-screen bg-black flex flex-col selection:bg-[#D4AF37] selection:text-black">
+    <div className="dark min-h-screen bg-black flex flex-col selection:bg-lumi-violet selection:text-white">
       {/* Navigation Header */}
       <header className="fixed top-0 left-0 w-full z-[100] border-b border-white/[0.05] bg-black/50 backdrop-blur-md">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="container mx-auto px-6 h-32 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-             <div className="w-8 h-8 bg-gradient-to-tr from-[#D4AF37] to-[#f1c40f] rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-                <Monitor className="w-4 h-4 text-black" />
-             </div>
-             <span className="text-xl font-heading font-medium tracking-tighter text-white">LuminAdd</span>
+             <img src="/LogoPequeño.png" alt="LumiAds Icon" className="h-[80px] w-auto group-hover:scale-110 transition-transform" />
+             <img src="/LogoTexto.png" alt="LumiAds Brand" className="h-[100px] w-auto hidden sm:block" />
           </Link>
           
           <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-500">
-             <Link href="#features" className="hover:text-[#D4AF37] transition-colors">Funciones</Link>
-             <Link href="#impact" className="hover:text-[#D4AF37] transition-colors">Impacto</Link>
-             <Link href="#pricing" className="hover:text-[#D4AF37] transition-colors">Programático</Link>
+             <Link href="#features" className="hover:text-lumi-violet transition-colors">Funciones</Link>
+             <Link href="#impact" className="hover:text-lumi-violet transition-colors">Impacto</Link>
+             <Link href="#pricing" className="hover:text-lumi-violet transition-colors">Programático</Link>
           </div>
 
           <div>
@@ -48,13 +46,13 @@ export default async function Home() {
         
         {/* CTA Final */}
         <section className="py-32 bg-black text-center relative overflow-hidden">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-[#D4AF37]/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-lumi-violet/10 rounded-full blur-[100px] pointer-events-none" />
             <div className="container mx-auto px-4 max-w-4xl relative z-10">
                <h2 className="text-4xl md:text-6xl font-heading text-white tracking-tighter mb-8 leading-tight">
                   ¿Listo para dominar <br />
-                  <span className="text-gradient-gold">el OOH Programático?</span>
+                  <span className="text-gradient-ui">el OOH Programático?</span>
                </h2>
-               <Link href="/register" className="cyber-button-gold inline-block">
+               <Link href="/register" className="cyber-button-ui inline-block">
                   Crear Mi Cuenta Ahora
                </Link>
             </div>
@@ -63,8 +61,9 @@ export default async function Home() {
 
       <footer className="py-12 border-t border-white/5 bg-black">
          <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-[10px] uppercase tracking-widest font-bold text-zinc-600">
-            <div className="flex items-center gap-2">
-               <span className="text-zinc-300">© 2026 LuminAdd</span>
+            <div className="flex items-center gap-4">
+               <img src="/LogoPequeño.png" alt="LumiAds" className="h-4 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all" />
+               <span className="text-zinc-300">© 2026 <img src="/LogoTexto.png" alt="LumiAds" className="h-3 w-auto inline-block mx-1" /></span>
                <span>•</span>
                <span>Digital Signage Intelligence</span>
             </div>
