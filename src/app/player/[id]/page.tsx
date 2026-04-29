@@ -31,7 +31,8 @@ export default async function PlayerPage({
         hora_fin, 
         prioridad, 
         impactos_estimados, 
-        impactos_reales
+        impactos_reales,
+        dias_semana
     `)
     .or(`pantalla_id.eq.${id},pantalla_id.is.null`)
     .in('estado', ['aprobada', 'pre_aprobada'])
@@ -57,7 +58,8 @@ export default async function PlayerPage({
             url_video: c.url_video,
             hora_inicio: c.hora_inicio,
             hora_fin: c.hora_fin,
-            prioridad: c.prioridad || 1
+            prioridad: c.prioridad || 1,
+            dias_semana: c.dias_semana
         }))} 
       />
     </main>
