@@ -127,7 +127,7 @@ export function NewTicketDialog() {
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Clasificación LumiAds AI</span>
+              <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Clasificación LuminAdd AI</span>
               {isAnalyzing && <Loader2 className="w-3 h-3 text-[#7C3CFF] animate-spin" />}
             </div>
             
@@ -233,5 +233,6 @@ export function NewTicketDialog() {
     </Dialog>
   )
 }
+
 
 

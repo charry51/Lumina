@@ -35,7 +35,7 @@ export default async function AdminDashboardPage() {
   }, {})
 
   // 2. Obtener todas las campañas para cálculos financieros (idealmente en un entorno grande esto se haría en SQL con SUM, 
-  // pero para LumiAds en fase inicial es perfecto para procesarlo aquí)
+  // pero para LuminAdd en fase inicial es perfecto para procesarlo aquí)
   const { data: allCampanas } = await adminClient
     .from('campanas')
     .select('id, nombre_campana, estado, fecha_inicio, presupuesto_total, precio_pactado')
@@ -55,7 +55,7 @@ export default async function AdminDashboardPage() {
     })
   }
 
-  // Modelado de negocio LumiAds:
+  // Modelado de negocio LuminAdd:
   // - 60% se paga a los anfitriones (dueños de pantallas)
   // - 15% costes de infraestructura, APIs de IA y pasarela de pago
   // - 25% Margen de beneficio neto
@@ -169,7 +169,7 @@ export default async function AdminDashboardPage() {
         </Card>
       </div>
 
-      {/* ROW 2: ESTADO DE RED LumiAds & USUARIOS */}
+      {/* ROW 2: ESTADO DE RED LuminAdd & USUARIOS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="bg-zinc-900/30 border-zinc-800/40 col-span-1 lg:col-span-2">
           <CardHeader className="pb-4 border-b border-zinc-800/50 flex flex-row items-center justify-between">
@@ -347,5 +347,6 @@ export default async function AdminDashboardPage() {
     </div>
   )
 }
+
 
 

@@ -215,7 +215,7 @@ export function PairingForm() {
       <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
         <p className="text-[10px] text-primary font-mono uppercase tracking-widest flex items-center gap-2">
           <Tv className="w-3 h-3" />
-          Enciende la TV y abre <strong>LumiAds.app/vincular</strong> en el navegador.
+          Enciende la TV y abre <strong>LuminAdd.app/vincular</strong> en el navegador.
           Verás un código de 6 caracteres. Introdúcelo aquí.
         </p>
       </div>
@@ -257,7 +257,7 @@ export function PairingForm() {
         </div>
       </div>
 
-      {/* LumiAds v3.0: Categorización Categoría y Densidad */}
+      {/* LuminAdd v3.0: Categorización Categoría y Densidad */}
       <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <Label className="text-muted-foreground text-xs uppercase tracking-widest">Tipo de Establecimiento</Label>
@@ -294,7 +294,7 @@ export function PairingForm() {
       <div className="flex flex-col gap-2">
         <Label className="text-muted-foreground text-xs uppercase tracking-widest flex justify-between">
            <span>Tamaño de la Pantalla (Detección Automática)</span>
-           <span className="text-[10px] text-[#7C3CFF] font-mono tracking-tighter uppercase font-black">LumiAds Telemetry Active</span>
+           <span className="text-[10px] text-[#7C3CFF] font-mono tracking-tighter uppercase font-black">LuminAdd Telemetry Active</span>
         </Label>
         <div className="bg-[#7C3CFF]/5 border border-[#7C3CFF]/30 rounded-lg h-12 flex items-center px-4 justify-between">
           <span className="text-xl font-black text-white font-mono">{tamanoPulgadas}"</span>
@@ -423,5 +423,6 @@ export function PairingForm() {
     </div>
   )
 }
+
 
 

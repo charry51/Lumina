@@ -13,13 +13,13 @@ export default async function Home() {
     <div className="dark min-h-screen bg-black flex flex-col selection:bg-lumi-violet selection:text-white">
       {/* Navigation Header */}
       <header className="fixed top-0 left-0 w-full z-[100] border-b border-white/[0.05] bg-black/50 backdrop-blur-md">
-        <div className="container mx-auto px-6 h-32 flex items-center justify-between">
+        <div className="container mx-auto px-6 h-32 flex items-center justify-between relative">
           <Link href="/" className="flex items-center gap-2 group">
              <img src="/LogoPequeño.png" alt="LumiAds Icon" className="h-[80px] w-auto group-hover:scale-110 transition-transform" />
              <img src="/LogoTexto.png" alt="LumiAds Brand" className="h-[100px] w-auto hidden sm:block" />
           </Link>
           
-          <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-500">
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-500">
              <Link href="#features" className="hover:text-lumi-violet transition-colors">Funciones</Link>
              <Link href="#impact" className="hover:text-lumi-violet transition-colors">Impacto</Link>
              <Link href="#pricing" className="hover:text-lumi-violet transition-colors">Programático</Link>
@@ -62,8 +62,8 @@ export default async function Home() {
       <footer className="py-12 border-t border-white/5 bg-black">
          <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-[10px] uppercase tracking-widest font-bold text-zinc-600">
             <div className="flex items-center gap-4">
-               <img src="/LogoPequeño.png" alt="LumiAds" className="h-4 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all" />
-               <span className="text-zinc-300">© 2026 <img src="/LogoTexto.png" alt="LumiAds" className="h-3 w-auto inline-block mx-1" /></span>
+               <img src="/LogoPequeño.png" alt="LuminAdd" className="h-4 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all" />
+               <span className="text-zinc-300">© 2026 <img src="/LogoTexto.png" alt="LuminAdd" className="h-3 w-auto inline-block mx-1" /></span>
                <span>•</span>
                <span>Digital Signage Intelligence</span>
             </div>
@@ -78,5 +78,6 @@ export default async function Home() {
     </div>
   )
 }
+
 
 

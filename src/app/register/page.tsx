@@ -14,7 +14,7 @@ export default async function RegisterPage({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-background font-sans text-foreground">
       <div className="mb-12 flex flex-col items-center">
-        <img src="/LogoTexto.png" alt="LumiAds" className="h-[100px] w-auto mb-4" />
+        <img src="/LogoTexto.png" alt="LuminAdd" className="h-[100px] w-auto mb-4" />
         <p className="text-[10px] text-[#2BC8FF] font-mono uppercase tracking-[6px] opacity-70">Sistemas de Inteligencia Visual</p>
       </div>
 
@@ -81,5 +81,6 @@ export default async function RegisterPage({
     </div>
   )
 }
+
 
 
