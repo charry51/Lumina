@@ -15,20 +15,23 @@ export default async function Home() {
       <header className="fixed top-0 left-0 w-full z-[100] border-b border-white/[0.05] bg-black/50 backdrop-blur-md">
         <div className="container mx-auto px-6 h-32 flex items-center justify-between relative">
           <Link href="/" className="flex items-center gap-2 group">
-             <img src="/LogoPequeño.png" alt="LumiAds Icon" className="h-[80px] w-auto group-hover:scale-110 transition-transform" />
-             <img src="/LogoTexto.png" alt="LumiAds Brand" className="h-[100px] w-auto hidden sm:block" />
+             <img src="/LogoPequeño.png" alt="LumiAds Icon" className="h-[60px] md:h-[80px] w-auto group-hover:scale-110 transition-transform" />
+             <img src="/LogoTexto.png" alt="LumiAds Brand" className="h-[80px] md:h-[100px] w-auto hidden sm:block" />
           </Link>
           
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-500">
-             <Link href="#features" className="hover:text-lumi-violet transition-colors">Funciones</Link>
-             <Link href="#impact" className="hover:text-lumi-violet transition-colors">Impacto</Link>
-             <Link href="#pricing" className="hover:text-lumi-violet transition-colors">Programático</Link>
+          {/* Centered Navigation - Absolute positioned relative to the full-width header for perfect screen centering */}
+          <div className="hidden md:flex absolute inset-x-0 top-0 bottom-0 pointer-events-none items-center justify-center">
+             <div className="flex items-center gap-12 text-[11px] uppercase tracking-[0.3em] font-bold text-zinc-400 pointer-events-auto">
+                <Link href="#features" className="hover:text-lumi-violet transition-colors">Funciones</Link>
+                <Link href="#impact" className="hover:text-lumi-violet transition-colors">Impacto</Link>
+                <Link href="#pricing" className="hover:text-lumi-violet transition-colors">Programático</Link>
+             </div>
           </div>
 
-          <div>
+          <div className="relative z-10">
              <Link 
                href="/login" 
-               className="px-5 py-2 rounded-full border border-white/10 text-white hover:bg-white/10 transition-all text-[10px] uppercase tracking-widest font-bold"
+               className="px-6 py-2.5 rounded-full border border-white/10 text-white hover:bg-white/10 transition-all text-[10px] uppercase tracking-widest font-bold bg-white/5 backdrop-blur-sm"
              >
                Iniciar Sesión
              </Link>
@@ -62,8 +65,8 @@ export default async function Home() {
       <footer className="py-12 border-t border-white/5 bg-black">
          <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-[10px] uppercase tracking-widest font-bold text-zinc-600">
             <div className="flex items-center gap-4">
-               <img src="/LogoPequeño.png" alt="LuminAdd" className="h-4 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all" />
-               <span className="text-zinc-300">© 2026 <img src="/LogoTexto.png" alt="LuminAdd" className="h-3 w-auto inline-block mx-1" /></span>
+               <img src="/LogoPequeño.png" alt="LumiAds" className="h-4 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all" />
+               <span className="text-zinc-300">© 2026 <img src="/LogoTexto.png" alt="LumiAds" className="h-3 w-auto inline-block mx-1" /></span>
                <span>•</span>
                <span>Digital Signage Intelligence</span>
             </div>
