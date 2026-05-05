@@ -90,7 +90,7 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
                  {msg.es_admin ? (
                    <>
                     <ShieldCheck className="w-3 h-3 text-[#7C3CFF]" />
-                    <span className="text-[9px] text-[#7C3CFF] font-black uppercase tracking-widest">Soporte LumiAds</span>
+                    <span className="text-[9px] text-[#7C3CFF] font-black uppercase tracking-widest">Soporte LuminAdd</span>
                    </>
                  ) : (
                    <>
@@ -160,5 +160,6 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
     </div>
   )
 }
+
 
 

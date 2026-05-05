@@ -39,7 +39,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   const [isUploading, setIsUploading] = useState(false)
   const [selectedMapScreens, setSelectedMapScreens] = useState<string[]>([])
   
-  // LumiAds v3 targets for estimation
+  // LuminAdd v3 targets for estimation
   const [targetType, setTargetType] = useState<ScreenType>('gimnasio')
   const [targetDensity, setTargetDensity] = useState<DensityLevel>('medio')
   
@@ -173,7 +173,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
         .from('creatividades')
         .getPublicUrl(uploadData.path)
 
-      // LumiAds v2: Crear el payload JSON limpio con los nuevos campos programáticos
+      // LuminAdd v2: Crear el payload JSON limpio con los nuevos campos programáticos
       const payloadData = {
         nombre_campana: formData.get('nombre_campana') as string,
         fecha_inicio: formData.get('fecha_inicio') as string,
@@ -212,7 +212,7 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-sm">
       
-      {/* LumiAds v2.0 - Programmatic Dashboard Card */}
+      {/* LuminAdd v2.0 - Programmatic Dashboard Card */}
       <div className="bg-muted/50 border border-border rounded-xl p-6 shadow-2xl relative overflow-hidden cyber-glass shadow-[#7C3CFF]/10">
          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#7C3CFF] to-transparent opacity-50" />
          
@@ -421,5 +421,6 @@ export default function CampaignForm({ pantallas, userPlan = 'Plan Básico' }: {
     </form>
   )
 }
+
 
 

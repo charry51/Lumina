@@ -7,7 +7,7 @@ import { generatePairingCode, checkPairingStatus } from './actions'
 // Generar un ID de dispositivo persistente (se guarda en localStorage)
 function getDeviceId(): string {
   if (typeof window === 'undefined') return ''
-  const key = 'LumiAds_device_id'
+  const key = 'LuminAdd_device_id'
   let id = localStorage.getItem(key)
   if (!id) {
     id = crypto.randomUUID()
@@ -141,10 +141,10 @@ export default function VincularPage() {
       <div className="relative z-10 flex flex-col items-center gap-8 text-center px-8">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-4">
-          <img src="/LogoPequeño.png" alt="LumiAds" className="h-14 w-auto" />
+          <img src="/LogoPequeño.png" alt="LuminAdd" className="h-14 w-auto" />
           <span className="text-4xl font-black text-white tracking-[0.2em] uppercase"
             style={{ fontFamily: 'var(--font-heading)' }}>
-            LumiAds
+            LuminAdd
           </span>
         </div>
 
@@ -218,7 +218,7 @@ export default function VincularPage() {
             </div>
 
             <p className="text-zinc-700 text-[10px] uppercase tracking-[0.4em] mt-4 font-black">
-              LumiAds v3.0 · SMART GEOLOCATION LOCKED
+              LuminAdd v3.0 · SMART GEOLOCATION LOCKED
             </p>
           </>
         )}
@@ -231,7 +231,7 @@ export default function VincularPage() {
               ¡Vinculada!
             </h2>
             <p className="text-zinc-400 text-xl">
-              Esta pantalla ya es parte de tu red LumiAds.
+              Esta pantalla ya es parte de tu red LuminAdd.
             </p>
             <div className="flex items-center gap-2 text-[#7C3CFF] font-mono animate-pulse">
               <div className="w-2 h-2 bg-[#7C3CFF] rounded-full animate-pulse" />
@@ -263,7 +263,7 @@ export default function VincularPage() {
       {/* Instrucciones inferiores */}
       {status === 'esperando' && (
         <div className="absolute bottom-8 flex items-center gap-8 text-zinc-700 text-[10px] uppercase tracking-widest font-mono">
-          <span>1. Abre LumiAds.app en tu ordenador</span>
+          <span>1. Abre LuminAdd.app en tu ordenador</span>
           <span className="text-zinc-800">|</span>
           <span>2. Ve a Pantallas → Vincular TV</span>
           <span className="text-zinc-800">|</span>
@@ -273,5 +273,6 @@ export default function VincularPage() {
     </div>
   )
 }
+
 
 

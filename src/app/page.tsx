@@ -13,22 +13,25 @@ export default async function Home() {
     <div className="dark min-h-screen bg-black flex flex-col selection:bg-lumi-violet selection:text-white">
       {/* Navigation Header */}
       <header className="fixed top-0 left-0 w-full z-[100] border-b border-white/[0.05] bg-black/50 backdrop-blur-md">
-        <div className="container mx-auto px-6 h-32 flex items-center justify-between">
+        <div className="container mx-auto px-6 h-32 flex items-center justify-between relative">
           <Link href="/" className="flex items-center gap-2 group">
-             <img src="/LogoPequeño.png" alt="LumiAds Icon" className="h-[80px] w-auto group-hover:scale-110 transition-transform" />
-             <img src="/LogoTexto.png" alt="LumiAds Brand" className="h-[100px] w-auto hidden sm:block" />
+             <img src="/LogoPequeño.png" alt="LumiAds Icon" className="h-[60px] md:h-[80px] w-auto group-hover:scale-110 transition-transform" />
+             <img src="/LogoTexto.png" alt="LumiAds Brand" className="h-[80px] md:h-[100px] w-auto hidden sm:block" />
           </Link>
           
-          <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-500">
-             <Link href="#features" className="hover:text-lumi-violet transition-colors">Funciones</Link>
-             <Link href="#impact" className="hover:text-lumi-violet transition-colors">Impacto</Link>
-             <Link href="#pricing" className="hover:text-lumi-violet transition-colors">Programático</Link>
+          {/* Centered Navigation - Absolute positioned relative to the full-width header for perfect screen centering */}
+          <div className="hidden md:flex absolute inset-x-0 top-0 bottom-0 pointer-events-none items-center justify-center">
+             <div className="flex items-center gap-12 text-[11px] uppercase tracking-[0.3em] font-bold text-zinc-400 pointer-events-auto">
+                <Link href="#features" className="hover:text-lumi-violet transition-colors">Funciones</Link>
+                <Link href="#impact" className="hover:text-lumi-violet transition-colors">Impacto</Link>
+                <Link href="#pricing" className="hover:text-lumi-violet transition-colors">Programático</Link>
+             </div>
           </div>
 
-          <div>
+          <div className="relative z-10">
              <Link 
                href="/login" 
-               className="px-5 py-2 rounded-full border border-white/10 text-white hover:bg-white/10 transition-all text-[10px] uppercase tracking-widest font-bold"
+               className="px-6 py-2.5 rounded-full border border-white/10 text-white hover:bg-white/10 transition-all text-[10px] uppercase tracking-widest font-bold bg-white/5 backdrop-blur-sm"
              >
                Iniciar Sesión
              </Link>
@@ -78,5 +81,6 @@ export default async function Home() {
     </div>
   )
 }
+
 
 
