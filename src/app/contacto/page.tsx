@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import ContactSection from '@/components/landing/ContactSection'
+import Footer from '@/components/Footer'
 
 export default function ContactoPage() {
   return (
-    <main className="dark min-h-screen bg-black text-white">
+    <div className="dark min-h-screen bg-black text-white flex flex-col justify-between">
       <div className="fixed left-4 top-4 z-50">
         <Link
           href="/"
@@ -12,7 +13,10 @@ export default function ContactoPage() {
           Volver
         </Link>
       </div>
-      <ContactSection />
-    </main>
+      <main className="flex-grow">
+        <ContactSection />
+      </main>
+      <Footer />
+    </div>
   )
 }
