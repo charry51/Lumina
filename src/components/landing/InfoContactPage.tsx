@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import ContactSection from '@/components/landing/ContactSection'
 import Footer from '@/components/Footer'
+import EcosystemGraphic from '@/components/landing/EcosystemGraphic'
 
 type InfoContactPageProps = {
   title: string
@@ -65,21 +66,7 @@ export default function InfoContactPage({
             {description}
           </p>
 
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {points.map((point) => (
-              <div key={point} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-left text-sm leading-relaxed text-zinc-300">
-                {point}
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {details.map((detail) => (
-              <div key={detail} className="rounded-2xl border border-white/10 bg-[#0E1426]/70 p-6 text-left text-sm leading-relaxed text-zinc-300">
-                {detail}
-              </div>
-            ))}
-          </div>
+          <EcosystemGraphic />
         </div>
       </section>
 
