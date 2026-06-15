@@ -296,6 +296,7 @@ export default async function AdvertiserDashboardPage() {
         </div>
 
       </div>
+      </div>
       <Footer />
     </div>
   )
