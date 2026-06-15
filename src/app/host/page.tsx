@@ -10,6 +10,7 @@ import { logout } from '@/app/login/actions'
 import { WithdrawButton } from './WithdrawButton'
 import { ConectarPantallaModal } from './ConectarPantallaModal'
 import { GoldCmsControls } from './GoldCmsControls'
+import Footer from '@/components/Footer'
 
 export default async function HostDashboardPage({
   searchParams,
@@ -122,8 +123,9 @@ export default async function HostDashboardPage({
   }
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 p-4 sm:p-8 font-sans selection:bg-violet-500/30">
-      {/* HEADER SIMILAR A ADVERTISER */}
+    <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-violet-500/30 flex flex-col justify-between">
+      <div className="p-4 sm:p-8 flex-grow w-full max-w-7xl mx-auto">
+        {/* HEADER SIMILAR A ADVERTISER */}
       <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-zinc-900 pb-8 relative">
         <div className="flex items-center gap-4 relative z-10">
           <Link href="/" className="flex items-center gap-2 group">
@@ -399,9 +401,11 @@ export default async function HostDashboardPage({
                  </div>
               )}
 
-           </div>
-        </div>
-      )}
+            </div>
+         </div>
+       )}
+      </div>
+      <Footer />
     </div>
   )
 }

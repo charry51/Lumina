@@ -8,6 +8,7 @@ import { DeleteCampaignButton } from '@/app/dashboard/DeleteCampaignButton'
 import { ReactivarCampaignButton } from '@/app/dashboard/ReactivarCampaignButton'
 import { BarChart3, Target, TrendingUp, Zap, Monitor, DollarSign, Plus, ArrowUpRight, Wallet } from 'lucide-react'
 import { SoporteNotificationBadge } from '@/components/SoporteNotificationBadge'
+import Footer from '@/components/Footer'
 
 export default async function AdvertiserDashboardPage() {
   const supabase = await createClient()
@@ -78,8 +79,9 @@ export default async function AdvertiserDashboardPage() {
   const userName = profile?.nombre || profile?.nombre_empresa || user.email?.split('@')[0] || 'Anunciante'
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 p-4 sm:p-8 font-sans selection:bg-[#2BC8FF]/30">
-      <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-zinc-900 pb-8 relative">
+    <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-[#2BC8FF]/30 flex flex-col justify-between">
+      <div className="p-4 sm:p-8 flex-grow w-full max-w-7xl mx-auto">
+        <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-zinc-900 pb-8 relative">
         <div className="flex items-center gap-4 relative z-10">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
@@ -294,6 +296,7 @@ export default async function AdvertiserDashboardPage() {
         </div>
 
       </div>
+      <Footer />
     </div>
   )
 }

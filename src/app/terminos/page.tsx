@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 export default function TerminosPage() {
   return (
-    <div className="dark min-h-screen bg-black text-white selection:bg-lumi-violet selection:text-white pb-24">
-      {/* Navigation */}
-      <header className="border-b border-white/[0.05] bg-black/50 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-6 h-20 flex items-center">
-          <Link href="/" className="flex items-center gap-2 group text-zinc-400 hover:text-white transition-colors">
+    <div className="dark min-h-screen bg-black text-white selection:bg-lumi-violet selection:text-white flex flex-col justify-between">
+      <div className="flex-grow pb-24">
+        {/* Navigation */}
+        <header className="border-b border-white/[0.05] bg-black/50 backdrop-blur-md sticky top-0 z-50">
+          <div className="container mx-auto px-6 h-20 flex items-center">
+            <Link href="/" className="flex items-center gap-2 group text-zinc-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="text-xs uppercase tracking-widest font-bold">Volver al Inicio</span>
           </Link>
@@ -87,6 +89,8 @@ export default function TerminosPage() {
 
         </div>
       </main>
+      </div>
+      <Footer />
     </div>
   );
 }

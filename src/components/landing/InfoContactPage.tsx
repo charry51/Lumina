@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import ContactSection from '@/components/landing/ContactSection'
+import Footer from '@/components/Footer'
 
 type InfoContactPageProps = {
   title: string
@@ -83,6 +84,7 @@ export default function InfoContactPage({
       </section>
 
       <ContactSection />
+      <Footer />
     </main>
   )
 }
