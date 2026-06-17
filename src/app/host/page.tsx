@@ -1,16 +1,14 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
 import { Button } from '@/components/ui/button'
 import { Plus, Tv, TrendingUp, Wallet, History, ChevronRight, Zap, Monitor, ArrowUpCircle } from 'lucide-react'
-import { SoporteNotificationBadge } from '@/components/SoporteNotificationBadge'
-import { logout } from '@/app/login/actions'
 import { WithdrawButton } from './WithdrawButton'
 import { ConectarPantallaModal } from './ConectarPantallaModal'
 import { GoldCmsControls } from './GoldCmsControls'
-import Footer from '@/components/Footer'
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+
 
 export default async function HostDashboardPage({
   searchParams,
@@ -125,63 +123,7 @@ export default async function HostDashboardPage({
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-violet-500/30 flex flex-col justify-between">
       <div className="p-4 sm:p-8 flex-grow w-full max-w-7xl mx-auto">
-        {/* HEADER SIMILAR A ADVERTISER */}
-      <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-zinc-900 pb-8 relative">
-        <div className="flex items-center gap-4 relative z-10">
-          <Link href="/" className="flex items-center gap-2 group">
-            <Image
-              src="/LogoPequeno.png"
-              alt="LumiAds Icon"
-              width={512}
-              height={512}
-              className="h-[52px] md:h-[64px] w-auto group-hover:scale-110 transition-transform"
-            />
-            <Image
-              src="/LogoTexto.png"
-              alt="LumiAds Brand"
-              width={720}
-              height={400}
-              className="h-[64px] md:h-[82px] w-auto hidden sm:block"
-            />
-          </Link>
-          <div className="border-l border-white/10 pl-4 py-1 flex flex-col justify-center">
-            <span className="bg-lumi-violet/10 text-lumi-violet text-[9px] font-black px-2 py-0.5 rounded border border-lumi-violet/20 uppercase tracking-widest w-fit">
-              DUEÑO DE PANTALLAS
-            </span>
-            <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-[4px] mt-1">Hola, {userName}</p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end w-full md:w-auto relative z-10">
-          <Link href="/host/estadisticas">
-             <Button variant="outline" className="border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white hover:bg-zinc-900 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
-                <TrendingUp className="w-4 h-4 text-violet-500" />
-                Estadísticas
-             </Button>
-          </Link>
-
-          <Link href="/dashboard/perfil">
-             <Button variant="outline" className="border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white hover:bg-zinc-900 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
-                Perfil
-             </Button>
-          </Link>
-
-          <ConectarPantallaModal
-            trigger={
-              <Button className="bg-violet-600 hover:bg-violet-500 text-white flex gap-2 items-center text-[10px] uppercase font-black tracking-widest px-6 shadow-[0_0_15px_rgba(124,60,255,0.4)]">
-                 <Monitor className="w-4 h-4" />
-                 Vincular nueva pantalla
-              </Button>
-            }
-          />
-
-          <SoporteNotificationBadge label="Soporte" />
-
-          <form action={logout}>
-            <Button variant="outline" type="submit" className="border-red-900/50 bg-zinc-950 text-red-500 hover:text-red-400 hover:bg-red-950/20 text-[10px] uppercase font-bold tracking-widest px-4">Cerrar sesión</Button>
-          </form>
-        </div>
-      </header>
+        <DashboardHeader userName={userName} role="host" />
 
       {!hasScreens ? (
         <div id="gestionar-pantallas" className="p-16 border border-zinc-900 bg-zinc-950/50 rounded-xl flex flex-col items-center justify-center text-center scroll-mt-8">
@@ -405,7 +347,7 @@ export default async function HostDashboardPage({
          </div>
        )}
       </div>
-      <Footer />
+
     </div>
   )
 }

@@ -1,14 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { logout } from '@/app/login/actions'
 import { DeleteCampaignButton } from '@/app/dashboard/DeleteCampaignButton'
 import { ReactivarCampaignButton } from '@/app/dashboard/ReactivarCampaignButton'
 import { BarChart3, Target, TrendingUp, Zap, Monitor, DollarSign, Plus, ArrowUpRight, Wallet } from 'lucide-react'
-import { SoporteNotificationBadge } from '@/components/SoporteNotificationBadge'
-import Footer from '@/components/Footer'
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+
 
 export default async function AdvertiserDashboardPage() {
   const supabase = await createClient()
@@ -81,72 +79,7 @@ export default async function AdvertiserDashboardPage() {
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-[#2BC8FF]/30 flex flex-col justify-between">
       <div className="p-4 sm:p-8 flex-grow w-full max-w-7xl mx-auto">
-        <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-zinc-900 pb-8 relative">
-        <div className="flex items-center gap-4 relative z-10">
-          <Link href="/" className="flex items-center gap-2 group">
-            <Image
-              src="/LogoPequeno.png"
-              alt="LumiAds Icon"
-              width={512}
-              height={512}
-              className="h-[52px] md:h-[64px] w-auto group-hover:scale-110 transition-transform"
-            />
-            <Image
-              src="/LogoTexto.png"
-              alt="LumiAds Brand"
-              width={720}
-              height={400}
-              className="h-[64px] md:h-[82px] w-auto hidden sm:block"
-            />
-          </Link>
-          <div className="border-l border-white/10 pl-4 py-1 flex flex-col justify-center">
-            <span className="bg-[#2BC8FF]/10 text-[#2BC8FF] text-[9px] font-black px-2 py-0.5 rounded border border-[#2BC8FF]/20 uppercase tracking-widest w-fit">
-              ADVERTISER
-            </span>
-            <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">Hola, {userName}</p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end w-full md:w-auto relative z-10">
-          <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-4 py-2 mr-2">
-            <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold">Saldo Disponible</span>
-              <span className="text-lg font-black font-mono text-white leading-none">{saldoBilletera.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}<span className="text-[#2BC8FF] ml-1">€</span></span>
-            </div>
-            <Link href="/dashboard/billetera?returnTo=/advertiser">
-               <Button size="sm" className="bg-[#2BC8FF] hover:bg-[#2BC8FF]/80 text-black flex gap-2 items-center text-[10px] uppercase font-black tracking-widest px-3 h-8 shadow-[0_0_10px_rgba(43,200,255,0.2)]">
-                  <Wallet className="w-3 h-3" />
-                  Recargar
-               </Button>
-            </Link>
-          </div>
-          <Link href="/advertiser/estadisticas">
-             <Button variant="outline" className="border-zinc-800 bg-zinc-950 text-[#2BC8FF] hover:text-white hover:bg-zinc-900 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
-                <TrendingUp className="w-4 h-4" />
-                Estadísticas
-             </Button>
-          </Link>
-
-          <Link href="/dashboard/perfil">
-             <Button variant="outline" className="border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white hover:bg-zinc-900 flex gap-2 items-center text-[10px] uppercase font-bold tracking-widest px-3">
-                Perfil
-             </Button>
-          </Link>
-
-          <Link href="/dashboard/nueva">
-             <Button className="bg-[#2BC8FF] hover:bg-[#2BC8FF]/80 text-black flex gap-2 items-center text-[10px] uppercase font-black tracking-widest px-6 shadow-[0_0_15px_rgba(43,200,255,0.4)]">
-                <Plus className="w-4 h-4" />
-                Crear campaña
-             </Button>
-          </Link>
-
-          <SoporteNotificationBadge label="Soporte" />
-
-          <form action={logout}>
-            <Button variant="outline" type="submit" className="border-red-900/50 bg-zinc-950 text-red-500 hover:text-red-400 hover:bg-red-950/20 text-[10px] uppercase font-bold tracking-widest px-4">Cerrar sesión</Button>
-          </form>
-        </div>
-      </header>
+        <DashboardHeader userName={userName} role="advertiser" saldoBilletera={saldoBilletera} />
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -297,7 +230,7 @@ export default async function AdvertiserDashboardPage() {
 
       </div>
       </div>
-      <Footer />
+
     </div>
   )
 }
